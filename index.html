@@ -8338,9 +8338,9 @@
 
         /* 仅在全屏模式下生效 */
         .fullscreen-active .phone-frame {
-            /* 核心修复：使用 calc() 计算实际尺寸，包含安全区域 */
-            width: calc(100vw + env(safe-area-inset-left) + env(safe-area-inset-right));
-            height: calc(100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
+            /* 保持标准视口尺寸，但添加安全区域内边距 */
+            width: 100vw;
+            height: 100vh;
             max-width: none; /* 移除最大宽度限制 */
             border-radius: 0; /* 移除边框圆角 */
             box-shadow: none; /* 移除阴影 */

@@ -372,10 +372,13 @@
             z-index: 0;
         }
         
-        /* 全屏模式下，背景图变为固定定位，铺满整个浏览器窗口 */
+        /* 全屏模式下，背景图变为绝对定位，铺满整个 phone-frame */
         .fullscreen-active #home-wallpaper {
-            position: fixed;
-            z-index: -1; /* 改回 -1，让它沉到最底层 */
+            position: absolute; /* 修改：相对于 .phone-frame 定位 */
+            inset: 0;           /* 新增：使用 inset: 0 替代 top/bottom/left/right: 0，让它填满 .phone-frame */
+            width: 100%;        /* 确保宽高 */
+            height: 100%;
+            z-index: 0;         /* 修改：作为 .phone-frame 内的最底层，而不是整个页面的最底层 */
         }
         
 
@@ -9581,28 +9584,37 @@
             const body = document.body;
             const iconElement = fullscreenBtn.querySelector('.fas.fa-expand, .fas.fa-compress');
             
-            // 页面加载时，根据当前是否全屏设置图标的初始状态
-            if (body.classList.contains('fullscreen-active')) {
-                iconElement.className = 'fas fa-compress w-6 text-center mr-3'; // 退出全屏图标
-                fullscreenBtn.title = '退出全屏';
-            } else {
-                iconElement.className = 'fas fa-expand w-6 text-center mr-3'; // 进入全屏图标
-                fullscreenBtn.title = '进入全屏';
-            }
-            
             // 全屏切换函数
             function toggleFullscreen() {
                 if (body.classList.contains('fullscreen-active')) {
                     // 退出全屏模式
                     body.classList.remove('fullscreen-active');
-                    iconElement.className = 'fas fa-expand w-6 text-center mr-3'; // 变为进入全屏图标
+                    iconElement.className = 'fas fa-expand w-6 text-center mr-3';
                     fullscreenBtn.title = '进入全屏';
+                    // 新增：保存状态到 localStorage
+                    localStorage.setItem('fullscreen_mode', 'false');
                 } else {
                     // 进入全屏模式
                     body.classList.add('fullscreen-active');
-                    iconElement.className = 'fas fa-compress w-6 text-center mr-3'; // 变为退出全屏图标
+                    iconElement.className = 'fas fa-compress w-6 text-center mr-3';
                     fullscreenBtn.title = '退出全屏';
+                    // 新增：保存状态到 localStorage
+                    localStorage.setItem('fullscreen_mode', 'true');
                 }
+            }
+
+            // 新增：页面加载时检查并应用已保存的状态
+            const savedMode = localStorage.getItem('fullscreen_mode');
+            if (savedMode === 'true') {
+                // 如果保存的状态是全屏，则直接应用全屏模式
+                body.classList.add('fullscreen-active');
+                iconElement.className = 'fas fa-compress w-6 text-center mr-3';
+                fullscreenBtn.title = '退出全屏';
+            } else {
+                // 否则，确保是手机模式
+                body.classList.remove('fullscreen-active');
+                iconElement.className = 'fas fa-expand w-6 text-center mr-3';
+                fullscreenBtn.title = '进入全屏';
             }
             
             // 绑定点击事件

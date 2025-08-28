@@ -8345,95 +8345,49 @@
             box-shadow: none; /* 移除阴影 */
         }
 
-        /* 仅在全屏模式下，调整Dock栏的位置，防止被底部横条遮挡 */
-        .fullscreen-active .dock {
-            /* 在原有 bottom 间距的基础上，增加底部安全区域的高度 */
-            bottom: env(safe-area-inset-bottom); /* <-- 已修改为 0rem */
-            /* 新增：让Dock栏在全屏模式下变得更宽 */
-            width: 95%;
-            max-width: 600px; /* 您可以根据喜好调整这个最大值 */
-        }
-        /* 新增：修复iOS全屏模式下顶部内容被状态栏遮挡的问题 */
-        .fullscreen-active #status-bar {
-            /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
-            padding-top: calc(0.75rem + env(safe-area-inset-top));
-        }
-        
-        /* 新增：确保在手机模式下标题栏始终可见 */
-        @media (max-width: 768px) {
-            .app-header {
-                display: flex !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                position: relative !important;
-                z-index: 20 !important;
-                min-height: 4.5rem !important;
-                overflow: visible !important;
-            }
-            
-            .app-header-title {
-                display: block !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-            }
-        }
-        
-        /* 新增：针对iOS主屏幕应用的专门样式 */
-        @media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {
-            .app-header {
-                display: flex !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                position: relative !important;
-                z-index: 20 !important;
-                min-height: 4.5rem !important;
-                overflow: visible !important;
-                transform: none !important;
-                transition: none !important;
-                -webkit-transform: none !important;
-                -webkit-transition: none !important;
-            }
-            
-            .app-header-title {
-                display: block !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                transform: none !important;
-                -webkit-transform: none !important;
-            }
-            
-            /* 确保在iOS主屏幕应用下所有标题栏都可见 */
-            .app-header * {
-                visibility: visible !important;
-                opacity: 1 !important;
-            }
-        }
-        /* 新增：精确调整所有App顶栏在全屏下的位置 */
-        .fullscreen-active .app-header {
-            /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
-            padding-top: calc(0.5rem + env(safe-area-inset-top));
-            /* 确保标题栏在全屏模式下仍然可见 */
-            display: flex !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            z-index: 20 !important;
-        }
 
-        /* --- [最终修复] 针对iOS"添加到主屏幕"后独立应用模式的适配 --- */
 
-        /* 这段代码只会在网页被当作"桌面App"运行时生效 */
+        /* ========== [最终版] iOS 独立应用模式布局修复 ========== */
+
+        /* 当网页以"添加到主屏幕"的独立应用模式运行时... */
         @media (display-mode: standalone) {
-            /* 1. 为整个手机屏幕容器增加顶部安全距离，一次性解决刘海屏遮挡问题 */
+
+            /* 1. 让最外层的 phone-screen 容器来处理顶部的"刘海"安全距离 */
+            /* 这会把整个应用界面都往下推，从根本上避开遮挡。*/
             #phone-screen {
                 padding-top: env(safe-area-inset-top);
+                height: 100%; /* 使用 100% 替代 100vh 配合 padding */
+                box-sizing: border-box; /* 让 padding 不会撑大元素 */
             }
 
-            /* 2. 同时为底部Dock栏增加底部安全距离，防止被iPhone的横条指示器遮挡 */
+            /* 2. 将所有 App 视图改造为 Flex 垂直布局，这是现代布局的治本之策 */
+            .app-screen-view {
+                display: flex;
+                flex-direction: column;
+                /* 移除原有的、会引起问题的 padding-top */
+                padding-top: 0;
+                /* 确保 App 视图能填满 #phone-screen 的剩余空间 */
+                height: 100%;
+            }
+
+            /* 3. 固定 App 头部，使其高度不变 */
+            .app-screen-view > .app-header {
+                flex-shrink: 0;
+                /* Header 内部不再需要自己的 safe-area-padding，因为父级已经处理了 */
+                padding-top: 0.5rem;
+            }
+
+            /* 4. 让头部之后的内容区域自动填满剩余空间，并可以滚动 */
+            /* 这是一个通用选择器，适用于所有 App 的内容区域 */
+            .app-header + * {
+                flex-grow: 1;
+                overflow-y: auto;
+                min-height: 0; /* 修复 Flex 容器内的滚动问题 */
+            }
+
+            /* 5. 为底部 Dock 栏增加"小横条"的安全距离 */
             .dock {
-                /* 在原有的 bottom 间距基础上，再增加底部安全区域的高度 */
                 padding-bottom: env(safe-area-inset-bottom);
-                /* 为动画效果增加一点过渡 */
-                transition: padding-bottom 0.3s ease-out;
             }
         }
 

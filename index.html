@@ -2845,7 +2845,7 @@
         .app-screen-view { 
             position: relative; /* 新增：为子元素的绝对定位提供基准 */
             height: 100%;
-            padding-top: 3rem;
+            padding-top: 2rem; /* <-- 已修改为 2rem */
         }
 
         /* 只为主屏幕添加滚动功能 */
@@ -8345,7 +8345,10 @@
         /* 仅在全屏模式下，调整Dock栏的位置，防止被底部横条遮挡 */
         .fullscreen-active .dock {
             /* 在原有 bottom 间距的基础上，增加底部安全区域的高度 */
-            bottom: calc(1rem + env(safe-area-inset-bottom));
+            bottom: env(safe-area-inset-bottom); /* <-- 已修改为 0rem */
+            /* 新增：让Dock栏在全屏模式下变得更宽 */
+            width: 95%;
+            max-width: 600px; /* 您可以根据喜好调整这个最大值 */
         }
         /* 新增：修复iOS全屏模式下顶部内容被状态栏遮挡的问题 */
         .fullscreen-active #status-bar {

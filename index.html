@@ -8347,6 +8347,11 @@
             /* 在原有 bottom 间距的基础上，增加底部安全区域的高度 */
             bottom: calc(1rem + env(safe-area-inset-bottom));
         }
+        /* 新增：修复iOS全屏模式下顶部内容被状态栏遮挡的问题 */
+        .fullscreen-active #status-bar {
+            /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
+            padding-top: calc(0.75rem + env(safe-area-inset-top));
+        }
 
     </style>
 </head>

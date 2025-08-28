@@ -25,24 +25,6 @@
             --moments-cover-image: url('https://placehold.co/375x192/333/fff?text=Cover');
             --moments-avatar-image: url('https://placehold.co/128x128/777/FFF?text=Me');
         }
-        
-        /* 第一层：html, body 作为稳定的根基 */
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* 彻底禁止最外层滚动 */
-            position: relative; /* 使用 relative 作为定位的根 */
-            margin: 0;
-            padding: 0;
-        }
-        
-        /* 全屏激活时的额外滚动控制 */
-        .fullscreen-active html,
-        .fullscreen-active body {
-            overflow: hidden !important;
-            position: relative !important;
-            -webkit-overflow-scrolling: auto;
-        }
 
         /* 新增：长按删除的震动动画 */
         @keyframes shake {
@@ -333,27 +315,18 @@
             font-size: 16.5px; /* 大 */
         }
         
-        /* 第二层：.phone-frame 变成绝对定位的"屏幕画框" */
+        /* 手机外框样式 */
         .phone-frame {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            position: relative;
             width: 100%;
-            height: 100%;
-            
-            /* 在桌面端预览时保持原样 */
             max-width: 375px;
-            max-height: 720px;
-            margin: auto; /* 让其在桌面端居中 */
+            height: 720px;
             border-radius: 3rem;
-            box-shadow: 0 1rem 3rem rgba(0,0,0,0.5);
             padding: 0.5rem; /* p-2 */
-            
-            display: flex; /* 保持flex布局 */
-            flex-direction: column; /* 保持纵向排列 */
-            overflow: hidden; /* 这一层也禁止溢出 */
+            box-shadow: 0 1rem 3rem rgba(0,0,0,0.5); /* shadow-2xl */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
             transition: all 0.3s ease-in-out; /* 添加平滑过渡效果 */
         }
         
@@ -2877,22 +2850,15 @@
             cursor: pointer;
         }
 
-        /* 第三层：#phone-screen 作为所有应用内容的直接容器 */
-        .app-screen-view {
-            width: 100%;
+        .app-screen-view { 
+            position: relative; /* 新增：为子元素的绝对定位提供基准 */
             height: 100%;
-            position: relative;
-            display: flex; /* 让它能撑满容器 */
-            flex-direction: column; /* 让内部元素纵向排列 */
-            flex: 1; /* 占据所有可用空间 */
-            overflow: hidden; /* 默认所有视图都不能滚动 */
-            padding-top: 2rem; /* <-- 保持原有的 2rem 内边距 */
+            padding-top: 2rem; /* <-- 已修改为 2rem */
         }
 
-        /* 替换您原来的 #home-screen 规则 */
+        /* 只为主屏幕添加滚动功能 */
         #home-screen {
-            overflow-y: auto; /* 只给主屏幕添加Y轴滚动许可 */
-            -webkit-overflow-scrolling: touch; /* 开启流畅滚动 */
+            overflow-y: auto;
             padding-bottom: 7rem;
         }
 
@@ -2916,9 +2882,6 @@
         #wechat-content-chat {
             position: relative;
             z-index: 1;
-            overflow-y: auto; /* 允许聊天记录滚动 */
-            -webkit-overflow-scrolling: touch; /* 开启流畅滚动 */
-            flex: 1;
         }
         #chat-footer {
             position: relative;
@@ -8364,7 +8327,7 @@
 
 
 
-        /* ====== 解决方案：修复iOS全屏模式下的状态栏重叠和拉伸问题 ====== */
+        /* ====== 全屏激活后的样式 (替换旧的 standalone-mode) ====== */
 
         /* 仅在全屏模式下生效 */
         body.fullscreen-active {
@@ -8372,37 +8335,28 @@
             overflow: hidden; /* 防止意外的滚动 */
             background-color: transparent; /* 新增：让body背景透明 */
         }
-
-        /* 当进入全屏模式时，覆盖桌面端的样式 */
+        /* 仅在全屏模式下，重定义 phone-frame 的样式 */
         .fullscreen-active .phone-frame {
-            max-width: none;
-            max-height: none;
-            border-radius: 0;
-            box-shadow: none;
-            margin: 0;
-            
-            /* 保持标准视口尺寸，但底部稍微增加安全区域高度 */
-            width: 100vw;
-            height: calc(100vh + env(safe-area-inset-bottom));
-            
-            /* 核心修复：添加安全区域内边距，这将在顶部和底部创建出您想要的"黑色遮挡条" */
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
-            
-            /* 确保内容区域能够充分利用增加的空间 */
-            box-sizing: border-box;
+            width: 100vw; /* 宽度占满屏幕 */
+            height: 100vh; /* 高度占满屏幕 */
+            max-width: none; /* 移除最大宽度限制 */
+            border-radius: 0; /* 移除边框圆角 */
+            padding: 0; /* 移除内边距 */
+            box-shadow: none; /* 移除阴影 */
         }
 
-        /* 仅在全屏模式下，精确调整Dock栏的位置 */
+        /* 仅在全屏模式下，调整Dock栏的位置，防止被底部横条遮挡 */
         .fullscreen-active .dock {
-            /* 在您原有的 1rem 基础上，增加底部安全区域的高度 */
-            bottom: calc(1rem + env(safe-area-inset-bottom)); 
-            
-            /* （可选）让Dock栏在全屏下稍微变宽，视觉效果更好 */
+            /* 在原有 bottom 间距的基础上，增加底部安全区域的高度 */
+            bottom: env(safe-area-inset-bottom); /* <-- 已修改为 0rem */
+            /* 新增：让Dock栏在全屏模式下变得更宽 */
             width: 95%;
-            max-width: 600px;
+            max-width: 600px; /* 您可以根据喜好调整这个最大值 */
+        }
+        /* 新增：修复iOS全屏模式下顶部内容被状态栏遮挡的问题 */
+        .fullscreen-active #status-bar {
+            /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
+            padding-top: calc(0.75rem + env(safe-area-inset-top));
         }
         
         /* 新增：确保在手机模式下标题栏始终可见 */
@@ -8423,9 +8377,10 @@
                 opacity: 1 !important;
             }
         }
-        
         /* 新增：精确调整所有App顶栏在全屏下的位置 */
         .fullscreen-active .app-header {
+            /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
+            padding-top: calc(0.5rem + env(safe-area-inset-top));
             /* 确保标题栏在全屏模式下仍然可见 */
             display: flex !important;
             visibility: visible !important;
@@ -8435,7 +8390,7 @@
 
     </style>
 </head>
-<body class="dark-mode">
+<body class="flex items-center justify-center min-h-screen dark-mode">
     
 
     <!-- SVG濾鏡，用於創建紙張毛邊效果 -->
@@ -8453,7 +8408,7 @@
     <input type="file" id="sticker-upload-input" class="hidden" accept="image/*">
     <input type="file" id="user-video-image-input" class="hidden" accept="image/*">
     <input type="file" id="my-video-image-input" class="hidden" accept="image/*">
-                    <div class="phone-frame">
+                    <div class="phone-frame relative w-full flex flex-col overflow-hidden">
         
         <div id="phone-screen" class="phone-screen flex-1 overflow-hidden relative animate-fade-in">
             
@@ -22575,199 +22530,6 @@ ${eventTypeSpecificInput}
         setTimeout(() => {
             renderTimeline();
         }, 500);
-    }
-    
-    // ====== iOS全屏模式滚动控制 ======
-    // 宽松的滚动控制：只阻止页面背景滚动，允许所有应用内滚动
-    function preventPageScroll(e) {
-        // 检查事件目标是否在可滚动的容器内
-        const target = e.target;
-        
-        // 检查是否在任何可滚动容器内
-        const isInScrollableContainer = target.closest('[style*="overflow"], [class*="overflow"], [id*="container"], [id*="list"], [id*="content"], .modal-content, .chat-container, .memory-container, .timeline-container, .settings-content, .bg-white, .bg-gray-800');
-        
-        // 如果在可滚动容器内，允许滚动
-        if (isInScrollableContainer) {
-            return true;
-        }
-        
-        // 检查目标元素本身是否可滚动
-        const computedStyle = window.getComputedStyle(target);
-        if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
-            computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
-            return true;
-        }
-        
-        // 检查父元素是否可滚动
-        const scrollableParent = target.closest('[style*="overflow"], [class*="overflow"]');
-        if (scrollableParent) {
-            return true;
-        }
-        
-        // 只有在空白区域才阻止滚动
-        if (target === document.body || target === document.documentElement || target === window) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        }
-        
-        return true;
-    }
-    
-    // 阻止触摸滚动（宽松策略）
-    function preventTouchScroll(e) {
-        const target = e.target;
-        
-        // 检查是否在可滚动容器内
-        const isInScrollableContainer = target.closest('[style*="overflow"], [class*="overflow"], [id*="container"], [id*="list"], [id*="content"], .modal-content, .chat-container, .memory-container, .timeline-container, .settings-content, .bg-white, .bg-gray-800');
-        
-        if (isInScrollableContainer) {
-            return true;
-        }
-        
-        // 检查元素本身是否可滚动
-        const computedStyle = window.getComputedStyle(target);
-        if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
-            computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
-            return true;
-        }
-        
-        // 只有在空白区域才阻止
-        if (target === document.body || target === document.documentElement) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        }
-        
-        return true;
-    }
-    
-    // 阻止鼠标滚轮滚动（宽松策略）
-    function preventWheelScroll(e) {
-        const target = e.target;
-        
-        // 检查是否在可滚动容器内
-        const isInScrollableContainer = target.closest('[style*="overflow"], [class*="overflow"], [id*="container"], [id*="list"], [id*="content"], .modal-content, .chat-container, .memory-container, .timeline-container, .settings-content, .bg-white, .bg-gray-800');
-        
-        if (isInScrollableContainer) {
-            return true;
-        }
-        
-        // 检查元素本身是否可滚动
-        const computedStyle = window.getComputedStyle(target);
-        if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
-            computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
-            return true;
-        }
-        
-        // 只有在空白区域才阻止
-        if (target === document.body || target === document.documentElement) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        }
-        
-        return true;
-    }
-    
-    // 阻止键盘滚动（宽松策略）
-    function preventKeyScroll(e) {
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
-            e.key === 'PageUp' || e.key === 'PageDown' || 
-            e.key === 'Home' || e.key === 'End' || 
-            e.key === ' ' || e.key === 'Spacebar') {
-            
-            const target = e.target;
-            
-            // 检查是否在可滚动容器内
-            const isInScrollableContainer = target.closest('[style*="overflow"], [class*="overflow"], [id*="container"], [id*="list"], [id*="content"], .modal-content, .chat-container, .memory-container, .timeline-container, .settings-content, .bg-white, .bg-gray-800');
-            
-            if (isInScrollableContainer) {
-                return true;
-            }
-            
-            // 检查元素本身是否可滚动
-            const computedStyle = window.getComputedStyle(target);
-            if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
-                computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
-                return true;
-            }
-            
-            // 只有在空白区域才阻止
-            if (target === document.body || target === document.documentElement) {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    // 应用宽松的滚动阻止
-    function applyLooseScrollPrevention() {
-        // 只阻止页面级别的滚动，不阻止应用内滚动
-        document.addEventListener('scroll', preventPageScroll, { passive: false, capture: true });
-        document.addEventListener('touchmove', preventTouchScroll, { passive: false, capture: true });
-        document.addEventListener('wheel', preventWheelScroll, { passive: false, capture: true });
-        document.addEventListener('keydown', preventKeyScroll, { passive: false, capture: true });
-        
-        // 阻止body和html的页面级滚动
-        document.body.addEventListener('scroll', preventPageScroll, { passive: false, capture: true });
-        document.documentElement.addEventListener('scroll', preventPageScroll, { passive: false, capture: true });
-        
-        // 阻止window的页面级滚动
-        window.addEventListener('scroll', preventPageScroll, { passive: false, capture: true });
-    }
-    
-    // 页面加载完成后立即应用宽松的滚动阻止
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', applyLooseScrollPrevention);
-    } else {
-        applyLooseScrollPrevention();
-    }
-    
-    // 全屏模式检测和额外控制
-    document.addEventListener('fullscreenchange', function() {
-        if (document.fullscreenElement) {
-            document.body.classList.add('fullscreen-active');
-            // 全屏时额外阻止页面滚动
-            setTimeout(applyLooseScrollPrevention, 100);
-        } else {
-            document.body.classList.remove('fullscreen-active');
-        }
-    });
-    
-    // iOS Safari 特殊处理
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        // iOS设备额外保护，但允许应用内滚动
-        document.addEventListener('gesturestart', function(e) {
-            const target = e.target;
-            
-            // 检查是否在可滚动容器内
-            const isInScrollableContainer = target.closest('[style*="overflow"], [class*="overflow"], [id*="container"], [id*="list"], [id*="content"], .modal-content, .chat-container, .memory-container, .timeline-container, .settings-content, .bg-white, .bg-gray-800');
-            
-            if (isInScrollableContainer) {
-                return true;
-            }
-            
-            // 检查元素本身是否可滚动
-            const computedStyle = window.getComputedStyle(target);
-            if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
-                computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
-                return true;
-            }
-            
-            // 只有在空白区域才阻止
-            if (target === document.body || target === document.documentElement) {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            }
-        }, { passive: false });
-        
-        // 阻止iOS的页面级弹性滚动，但保留应用内滚动
-        document.body.style.webkitOverflowScrolling = 'auto';
-        document.documentElement.style.webkitOverflowScrolling = 'auto';
     }
     
     </script>

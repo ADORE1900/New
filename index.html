@@ -8353,28 +8353,34 @@
         @media (display-mode: standalone) {
 
             /* --- 1. 基础重置 --- */
-            /* 强制 body 和 phone-screen 填满屏幕并作为Flexbox布局的根基 */
+            /* 强制 body 填满屏幕，防止iOS的"橡皮筋"滚动效果 */
             body {
-                /* 防止iOS的橡皮筋滚动效果 */
                 position: fixed;
                 inset: 0;
                 overflow: hidden;
             }
+            
+            /* 将整个手机屏幕容器设置为Flex布局的根基 */
             #phone-screen {
                 display: flex;
-                flex-direction: column;
+                flex-direction: column; /* 垂直排列：状态栏、内容区 */
                 height: 100vh; /* 强制占满整个可视高度 */
-                padding: 0; /* 移除任何可能存在的内边距 */
+                padding: 0;    /* 移除任何可能存在的内边距 */
+                border-radius: 0; /* 在独立模式下移除圆角，实现真全屏 */
             }
 
             /* --- 2. 状态栏修正 (核心) --- */
-            /* 将应用内状态栏从绝对定位改为Flex布局的一部分，这是解决重叠的关键 */
+            /* 将状态栏从绝对定位改为正常的文档流一部分，这是解决重叠的关键 */
             #status-bar {
                 position: relative; /* 覆盖原来的 absolute */
-                flex-shrink: 0; /* 确保高度不会被压缩 */
-                order: -1; /* 确保它永远在Flex布局的最顶部 */
-                z-index: 100;
-                /* 内部增加安全距离，把时间和图标"推"下来 */
+                flex-shrink: 0;     /* 确保其高度不会被压缩 */
+                order: -1;          /* 确保它永远在Flex布局的最顶部 */
+                z-index: 1000;
+                
+                /* * 核心代码：使用iOS提供的环境变量 env(safe-area-inset-top) 
+                 * 获取顶部安全区域（刘海/灵动岛）的高度，并将其作为内边距(padding)
+                 * 这会将你的状态栏内容（时间、图标）完美地"推"到安全区域下方。
+                 */
                 padding-top: env(safe-area-inset-top);
             }
 
@@ -8383,15 +8389,12 @@
             .app-screen-view:not(#home-screen) {
                 display: flex;
                 flex-direction: column;
-                /* 移除原有的、会引起问题的 padding-top */
-                padding-top: 0;
-                /* 自动填满 status-bar 下方的所有剩余空间 */
-                flex-grow: 1;
-                /* 关键：为Flex容器内的滚动内容区提供上下文 */
-                min-height: 0;
+                padding-top: 0; /* 移除原有的、会引起问题的 padding-top */
+                flex-grow: 1;   /* 自动填满 status-bar 下方的所有剩余空间 */
+                min-height: 0;  /* 关键：为Flex容器内的滚动内容区提供上下文 */
             }
-
-            /* 主屏幕因为它自己需要滚动，所以特殊处理，不使用flex布局 */
+            
+            /* 主屏幕特殊处理，因为它自身需要滚动 */
             #home-screen {
                 padding-top: 0; /* 同样移除padding */
                 flex-grow: 1;
@@ -8399,18 +8402,18 @@
             }
 
             /* --- 4. App 内部标题栏修正 --- */
-            /* 让 App 内部的标题栏高度固定 */
+            /* 让 App 内部的标题栏高度固定，不被压缩 */
             .app-screen-view > .app-header {
                 flex-shrink: 0;
-                position: relative; /* 确保它在Flex流中 */
+                position: relative; 
             }
 
             /* --- 5. App 内容区域修正 --- */
             /* 这是一个通用选择器，选择所有App header后面的那个兄弟元素作为内容区 */
             .app-header + * {
-                flex-grow: 1; /* 填满剩余空间 */
-                overflow-y: auto; /* 内容超出时滚动 */
-                min-height: 0; /* 修复Flex滚动问题 */
+                flex-grow: 1;       /* 填满剩余空间 */
+                overflow-y: auto;   /* 内容超出时滚动 */
+                min-height: 0;      /* 修复Flex滚动问题 */
             }
 
             /* --- 6. 底部 Dock 栏修正 --- */
@@ -8444,7 +8447,7 @@
         
         <div id="phone-screen" class="phone-screen flex-1 overflow-hidden relative animate-fade-in">
             
-            <div id="ios-safe-area-top-shim" class="hidden"></div>
+
 
             <div id="home-wallpaper" class="absolute inset-0 w-full h-full z-0"></div>
 

@@ -8377,6 +8377,37 @@
                 opacity: 1 !important;
             }
         }
+        
+        /* 新增：针对iOS主屏幕应用的专门样式 */
+        @media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {
+            .app-header {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                position: relative !important;
+                z-index: 20 !important;
+                min-height: 4.5rem !important;
+                overflow: visible !important;
+                transform: none !important;
+                transition: none !important;
+                -webkit-transform: none !important;
+                -webkit-transition: none !important;
+            }
+            
+            .app-header-title {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                transform: none !important;
+                -webkit-transform: none !important;
+            }
+            
+            /* 确保在iOS主屏幕应用下所有标题栏都可见 */
+            .app-header * {
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+        }
         /* 新增：精确调整所有App顶栏在全屏下的位置 */
         .fullscreen-active .app-header {
             /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
@@ -9636,25 +9667,64 @@
             // 检测是否为手机设备
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
             
-            if (savedMode === 'true' && !isMobile) {
-                // 如果保存的状态是全屏且不是手机设备，则应用全屏模式
+            // 新增：检测是否为iOS主屏幕应用
+            const isStandalone = window.navigator.standalone === true || 
+                                window.matchMedia('(display-mode: standalone)').matches ||
+                                window.matchMedia('(display-mode: fullscreen)').matches ||
+                                window.matchMedia('(display-mode: minimal-ui)').matches;
+            
+            // 新增：检测是否为Safari浏览器
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            
+            if (savedMode === 'true' && !isMobile && !isStandalone) {
+                // 如果保存的状态是全屏且不是手机设备且不是主屏幕应用，则应用全屏模式
                 body.classList.add('fullscreen-active');
                 iconElement.className = 'fas fa-compress w-6 text-center mr-3';
                 fullscreenBtn.title = '退出全屏';
             } else {
-                // 否则，确保是手机模式，不启用全屏
+                // 否则，确保是手机模式或主屏幕应用，不启用全屏
                 body.classList.remove('fullscreen-active');
                 iconElement.className = 'fas fa-expand w-6 text-center mr-3';
                 fullscreenBtn.title = '进入全屏';
                 
-                // 在手机模式下，确保标题栏始终可见
-                if (isMobile) {
+                // 在手机模式或主屏幕应用下，确保标题栏始终可见
+                if (isMobile || isStandalone) {
                     const appHeaders = document.querySelectorAll('.app-header');
                     appHeaders.forEach(header => {
                         header.style.display = 'flex';
                         header.style.visibility = 'visible';
                         header.style.opacity = '1';
+                        header.style.position = 'relative';
+                        header.style.zIndex = '20';
                     });
+                    
+                    // 新增：针对iOS主屏幕应用的特殊处理
+                    if (isStandalone && isSafari) {
+                        // 强制显示所有标题栏
+                        document.querySelectorAll('.app-header').forEach(header => {
+                            header.style.cssText = `
+                                display: flex !important;
+                                visibility: visible !important;
+                                opacity: 1 !important;
+                                position: relative !important;
+                                z-index: 20 !important;
+                                min-height: 4.5rem !important;
+                                overflow: visible !important;
+                                transform: none !important;
+                                transition: none !important;
+                            `;
+                        });
+                        
+                        // 确保标题文字可见
+                        document.querySelectorAll('.app-header-title').forEach(title => {
+                            title.style.cssText = `
+                                display: block !important;
+                                visibility: visible !important;
+                                opacity: 1 !important;
+                                transform: none !important;
+                            `;
+                        });
+                    }
                 }
             }
             
@@ -9667,8 +9737,101 @@
                     toggleFullscreen();
                 }
             });
+            
+            // 新增：监听页面可见性变化，确保在iOS主屏幕应用下标题栏始终可见
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    // 页面变为可见时，检查并修复标题栏
+                    const isStandalone = window.navigator.standalone === true || 
+                                        window.matchMedia('(display-mode: standalone)').matches ||
+                                        window.matchMedia('(display-mode: fullscreen)').matches ||
+                                        window.matchMedia('(display-mode: minimal-ui)').matches;
+                    
+                    if (isStandalone) {
+                        setTimeout(() => {
+                            document.querySelectorAll('.app-header').forEach(header => {
+                                header.style.cssText = `
+                                    display: flex !important;
+                                    visibility: visible !important;
+                                    opacity: 1 !important;
+                                    position: relative !important;
+                                    z-index: 20 !important;
+                                    min-height: 4.5rem !important;
+                                    overflow: visible !important;
+                                    transform: none !important;
+                                    transition: none !important;
+                                `;
+                            });
+                        }, 100);
+                    }
+                }
+            });
+            
+            // 新增：监听窗口焦点变化
+            window.addEventListener('focus', function() {
+                const isStandalone = window.navigator.standalone === true || 
+                                    window.matchMedia('(display-mode: standalone)').matches ||
+                                    window.matchMedia('(display-mode: fullscreen)').matches ||
+                                    window.matchMedia('(display-mode: minimal-ui)').matches;
+                
+                if (isStandalone) {
+                    setTimeout(() => {
+                        document.querySelectorAll('.app-header').forEach(header => {
+                            header.style.cssText = `
+                                display: flex !important;
+                                visibility: visible !important;
+                                opacity: 1 !important;
+                                position: relative !important;
+                                z-index: 20 !important;
+                                min-height: 4.5rem !important;
+                                overflow: visible !important;
+                                transform: none !important;
+                                transition: none !important;
+                            `;
+                        });
+                    }, 100);
+                }
+            });
         });
 
+        // 新增：iOS主屏幕应用标题栏修复函数
+        function fixIOSStandaloneHeaders() {
+            const isStandalone = window.navigator.standalone === true || 
+                                window.matchMedia('(display-mode: standalone)').matches ||
+                                window.matchMedia('(display-mode: fullscreen)').matches ||
+                                window.matchMedia('(display-mode: minimal-ui)').matches;
+            
+            if (isStandalone) {
+                // 强制显示所有标题栏
+                document.querySelectorAll('.app-header').forEach(header => {
+                    header.style.cssText = `
+                        display: flex !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                        position: relative !important;
+                        z-index: 20 !important;
+                        min-height: 4.5rem !important;
+                        overflow: visible !important;
+                        transform: none !important;
+                        transition: none !important;
+                        -webkit-transform: none !important;
+                        -webkit-transition: none !important;
+                    `;
+                });
+                
+                // 确保标题文字可见
+                document.querySelectorAll('.app-header-title').forEach(title => {
+                    title.style.cssText = `
+                        display: block !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                        transform: none !important;
+                        -webkit-transform: none !important;
+                    `;
+                });
+            }
+        }
+        
         // 全局變數
         let songList = [];
         let worldBooks = [];

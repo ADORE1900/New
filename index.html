@@ -26,20 +26,21 @@
             --moments-avatar-image: url('https://placehold.co/128x128/777/FFF?text=Me');
         }
         
-        /* iOS全屏模式下的滚动控制 */
+        /* 第一层：html, body 作为稳定的根基 */
         html, body {
-            overflow: hidden;
-            position: fixed;
             width: 100%;
             height: 100%;
-            -webkit-overflow-scrolling: touch;
+            overflow: hidden; /* 彻底禁止最外层滚动 */
+            position: relative; /* 使用 relative 作为定位的根 */
+            margin: 0;
+            padding: 0;
         }
         
         /* 全屏激活时的额外滚动控制 */
         .fullscreen-active html,
         .fullscreen-active body {
             overflow: hidden !important;
-            position: fixed !important;
+            position: relative !important;
             -webkit-overflow-scrolling: auto;
         }
 
@@ -332,18 +333,27 @@
             font-size: 16.5px; /* 大 */
         }
         
-        /* 手机外框样式 */
+        /* 第二层：.phone-frame 变成绝对定位的"屏幕画框" */
         .phone-frame {
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             width: 100%;
+            height: 100%;
+            
+            /* 在桌面端预览时保持原样 */
             max-width: 375px;
-            height: 720px;
+            max-height: 720px;
+            margin: auto; /* 让其在桌面端居中 */
             border-radius: 3rem;
+            box-shadow: 0 1rem 3rem rgba(0,0,0,0.5);
             padding: 0.5rem; /* p-2 */
-            box-shadow: 0 1rem 3rem rgba(0,0,0,0.5); /* shadow-2xl */
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            
+            display: flex; /* 保持flex布局 */
+            flex-direction: column; /* 保持纵向排列 */
+            overflow: hidden; /* 这一层也禁止溢出 */
             transition: all 0.3s ease-in-out; /* 添加平滑过渡效果 */
         }
         
@@ -2867,17 +2877,23 @@
             cursor: pointer;
         }
 
-        .app-screen-view { 
-            position: relative; /* 新增：为子元素的绝对定位提供基准 */
+        /* 第三层：#phone-screen 作为所有应用内容的直接容器 */
+        .app-screen-view {
+            width: 100%;
             height: 100%;
-            padding-top: 2rem; /* <-- 已修改为 2rem */
+            position: relative;
+            display: flex; /* 让它能撑满容器 */
+            flex-direction: column; /* 让内部元素纵向排列 */
+            flex: 1; /* 占据所有可用空间 */
+            overflow: hidden; /* 默认所有视图都不能滚动 */
+            padding-top: 2rem; /* <-- 保持原有的 2rem 内边距 */
         }
 
-        /* 只为主屏幕添加滚动功能 */
+        /* 替换您原来的 #home-screen 规则 */
         #home-screen {
-            overflow-y: auto;
+            overflow-y: auto; /* 只给主屏幕添加Y轴滚动许可 */
+            -webkit-overflow-scrolling: touch; /* 开启流畅滚动 */
             padding-bottom: 7rem;
-            -webkit-overflow-scrolling: touch; /* 关键：在这里明确指定流畅滚动 */
         }
 
 
@@ -2900,6 +2916,9 @@
         #wechat-content-chat {
             position: relative;
             z-index: 1;
+            overflow-y: auto; /* 允许聊天记录滚动 */
+            -webkit-overflow-scrolling: touch; /* 开启流畅滚动 */
+            flex: 1;
         }
         #chat-footer {
             position: relative;
@@ -8354,14 +8373,17 @@
             background-color: transparent; /* 新增：让body背景透明 */
         }
 
-        /* 仅在全屏模式下生效 */
+        /* 当进入全屏模式时，覆盖桌面端的样式 */
         .fullscreen-active .phone-frame {
+            max-width: none;
+            max-height: none;
+            border-radius: 0;
+            box-shadow: none;
+            margin: 0;
+            
             /* 保持标准视口尺寸，但底部稍微增加安全区域高度 */
             width: 100vw;
             height: calc(100vh + env(safe-area-inset-bottom));
-            max-width: none; /* 移除最大宽度限制 */
-            border-radius: 0; /* 移除边框圆角 */
-            box-shadow: none; /* 移除阴影 */
             
             /* 核心修复：添加安全区域内边距，这将在顶部和底部创建出您想要的"黑色遮挡条" */
             padding-top: env(safe-area-inset-top);
@@ -8413,7 +8435,7 @@
 
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen dark-mode">
+<body class="dark-mode">
     
 
     <!-- SVG濾鏡，用於創建紙張毛邊效果 -->
@@ -8431,7 +8453,7 @@
     <input type="file" id="sticker-upload-input" class="hidden" accept="image/*">
     <input type="file" id="user-video-image-input" class="hidden" accept="image/*">
     <input type="file" id="my-video-image-input" class="hidden" accept="image/*">
-                    <div class="phone-frame relative w-full flex flex-col overflow-hidden">
+                    <div class="phone-frame">
         
         <div id="phone-screen" class="phone-screen flex-1 overflow-hidden relative animate-fade-in">
             

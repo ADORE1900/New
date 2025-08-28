@@ -22771,39 +22771,6 @@ ${eventTypeSpecificInput}
     }
     
     </script>
-        <script>
-            window.addEventListener('touchmove', function(event) {
-                // event.target 是用户手指当前触摸的那个元素
-                const target = event.target;
-
-                // 在这里定义我们【允许】滚动的区域的选择器
-                // 确保包含了所有需要内部滚动的容器ID或类名
-                const scrollableSelectors = [
-                    '#home-screen',
-                    '#wechat-content-chat',
-                    '#monitoring-text-container',
-                    '.settings-content',
-                    '#character-select-list-container',
-                    '#diary-pages-container',
-                    '#timeline-container',
-                    '.modal-content' // 允许所有弹窗内容滚动
-                ].join(','); // 将它们合并成一个CSS选择器字符串
-
-                // .closest(selector) 方法会从当前元素开始，向上查找祖先元素，
-                // 看是否匹配我们定义的"可滚动区域"
-                const isInsideScrollable = target.closest(scrollableSelectors);
-
-                // 如果手指下的元素【不是】我们允许滚动的区域
-                if (!isInsideScrollable) {
-                    // 就调用 event.preventDefault()，强制阻止这次滑动事件的默认行为（即页面滚动）
-                    event.preventDefault();
-                }
-                // 如果是可滚动区域，我们什么都不做，让它可以正常滚动
-                
-            }, { passive: false }); // passive: false 是必须的，它告诉浏览器我们可能会取消事件
-
-            console.log('终极滚动锁定脚本已激活。');
-        </script>
         </body>
 </html>
 

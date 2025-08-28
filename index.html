@@ -25,6 +25,23 @@
             --moments-cover-image: url('https://placehold.co/375x192/333/fff?text=Cover');
             --moments-avatar-image: url('https://placehold.co/128x128/777/FFF?text=Me');
         }
+        
+        /* iOS全屏模式下的滚动控制 */
+        html, body {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* 全屏激活时的额外滚动控制 */
+        .fullscreen-active html,
+        .fullscreen-active body {
+            overflow: hidden !important;
+            position: fixed !important;
+            -webkit-overflow-scrolling: auto;
+        }
 
         /* 新增：长按删除的震动动画 */
         @keyframes shake {

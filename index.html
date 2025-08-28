@@ -8347,55 +8347,76 @@
 
 
 
-        /* ========== [最终版] iOS 独立应用模式布局修复 ========== */
+        /* ========== [最终强力修复] iOS 独立应用模式布局重构 ========== */
 
         /* 当网页以"添加到主屏幕"的独立应用模式运行时... */
         @media (display-mode: standalone) {
 
-            /* 1. 让我们的"假"状态栏，给系统的"真"状态栏让出空间 */
+            /* --- 1. 基础重置 --- */
+            /* 强制 body 和 phone-screen 填满屏幕并作为Flexbox布局的根基 */
+            body {
+                /* 防止iOS的橡皮筋滚动效果 */
+                position: fixed;
+                inset: 0;
+                overflow: hidden;
+            }
+            #phone-screen {
+                display: flex;
+                flex-direction: column;
+                height: 100vh; /* 强制占满整个可视高度 */
+                padding: 0; /* 移除任何可能存在的内边距 */
+            }
+
+            /* --- 2. 状态栏修正 (核心) --- */
+            /* 将应用内状态栏从绝对定位改为Flex布局的一部分，这是解决重叠的关键 */
             #status-bar {
-                /* 只给状态栏内部增加上边距，把文字和按钮推下来，但背景依然可以延伸到屏幕最顶部，效果最好 */
+                position: relative; /* 覆盖原来的 absolute */
+                flex-shrink: 0; /* 确保高度不会被压缩 */
+                order: -1; /* 确保它永远在Flex布局的最顶部 */
+                z-index: 100;
+                /* 内部增加安全距离，把时间和图标"推"下来 */
                 padding-top: env(safe-area-inset-top);
             }
 
-            /* 2. 让所有的App视图(除了有特殊背景的主屏幕)也整体下移，避开我们的"假"状态栏 */
-            /* 2.5rem 是我们状态栏的大约高度，再加上安全距离 */
+            /* --- 3. App 视图容器修正 --- */
+            /* 让所有 App 视图（除了主屏幕）都使用 Flex 布局来管理内部结构 */
             .app-screen-view:not(#home-screen) {
-                padding-top: calc(2.5rem + env(safe-area-inset-top));
+                display: flex;
+                flex-direction: column;
+                /* 移除原有的、会引起问题的 padding-top */
+                padding-top: 0;
+                /* 自动填满 status-bar 下方的所有剩余空间 */
+                flex-grow: 1;
+                /* 关键：为Flex容器内的滚动内容区提供上下文 */
+                min-height: 0;
             }
 
-            /* 3. 为底部 Dock 栏增加"小横条"的安全距离 */
+            /* 主屏幕因为它自己需要滚动，所以特殊处理，不使用flex布局 */
+            #home-screen {
+                padding-top: 0; /* 同样移除padding */
+                flex-grow: 1;
+                overflow-y: auto; /* 让主屏幕可以滚动 */
+            }
+
+            /* --- 4. App 内部标题栏修正 --- */
+            /* 让 App 内部的标题栏高度固定 */
+            .app-screen-view > .app-header {
+                flex-shrink: 0;
+                position: relative; /* 确保它在Flex流中 */
+            }
+
+            /* --- 5. App 内容区域修正 --- */
+            /* 这是一个通用选择器，选择所有App header后面的那个兄弟元素作为内容区 */
+            .app-header + * {
+                flex-grow: 1; /* 填满剩余空间 */
+                overflow-y: auto; /* 内容超出时滚动 */
+                min-height: 0; /* 修复Flex滚动问题 */
+            }
+
+            /* --- 6. 底部 Dock 栏修正 --- */
             .dock {
+                /* 为底部 Dock 栏增加"小横条"的安全距离 */
                 padding-bottom: env(safe-area-inset-bottom);
-            }
-        }
-
-        /* --- 全屏模式下 Dock 栏宽度优化 --- */
-        .fullscreen-active .dock {
-            /* 将宽度从90%增加到95%，使其更贴近屏幕边缘 */
-            width: 95%;
-            /* 同时，增加最大宽度限制，让它在电脑宽屏上也不会过分拉伸，看起来更协调 */
-            max-width: 600px;
-        }
-
-        /* --- [最终解决方案] iOS顶部安全区域垫片样式 --- */
-
-        /* 这段代码只会在"桌面App"模式下生效 */
-        @media (display-mode: standalone) {
-            #ios-safe-area-top-shim {
-                display: block; /* 激活垫片 */
-                width: 100%;
-                /* 关键：让垫片的高度自动等于iOS设备顶部"刘海"的高度 */
-                height: env(safe-area-inset-top);
-                background-color: #1a1a1a; /* 夜间模式下的背景色，您可以根据需要调整 */
-                flex-shrink: 0; /* 防止被压缩 */
-                position: relative;
-                z-index: 9999; /* 确保它在最顶层 */
-            }
-
-            /* 针对浅色模式的适配 */
-            .light-mode #ios-safe-area-top-shim {
-                background-color: #ffffff; /* 浅色模式下的背景色 */
             }
         }
 

@@ -37,46 +37,7 @@
           animation: shake 0.5s ease-in-out;
         }
 
-        /* ====== iOS Safari 全屏适配专用样式 ====== */
 
-        /* 仅在全屏模式下生效 */
-        body.standalone-mode {
-            /* 移除外边距，确保全屏 */
-            margin: 0;
-            overflow: hidden; /* 防止意外的滚动 */
-        }
-
-        /* 仅在全屏模式下，重定义 phone-frame 的样式 */
-        .standalone-mode .phone-frame {
-            width: 100vw; /* 宽度占满屏幕 */
-            height: 100vh; /* 高度占满屏幕 */
-            max-width: none; /* 移除最大宽度限制 */
-            border-radius: 0; /* 移除边框圆角 */
-            padding: 0; /* 移除内边距 */
-            box-shadow: none; /* 移除阴影 */
-        }
-
-        /* 仅在全屏模式下，重定义 phone-screen 的样式 */
-        .standalone-mode #phone-screen {
-            border-radius: 0; /* 移除内屏幕的圆角 */
-            /* 添加安全区域边距，防止内容被刘海和底部横条遮挡 */
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        /* 仅在全屏模式下，调整自定义状态栏的位置 */
-        .standalone-mode #status-bar {
-            /* 不再需要绝对定位，它会自然地待在顶部安全区域内 */
-            position: static;
-            /* 或者，如果布局需要，可以这样微调 */
-            /* top: env(safe-area-inset-top); */
-        }
-
-        /* 仅在全屏模式下，调整Dock栏的位置，防止被底部横条遮挡 */
-        .standalone-mode .dock {
-            /* 在原有 bottom 间距的基础上，增加底部安全区域的高度 */
-            bottom: calc(1rem + env(safe-area-inset-bottom));
-        }
 
         /* 修复：防止 iOS 输入框聚焦时页面自动放大 */
         #chat-input:focus {
@@ -341,11 +302,11 @@
             transition: font-size 0.2s ease-in-out;
             /* V36.0 修改：使用变量来设置字体 */
             font-family: var(--custom-font);
-            /* 移除内屏幕的圆角 */
-            border-radius: 0;
-            /* 添加安全区域边距，防止内容被刘海和底部横条遮挡 */
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
+            flex: 1;
+            border-radius: 2.5rem; /* 恢复圆角 */
+            overflow: hidden;
+            position: relative;
+            /* 移除 padding-top 和 padding-bottom 的安全区域设置 */
         }
         #phone-screen.text-size-small {
             font-size: 13.5px; /* 小 */
@@ -354,17 +315,19 @@
             font-size: 16.5px; /* 大 */
         }
         
-        /* 手机外框样式 - 全屏自适应 */
+        /* 手机外框样式 */
         .phone-frame {
-            width: 100vw; /* 宽度占满屏幕 */
-            height: 100vh; /* 高度占满屏幕 */
-            max-width: none; /* 移除最大宽度限制 */
-            border-radius: 0; /* 移除边框圆角 */
-            padding: 0; /* 移除内边距 */
-            box-shadow: none; /* 移除阴影 */
+            position: relative;
+            width: 100%;
+            max-width: 375px;
+            height: 720px;
+            border-radius: 3rem;
+            padding: 0.5rem; /* p-2 */
+            box-shadow: 0 1rem 3rem rgba(0,0,0,0.5); /* shadow-2xl */
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            transition: all 0.3s ease-in-out; /* 添加平滑过渡效果 */
         }
         
         .dark-mode .phone-frame, .light-mode .phone-frame {
@@ -374,9 +337,11 @@
         /* 應用程式圖示互動效果 */
         .app-icon {
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, width 0.3s, height 0.3s; /* 添加width和height的过渡效果 */
             background-size: cover;
             background-position: center;
+            width: 4rem;  /* 默认手机框尺寸 (等于 w-16) */
+            height: 4rem; /* 默认手机框尺寸 (等于 w-16) */
         }
         .app-icon:hover {
             transform: scale(1.05);
@@ -391,6 +356,26 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 全屏模式下，图标变大 */
+        .fullscreen-active .app-icon {
+            width: 5rem;  /* 全屏尺寸 (等于 w-20) */
+            height: 5rem; /* 全屏尺寸 (等于 w-20) */
+        }
+        
+        /* --- 新增：背景图片动态切换的核心样式 --- */
+        
+        /* 默认手机框模式下，背景图是绝对定位，跟随phone-screen */
+        #home-wallpaper {
+            position: absolute;
+            z-index: 0;
+        }
+        
+        /* 全屏模式下，背景图变为固定定位，铺满整个浏览器窗口 */
+        .fullscreen-active #home-wallpaper {
+            position: fixed;
+            z-index: -1; /* 确保它在所有内容的最后方 */
         }
         
         /* 訊息提示框樣式 */
@@ -8331,9 +8316,43 @@
             opacity: 0.5;
         }
 
+
+
+
+        /* ====== 全屏激活后的样式 (替换旧的 standalone-mode) ====== */
+
+        /* 仅在全屏模式下生效 */
+        body.fullscreen-active {
+            margin: 0;
+            overflow: hidden; /* 防止意外的滚动 */
+        }
+        /* 仅在全屏模式下，重定义 phone-frame 的样式 */
+        .fullscreen-active .phone-frame {
+            width: 100vw; /* 宽度占满屏幕 */
+            height: 100vh; /* 高度占满屏幕 */
+            max-width: none; /* 移除最大宽度限制 */
+            border-radius: 0; /* 移除边框圆角 */
+            padding: 0; /* 移除内边距 */
+            box-shadow: none; /* 移除阴影 */
+        }
+        /* 仅在全屏模式下，重定义 phone-screen 的样式 */
+        .fullscreen-active #phone-screen {
+            border-radius: 0; /* 移除内屏幕的圆角 */
+            /* 添加安全区域边距，防止内容被刘海和底部横条遮挡 */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        /* 仅在全屏模式下，调整Dock栏的位置，防止被底部横条遮挡 */
+        .fullscreen-active .dock {
+            /* 在原有 bottom 间距的基础上，增加底部安全区域的高度 */
+            bottom: calc(1rem + env(safe-area-inset-bottom));
+        }
+
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen dark-mode">
+    
+
     <!-- SVG濾鏡，用於創建紙張毛邊效果 -->
     <svg style="position:absolute; width:0; height:0; overflow:hidden;">
       <filter id="paper-edge-filter">
@@ -8349,7 +8368,7 @@
     <input type="file" id="sticker-upload-input" class="hidden" accept="image/*">
     <input type="file" id="user-video-image-input" class="hidden" accept="image/*">
     <input type="file" id="my-video-image-input" class="hidden" accept="image/*">
-    <div class="phone-frame relative w-full h-screen flex flex-col overflow-hidden">
+                    <div class="phone-frame relative w-full flex flex-col overflow-hidden">
         
         <div id="phone-screen" class="phone-screen flex-1 overflow-hidden relative animate-fade-in">
             
@@ -8567,10 +8586,10 @@
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
-                            <div class="w-20 h-20 rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="动态监控"><i class="ri-eye-line text-white text-2xl"></i></div>
-                            <div class="w-20 h-20 rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="设置"><i class="fas fa-cog text-white text-2xl"></i></div>
-                            <div class="w-20 h-20 rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="Placeholder 2"><i class="fas fa-question text-white text-2xl"></i></div>
-                            <div class="w-20 h-20 rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="Placeholder 3"><i class="fas fa-question text-white text-2xl"></i></div>
+                            <div class="rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="动态监控"><i class="ri-eye-line text-white text-2xl"></i></div>
+                            <div class="rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="设置"><i class="fas fa-cog text-white text-2xl"></i></div>
+                            <div class="rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="Placeholder 2"><i class="fas fa-question text-white text-2xl"></i></div>
+                            <div class="rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="Placeholder 3"><i class="fas fa-question text-white text-2xl"></i></div>
                         </div>
                     </div>
 
@@ -9255,6 +9274,12 @@
                         </div>
                     </div>
                      <div class="space-y-2 mt-8">
+                        <div id="fullscreen-toggle-btn" class="list-item flex justify-between items-center cursor-pointer hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center">
+                               <i class="fas fa-expand w-6 text-center mr-3"></i>
+                               <h4 class="font-semibold">全屏模式</h4>
+                            </div>
+                        </div>
                         <div id="export-data-btn" class="list-item flex justify-between items-center">
                             <div class="flex items-center">
                                <i class="fas fa-download w-6 text-center mr-3"></i>
@@ -9445,9 +9470,9 @@
         
         <!-- Dock栏 - 从home-screen中移出，现在与phone-screen成为兄弟关系 -->
         <div class="dock absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-[340px] h-18 rounded-3xl p-2 flex items-center justify-around shadow-xl">
-            <div class="flex flex-col items-center"><div class="w-20 h-20 bg-zinc-800 rounded-xl flex items-center justify-center shadow-lg app-icon" data-app-name="世界书"><i class="fas fa-book text-white text-2xl"></i></div></div>
-            <div class="flex flex-col items-center"><div class="w-20 h-20 bg-zinc-800 rounded-xl flex items-center justify-center shadow-lg app-icon" data-app-name="角色书"><i class="fas fa-theater-masks text-white text-2xl"></i></div></div>
-            <div class="flex flex-col items-center"><div class="w-20 h-20 bg-zinc-800 rounded-xl flex items-center justify-center shadow-lg app-icon" data-app-name="微信"><i class="fab fa-weixin text-white text-2xl"></i></div></div>
+            <div class="flex flex-col items-center"><div class="bg-zinc-800 rounded-xl flex items-center justify-center shadow-lg app-icon" data-app-name="世界书"><i class="fas fa-book text-white text-2xl"></i></div></div>
+            <div class="flex flex-col items-center"><div class="bg-zinc-800 rounded-xl flex items-center justify-center shadow-lg app-icon" data-app-name="角色书"><i class="fas fa-theater-masks text-white text-2xl"></i></div></div>
+            <div class="flex flex-col items-center"><div class="bg-zinc-800 rounded-xl flex items-center justify-center shadow-lg app-icon" data-app-name="微信"><i class="fab fa-weixin text-white text-2xl"></i></div></div>
         </div>
         
         <!-- FIX 4: ADDED NOTIFICATION ELEMENT (移动到这里) -->
@@ -9540,6 +9565,47 @@
     </div>
 
     <script>
+        // 全屏模式切换功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const fullscreenBtn = document.getElementById('fullscreen-toggle-btn');
+            const body = document.body;
+            const iconElement = fullscreenBtn.querySelector('.fas.fa-expand, .fas.fa-compress');
+            
+            // 页面加载时，根据当前是否全屏设置图标的初始状态
+            if (body.classList.contains('fullscreen-active')) {
+                iconElement.className = 'fas fa-compress w-6 text-center mr-3'; // 退出全屏图标
+                fullscreenBtn.title = '退出全屏';
+            } else {
+                iconElement.className = 'fas fa-expand w-6 text-center mr-3'; // 进入全屏图标
+                fullscreenBtn.title = '进入全屏';
+            }
+            
+            // 全屏切换函数
+            function toggleFullscreen() {
+                if (body.classList.contains('fullscreen-active')) {
+                    // 退出全屏模式
+                    body.classList.remove('fullscreen-active');
+                    iconElement.className = 'fas fa-expand w-6 text-center mr-3'; // 变为进入全屏图标
+                    fullscreenBtn.title = '进入全屏';
+                } else {
+                    // 进入全屏模式
+                    body.classList.add('fullscreen-active');
+                    iconElement.className = 'fas fa-compress w-6 text-center mr-3'; // 变为退出全屏图标
+                    fullscreenBtn.title = '退出全屏';
+                }
+            }
+            
+            // 绑定点击事件
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            
+            // 监听ESC键退出全屏
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && body.classList.contains('fullscreen-active')) {
+                    toggleFullscreen();
+                }
+            });
+        });
+
         // 全局變數
         let songList = [];
         let worldBooks = [];
@@ -11832,7 +11898,7 @@ ${moduleStyleContext || "无"}
 
                 // 检查是否有情感触动
                 const hasEmotionalContent = recentMessages.some(msg => 
-                    msg.content.includes(❤️') || 
+                    msg.content.includes('❤️') || 
                     msg.content.includes('💕') || 
                     msg.content.includes('😊') ||
                     msg.content.includes('😍') ||
@@ -16650,7 +16716,9 @@ ${moment.image ? `配图描述: ${moment.image_desc}` : ''}
                 if (file) {
                     try {
                         // 调用正确的图片处理函数，它会返回一个imageId
-                        const imageId = await handleImageUpload(e.target, null, `diary_cover_${ownerId}`);
+                        const imageId = await handleImageUpload(e.target, null, `diary_cover_${ownerId}`, {
+                            compression: { maxWidth: 1920, maxHeight: 1920, quality: 0.9 }
+                        });
                         if (imageId) {
                             // 保存的是imageId，而不是Base64
                             saveData(`diary_cover_${ownerId}`, imageId);
@@ -19091,14 +19159,6 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
 
         // 初始化與事件監聽器
         document.addEventListener('DOMContentLoaded', async () => {
-            // 检测是否处于独立模式 (添加到主屏幕后打开)
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                console.log("App is running in standalone (full-screen) mode.");
-                document.body.classList.add('standalone-mode');
-            } else {
-                console.log("App is running in a browser tab.");
-            }
-            
             await loadAllSavedData();
             await loadAllData();
             
@@ -19248,7 +19308,9 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
 
             $('#music-block').addEventListener('click', (e) => { if (e.target === e.currentTarget) $('#background-input').click(); });
             $('#background-input').addEventListener('change', async (e) => {
-                const imageId = await handleImageUpload(e.target, $('#music-block'), 'saved_music_background');
+                const imageId = await handleImageUpload(e.target, $('#music-block'), 'saved_music_background', {
+                    compression: { maxWidth: 1920, maxHeight: 1920, quality: 0.9 }
+                });
                 if (imageId) {
                     // 异步加载图片
                     getImageFromDB(imageId).then(blob => {
@@ -19261,7 +19323,9 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
             });
             $('#vinyl-record').addEventListener('click', () => $('#vinyl-input').click());
             $('#vinyl-input').addEventListener('change', async (e) => {
-                const imageId = await handleImageUpload(e.target, $('#vinyl-record'), 'saved_vinyl_cover');
+                const imageId = await handleImageUpload(e.target, $('#vinyl-record'), 'saved_vinyl_cover', {
+                    compression: { maxWidth: 1920, maxHeight: 1920, quality: 0.9 }
+                });
                 if (imageId) {
                     // 异步加载图片
                     getImageFromDB(imageId).then(blob => {
@@ -19274,7 +19338,10 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
             });
             $('#photo-widget').addEventListener('click', () => $('#photo-widget-input').click());
             $('#photo-widget-input').addEventListener('change', async (e) => {
-                const imageId = await handleImageUpload(e.target, $('#photo-widget'), 'saved_photo_widget', { hideTextElement: '#photo-widget-text' });
+                const imageId = await handleImageUpload(e.target, $('#photo-widget'), 'saved_photo_widget', { 
+                    compression: { maxWidth: 1920, maxHeight: 1920, quality: 0.9 }, 
+                    hideTextElement: '#photo-widget-text' 
+                });
                 if (imageId) {
                     // 异步加载图片
                     getImageFromDB(imageId).then(blob => {
@@ -19530,7 +19597,9 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
                 const file = e.target.files[0];
                 if (file && currentChatCharacterId) {
                                             try {
-                            const imageId = await handleImageUpload(e.target, null, null);
+                            const imageId = await handleImageUpload(e.target, null, null, {
+                                compression: { maxWidth: 1920, maxHeight: 1920, quality: 0.9 }
+                            });
                             
                             if (imageId) {
                                 getImageFromDB(imageId).then(blob => {
@@ -19636,7 +19705,9 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
 
             $('#change-wallpaper-link').addEventListener('click', () => $('#wallpaper-input').click());
             $('#wallpaper-input').addEventListener('change', async (e) => {
-                const imageId = await handleImageUpload(e.target, homeWallpaper, 'saved_wallpaper');
+                const imageId = await handleImageUpload(e.target, homeWallpaper, 'saved_wallpaper', {
+                    compression: { maxWidth: 1920, maxHeight: 1920, quality: 0.9 }
+                });
                 if (imageId) {
                     // 异步加载图片
                     getImageFromDB(imageId).then(blob => {

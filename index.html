@@ -22555,50 +22555,99 @@ ${eventTypeSpecificInput}
     }
     
     // ====== iOS全屏模式滚动控制 ======
-    // 智能滚动控制：只阻止页面滚动，保留应用内滚动
+    // 宽松的滚动控制：只阻止页面背景滚动，允许所有应用内滚动
     function preventPageScroll(e) {
-        // 检查事件目标是否在应用内容区域内
+        // 检查事件目标是否在可滚动的容器内
         const target = e.target;
-        const isInAppContent = target.closest('.app-content, .chat-container, .memory-container, .timeline-container, .modal-content, .scrollable-content');
         
-        // 如果不在应用内容区域内，阻止滚动
-        if (!isInAppContent) {
+        // 检查是否在任何可滚动容器内
+        const isInScrollableContainer = target.closest('[style*="overflow"], [class*="overflow"], [id*="container"], [id*="list"], [id*="content"], .modal-content, .chat-container, .memory-container, .timeline-container, .settings-content, .bg-white, .bg-gray-800');
+        
+        // 如果在可滚动容器内，允许滚动
+        if (isInScrollableContainer) {
+            return true;
+        }
+        
+        // 检查目标元素本身是否可滚动
+        const computedStyle = window.getComputedStyle(target);
+        if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
+            computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
+            return true;
+        }
+        
+        // 检查父元素是否可滚动
+        const scrollableParent = target.closest('[style*="overflow"], [class*="overflow"]');
+        if (scrollableParent) {
+            return true;
+        }
+        
+        // 只有在空白区域才阻止滚动
+        if (target === document.body || target === document.documentElement || target === window) {
             e.preventDefault();
             e.stopPropagation();
             return false;
         }
         
-        // 如果在应用内容区域内，允许滚动
         return true;
     }
     
-    // 阻止触摸滚动（但允许应用内滚动）
+    // 阻止触摸滚动（宽松策略）
     function preventTouchScroll(e) {
         const target = e.target;
-        const isInAppContent = target.closest('.app-content, .chat-container, .memory-container, .timeline-container, .modal-content, .scrollable-content');
         
-        if (!isInAppContent) {
+        // 检查是否在可滚动容器内
+        const isInScrollableContainer = target.closest('[style*="overflow"], [class*="overflow"], [id*="container"], [id*="list"], [id*="content"], .modal-content, .chat-container, .memory-container, .timeline-container, .settings-content, .bg-white, .bg-gray-800');
+        
+        if (isInScrollableContainer) {
+            return true;
+        }
+        
+        // 检查元素本身是否可滚动
+        const computedStyle = window.getComputedStyle(target);
+        if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
+            computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
+            return true;
+        }
+        
+        // 只有在空白区域才阻止
+        if (target === document.body || target === document.documentElement) {
             e.preventDefault();
             e.stopPropagation();
             return false;
         }
+        
         return true;
     }
     
-    // 阻止鼠标滚轮滚动（但允许应用内滚动）
+    // 阻止鼠标滚轮滚动（宽松策略）
     function preventWheelScroll(e) {
         const target = e.target;
-        const isInAppContent = target.closest('.app-content, .chat-container, .memory-container, .timeline-container, .modal-content, .scrollable-content');
         
-        if (!isInAppContent) {
+        // 检查是否在可滚动容器内
+        const isInScrollableContainer = target.closest('[style*="overflow"], [class*="overflow"], [id*="container"], [id*="list"], [id*="content"], .modal-content, .chat-container, .memory-container, .timeline-container, .settings-content, .bg-white, .bg-gray-800');
+        
+        if (isInScrollableContainer) {
+            return true;
+        }
+        
+        // 检查元素本身是否可滚动
+        const computedStyle = window.getComputedStyle(target);
+        if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
+            computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
+            return true;
+        }
+        
+        // 只有在空白区域才阻止
+        if (target === document.body || target === document.documentElement) {
             e.preventDefault();
             e.stopPropagation();
             return false;
         }
+        
         return true;
     }
     
-    // 阻止键盘滚动（但允许应用内滚动）
+    // 阻止键盘滚动（宽松策略）
     function preventKeyScroll(e) {
         if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
             e.key === 'PageUp' || e.key === 'PageDown' || 
@@ -22606,9 +22655,23 @@ ${eventTypeSpecificInput}
             e.key === ' ' || e.key === 'Spacebar') {
             
             const target = e.target;
-            const isInAppContent = target.closest('.app-content, .chat-container, .memory-container, .timeline-container, .modal-content, .scrollable-content');
             
-            if (!isInAppContent) {
+            // 检查是否在可滚动容器内
+            const isInScrollableContainer = target.closest('[style*="overflow"], [class*="overflow"], [id*="container"], [id*="list"], [id*="content"], .modal-content, .chat-container, .memory-container, .timeline-container, .settings-content, .bg-white, .bg-gray-800');
+            
+            if (isInScrollableContainer) {
+                return true;
+            }
+            
+            // 检查元素本身是否可滚动
+            const computedStyle = window.getComputedStyle(target);
+            if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
+                computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
+                return true;
+            }
+            
+            // 只有在空白区域才阻止
+            if (target === document.body || target === document.documentElement) {
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
@@ -22617,8 +22680,8 @@ ${eventTypeSpecificInput}
         return true;
     }
     
-    // 应用智能滚动阻止
-    function applySmartScrollPrevention() {
+    // 应用宽松的滚动阻止
+    function applyLooseScrollPrevention() {
         // 只阻止页面级别的滚动，不阻止应用内滚动
         document.addEventListener('scroll', preventPageScroll, { passive: false, capture: true });
         document.addEventListener('touchmove', preventTouchScroll, { passive: false, capture: true });
@@ -22633,11 +22696,11 @@ ${eventTypeSpecificInput}
         window.addEventListener('scroll', preventPageScroll, { passive: false, capture: true });
     }
     
-    // 页面加载完成后立即应用智能滚动阻止
+    // 页面加载完成后立即应用宽松的滚动阻止
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', applySmartScrollPrevention);
+        document.addEventListener('DOMContentLoaded', applyLooseScrollPrevention);
     } else {
-        applySmartScrollPrevention();
+        applyLooseScrollPrevention();
     }
     
     // 全屏模式检测和额外控制
@@ -22645,7 +22708,7 @@ ${eventTypeSpecificInput}
         if (document.fullscreenElement) {
             document.body.classList.add('fullscreen-active');
             // 全屏时额外阻止页面滚动
-            setTimeout(applySmartScrollPrevention, 100);
+            setTimeout(applyLooseScrollPrevention, 100);
         } else {
             document.body.classList.remove('fullscreen-active');
         }
@@ -22656,9 +22719,23 @@ ${eventTypeSpecificInput}
         // iOS设备额外保护，但允许应用内滚动
         document.addEventListener('gesturestart', function(e) {
             const target = e.target;
-            const isInAppContent = target.closest('.app-content, .chat-container, .memory-container, .timeline-container, .modal-content, .scrollable-content');
             
-            if (!isInAppContent) {
+            // 检查是否在可滚动容器内
+            const isInScrollableContainer = target.closest('[style*="overflow"], [class*="overflow"], [id*="container"], [id*="list"], [id*="content"], .modal-content, .chat-container, .memory-container, .timeline-container, .settings-content, .bg-white, .bg-gray-800');
+            
+            if (isInScrollableContainer) {
+                return true;
+            }
+            
+            // 检查元素本身是否可滚动
+            const computedStyle = window.getComputedStyle(target);
+            if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
+                computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
+                return true;
+            }
+            
+            // 只有在空白区域才阻止
+            if (target === document.body || target === document.documentElement) {
                 e.preventDefault();
                 e.stopPropagation();
                 return false;

@@ -8338,8 +8338,9 @@
 
         /* 仅在全屏模式下生效 */
         .fullscreen-active .phone-frame {
-            width: 100vw; /* 宽度占满屏幕 */
-            height: 100vh; /* 高度占满屏幕 */
+            /* 核心修复：使用 calc() 计算实际尺寸，包含安全区域 */
+            width: calc(100vw + env(safe-area-inset-left) + env(safe-area-inset-right));
+            height: calc(100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
             max-width: none; /* 移除最大宽度限制 */
             border-radius: 0; /* 移除边框圆角 */
             box-shadow: none; /* 移除阴影 */
@@ -8349,6 +8350,9 @@
             padding-bottom: env(safe-area-inset-bottom);
             padding-left: env(safe-area-inset-left);
             padding-right: env(safe-area-inset-right);
+            
+            /* 确保内容区域能够充分利用增加的空间 */
+            box-sizing: border-box;
         }
 
         /* 仅在全屏模式下，精确调整Dock栏的位置 */

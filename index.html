@@ -8338,9 +8338,9 @@
 
         /* 仅在全屏模式下生效 */
         .fullscreen-active .phone-frame {
-            /* 保持标准视口尺寸，但添加安全区域内边距 */
+            /* 保持标准视口尺寸，但底部稍微增加安全区域高度 */
             width: 100vw;
-            height: 100vh;
+            height: calc(100vh + env(safe-area-inset-bottom));
             max-width: none; /* 移除最大宽度限制 */
             border-radius: 0; /* 移除边框圆角 */
             box-shadow: none; /* 移除阴影 */

@@ -8419,6 +8419,24 @@
             z-index: 20 !important;
         }
 
+        /* --- [最终修复] 针对iOS"添加到主屏幕"后独立应用模式的适配 --- */
+
+        /* 这段代码只会在网页被当作"桌面App"运行时生效 */
+        @media (display-mode: standalone) {
+            /* 1. 为整个手机屏幕容器增加顶部安全距离，一次性解决刘海屏遮挡问题 */
+            #phone-screen {
+                padding-top: env(safe-area-inset-top);
+            }
+
+            /* 2. 同时为底部Dock栏增加底部安全距离，防止被iPhone的横条指示器遮挡 */
+            .dock {
+                /* 在原有的 bottom 间距基础上，再增加底部安全区域的高度 */
+                padding-bottom: env(safe-area-inset-bottom);
+                /* 为动画效果增加一点过渡 */
+                transition: padding-bottom 0.3s ease-out;
+            }
+        }
+
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen dark-mode">

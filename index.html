@@ -2518,6 +2518,9 @@
             z-index: 20;
             border-bottom: 1px solid rgba(128, 128, 128, 0.2); /* 中性边框颜色 */
             background: transparent;
+            /* 确保标题栏在手机模式下始终可见 */
+            min-height: 4.5rem;
+            overflow: visible;
         }
 
         .app-header .text-center {
@@ -8355,10 +8358,34 @@
             /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
             padding-top: calc(0.75rem + env(safe-area-inset-top));
         }
+        
+        /* 新增：确保在手机模式下标题栏始终可见 */
+        @media (max-width: 768px) {
+            .app-header {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                position: relative !important;
+                z-index: 20 !important;
+                min-height: 4.5rem !important;
+                overflow: visible !important;
+            }
+            
+            .app-header-title {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+        }
         /* 新增：精确调整所有App顶栏在全屏下的位置 */
         .fullscreen-active .app-header {
             /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
             padding-top: calc(0.5rem + env(safe-area-inset-top));
+            /* 确保标题栏在全屏模式下仍然可见 */
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 20 !important;
         }
 
     </style>
@@ -9605,16 +9632,30 @@
 
             // 新增：页面加载时检查并应用已保存的状态
             const savedMode = localStorage.getItem('fullscreen_mode');
-            if (savedMode === 'true') {
-                // 如果保存的状态是全屏，则直接应用全屏模式
+            
+            // 检测是否为手机设备
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            
+            if (savedMode === 'true' && !isMobile) {
+                // 如果保存的状态是全屏且不是手机设备，则应用全屏模式
                 body.classList.add('fullscreen-active');
                 iconElement.className = 'fas fa-compress w-6 text-center mr-3';
                 fullscreenBtn.title = '退出全屏';
             } else {
-                // 否则，确保是手机模式
+                // 否则，确保是手机模式，不启用全屏
                 body.classList.remove('fullscreen-active');
                 iconElement.className = 'fas fa-expand w-6 text-center mr-3';
                 fullscreenBtn.title = '进入全屏';
+                
+                // 在手机模式下，确保标题栏始终可见
+                if (isMobile) {
+                    const appHeaders = document.querySelectorAll('.app-header');
+                    appHeaders.forEach(header => {
+                        header.style.display = 'flex';
+                        header.style.visibility = 'visible';
+                        header.style.opacity = '1';
+                    });
+                }
             }
             
             // 绑定点击事件
@@ -9727,6 +9768,19 @@ function getChatBackgroundElement() {
             });
             homeWallpaper.classList.toggle('hidden', screenId !== 'home-screen');
             statusBar.classList.toggle('on-home', screenId === 'home-screen');
+            
+            // 新增：确保在屏幕切换后标题栏始终可见
+            setTimeout(() => {
+                const currentScreen = document.getElementById(screenId);
+                if (currentScreen) {
+                    const appHeader = currentScreen.querySelector('.app-header');
+                    if (appHeader) {
+                        appHeader.style.display = 'flex';
+                        appHeader.style.visibility = 'visible';
+                        appHeader.style.opacity = '1';
+                    }
+                }
+            }, 100);
             
             if (screenId === 'wechat-chat-screen') {
                 // 重新加载 chatBackgrounds 数据，确保获取最新数据

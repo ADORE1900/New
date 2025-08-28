@@ -375,8 +375,10 @@
         /* 全屏模式下，背景图变为固定定位，铺满整个浏览器窗口 */
         .fullscreen-active #home-wallpaper {
             position: fixed;
-            z-index: -1; /* 确保它在所有内容的最后方 */
+            z-index: -1; /* 改回 -1，让它沉到最底层 */
         }
+        
+
         
         /* 訊息提示框樣式 */
         .message-box {
@@ -8325,6 +8327,7 @@
         body.fullscreen-active {
             margin: 0;
             overflow: hidden; /* 防止意外的滚动 */
+            background-color: transparent; /* 新增：让body背景透明 */
         }
         /* 仅在全屏模式下，重定义 phone-frame 的样式 */
         .fullscreen-active .phone-frame {
@@ -8335,13 +8338,7 @@
             padding: 0; /* 移除内边距 */
             box-shadow: none; /* 移除阴影 */
         }
-        /* 仅在全屏模式下，重定义 phone-screen 的样式 */
-        .fullscreen-active #phone-screen {
-            border-radius: 0; /* 移除内屏幕的圆角 */
-            /* 添加安全区域边距，防止内容被刘海和底部横条遮挡 */
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-        }
+
         /* 仅在全屏模式下，调整Dock栏的位置，防止被底部横条遮挡 */
         .fullscreen-active .dock {
             /* 在原有 bottom 间距的基础上，增加底部安全区域的高度 */
@@ -8354,6 +8351,11 @@
         .fullscreen-active #status-bar {
             /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
             padding-top: calc(0.75rem + env(safe-area-inset-top));
+        }
+        /* 新增：精确调整所有App顶栏在全屏下的位置 */
+        .fullscreen-active .app-header {
+            /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
+            padding-top: calc(0.5rem + env(safe-area-inset-top));
         }
 
     </style>

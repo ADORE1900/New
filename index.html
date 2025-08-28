@@ -8327,7 +8327,7 @@
 
 
 
-        /* ====== 全屏激活后的样式 (替换旧的 standalone-mode) ====== */
+        /* ====== 解决方案：修复iOS全屏模式下的状态栏重叠和拉伸问题 ====== */
 
         /* 仅在全屏模式下生效 */
         body.fullscreen-active {
@@ -8335,28 +8335,30 @@
             overflow: hidden; /* 防止意外的滚动 */
             background-color: transparent; /* 新增：让body背景透明 */
         }
-        /* 仅在全屏模式下，重定义 phone-frame 的样式 */
+
+        /* 仅在全屏模式下生效 */
         .fullscreen-active .phone-frame {
             width: 100vw; /* 宽度占满屏幕 */
             height: 100vh; /* 高度占满屏幕 */
             max-width: none; /* 移除最大宽度限制 */
             border-radius: 0; /* 移除边框圆角 */
-            padding: 0; /* 移除内边距 */
             box-shadow: none; /* 移除阴影 */
+            
+            /* 核心修复：添加安全区域内边距，这将在顶部和底部创建出您想要的"黑色遮挡条" */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
 
-        /* 仅在全屏模式下，调整Dock栏的位置，防止被底部横条遮挡 */
+        /* 仅在全屏模式下，精确调整Dock栏的位置 */
         .fullscreen-active .dock {
-            /* 在原有 bottom 间距的基础上，增加底部安全区域的高度 */
-            bottom: env(safe-area-inset-bottom); /* <-- 已修改为 0rem */
-            /* 新增：让Dock栏在全屏模式下变得更宽 */
+            /* 在您原有的 1rem 基础上，增加底部安全区域的高度 */
+            bottom: calc(1rem + env(safe-area-inset-bottom)); 
+            
+            /* （可选）让Dock栏在全屏下稍微变宽，视觉效果更好 */
             width: 95%;
-            max-width: 600px; /* 您可以根据喜好调整这个最大值 */
-        }
-        /* 新增：修复iOS全屏模式下顶部内容被状态栏遮挡的问题 */
-        .fullscreen-active #status-bar {
-            /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
-            padding-top: calc(0.75rem + env(safe-area-inset-top));
+            max-width: 600px;
         }
         
         /* 新增：确保在手机模式下标题栏始终可见 */
@@ -8377,10 +8379,9 @@
                 opacity: 1 !important;
             }
         }
+        
         /* 新增：精确调整所有App顶栏在全屏下的位置 */
         .fullscreen-active .app-header {
-            /* 在原有的内边距基础上，增加iOS顶部的安全区域高度 */
-            padding-top: calc(0.5rem + env(safe-area-inset-top));
             /* 确保标题栏在全屏模式下仍然可见 */
             display: flex !important;
             visibility: visible !important;

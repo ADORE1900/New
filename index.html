@@ -8357,8 +8357,8 @@
 
         /* 仅在全屏模式下，精确调整Dock栏的位置 */
         .fullscreen-active .dock {
-            /* 在您原有的 0rem 基础上，增加底部安全区域的高度 */
-            bottom: calc(0rem + env(safe-area-inset-bottom)); 
+            /* 在您原有的 1rem 基础上，增加底部安全区域的高度 */
+            bottom: calc(1rem + env(safe-area-inset-bottom)); 
             
             /* （可选）让Dock栏在全屏下稍微变宽，视觉效果更好 */
             width: 95%;

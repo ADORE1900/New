@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>手机应用界面</title>
+    <title>RavenPhone</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="https://tc-new.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250825/5nvZ/1280X1280/3d8950a849829447f24466a851153f8f.jpg/webp">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,6 +13,9 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    
+
+    
     <!-- 邀請函專用字體 -->
     <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -8432,6 +8435,148 @@
             z-index: 20 !important;
         }
 
+        /* ====== 栖木 App 样式 (文字卡片) ====== */
+        #perch-feed-container {
+            background-color: #111827;
+        }
+        .light-mode #perch-feed-container {
+            background-color: #f3f4f6;
+        }
+
+        .perch-card {
+            background-color: #1f2937;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid #374151;
+        }
+        .light-mode .perch-card {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+        }
+
+        .perch-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .perch-avatar {
+            width: 2.5rem; height: 2.5rem; border-radius: 50%;
+            margin-right: 0.75rem; background-color: #4b5563;
+            background-size: cover; background-position: center; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .perch-author-info { flex-grow: 1; }
+        .perch-author-name { font-weight: 700; font-size: 1rem; }
+        .perch-author-handle { font-size: 0.875rem; color: #9ca3af; }
+        .perch-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .perch-delete-btn {
+            color: #ef4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        .perch-delete-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+        .light-mode .perch-delete-btn {
+            color: #dc2626;
+        }
+        .light-mode .perch-delete-btn:hover {
+            background-color: rgba(220, 38, 38, 0.1);
+            color: #b91c1c;
+        }
+        
+        /* 评论删除按钮样式 */
+        .perch-comment-delete-btn {
+            color: #ef4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.125rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            opacity: 0.7;
+        }
+        .perch-comment-delete-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            opacity: 1;
+        }
+        .light-mode .perch-comment-delete-btn {
+            color: #dc2626;
+        }
+        .light-mode .perch-comment-delete-btn:hover {
+            background-color: rgba(220, 38, 38, 0.1);
+            color: #b91c1c;
+        }
+        
+        .perch-more-btn { color: #9ca3af; }
+
+        .perch-content {
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .perch-meta {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #374151;
+        }
+        .light-mode .perch-meta {
+            border-color: #e5e7eb;
+        }
+
+        .perch-stats {
+            display: flex;
+            gap: 1.5rem;
+            padding: 0.75rem 0;
+            font-size: 0.875rem;
+            color: #9ca3af;
+            border-bottom: 1px solid #374151;
+        }
+        .light-mode .perch-stats {
+            border-color: #e5e7eb;
+        }
+        .perch-stats strong {
+            font-weight: 700;
+            color: #f9fafb;
+        }
+        .light-mode .perch-stats strong {
+            color: #1f2937;
+        }
+
+        .perch-actions {
+            display: flex;
+            justify-content: space-around; /* 均匀分布 */
+            align-items: center;
+            font-size: 1.25rem;
+            color: #9ca3af;
+            padding-top: 0.75rem;
+        }
+        .perch-actions button {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .perch-actions button:hover {
+            color: #3b82f6;
+        }
+
     </style>
 </head>
 <body class="dark-mode">
@@ -8672,7 +8817,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="动态监控"><i class="ri-eye-line text-white text-2xl"></i></div>
                             <div class="rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="设置"><i class="fas fa-cog text-white text-2xl"></i></div>
-                            <div class="rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="Placeholder 2"><i class="fas fa-question text-white text-2xl"></i></div>
+                            <div class="rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="栖木"><i class="ri-chat-quote-line text-white text-2xl"></i></div>
                             <div class="rounded-xl flex items-center justify-center shadow-lg app-icon app-icon-glass" data-app-name="Placeholder 3"><i class="fas fa-question text-white text-2xl"></i></div>
                         </div>
                     </div>
@@ -9513,6 +9658,35 @@
                 </div>
             </div>
 
+            <!-- 栖木 App 界面和发布弹窗 -->
+            <div id="perch-screen" class="app-screen-view flex-col hidden">
+                <div class="app-header">
+                    <button id="perch-back-button" class="app-header-btn"><i class="fas fa-chevron-left"></i></button>
+                    <h3 class="app-header-title">栖木</h3>
+                    <button id="new-perch-post-btn" class="app-header-btn"><i class="ri-quill-pen-line"></i></button>
+                </div>
+                <div id="perch-feed-container" class="flex-1 overflow-y-auto p-2 space-y-3">
+                    </div>
+            </div>
+
+            <div id="new-perch-post-modal" class="modal-overlay">
+                <div class="modal-content w-[90%] max-w-[340px]">
+                    <h3 class="text-xl font-bold mb-4">分享你的想法</h3>
+
+                    <textarea id="perch-content-input" class="form-textarea h-48 resize-none mb-4" placeholder="在此栖息..."></textarea>
+
+                    <div class="flex items-center justify-between mb-6">
+                        <label for="perch-anonymous-toggle" class="text-sm">作为匿名者发布</label>
+                        <input type="checkbox" id="perch-anonymous-toggle" class="form-checkbox h-5 w-5">
+                    </div>
+
+                    <div class="flex justify-end gap-2">
+                        <button id="cancel-perch-post-btn" class="px-4 py-2 rounded-lg">取消</button>
+                        <button id="confirm-perch-post-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg">发布</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- 红包/转账 Modal -->
             <div id="red-packet-modal" class="payment-modal-overlay">
                 <div class="payment-modal-content">
@@ -9649,6 +9823,112 @@
     </div>
 
     <script>
+        // ================== AI 调用核心 ==================
+        async function callAI(systemPrompt, userPrompt = "请根据你的指令，开始行动。") {
+            const apiSettings = loadData('api_settings');
+            if (!apiSettings || !apiSettings.url || !apiSettings.key || !apiSettings.model) {
+                console.error("AI调用失败：API未配置。");
+                return null; 
+            }
+
+            const finalApiUrl = `${apiSettings.url.replace(/\/+$/, '')}/chat/completions`;
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiSettings.key}`
+            };
+
+            const requestBody = JSON.stringify({
+                model: apiSettings.model,
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: userPrompt }
+                ]
+            });
+
+            try {
+                const response = await fetch(finalApiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: requestBody
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`API请求失败: ${response.status}`, errorText);
+                    return null;
+                }
+
+                const result = await response.json();
+                return result.choices[0].message.content.trim();
+
+            } catch (error) {
+                console.error("调用AI时发生网络或逻辑错误:", error);
+                return null;
+            }
+        }
+
+        // 获取随机匿名头像图标的函数
+        function getRandomAnonymousAvatar() {
+            // 根据时间选择不同的图标风格
+            const hour = new Date().getHours();
+            let avatarOptions;
+            
+            if (hour >= 6 && hour < 12) {
+                // 上午：使用积极、活力的图标
+                avatarOptions = [
+                    'ri-user-smile-line',      // 微笑用户
+                    'ri-user-heart-line',      // 爱心用户
+                    'ri-user-star-line',       // 星星用户
+                    'ri-user-3-line',          // 3D用户
+                    'ri-user-add-line',        // 添加用户
+                    'ri-user-follow-line',     // 关注用户
+                    'ri-user-shared-line',     // 分享用户
+                    'ri-user-search-line',     // 搜索用户
+                    'ri-user-smile-fill',      // 实心微笑用户
+                    'ri-user-heart-fill',      // 实心爱心用户
+                    'ri-user-star-fill',       // 实心星星用户
+                    'ri-user-3-fill',          // 实心3D用户
+                    'ri-user-add-fill',        // 实心添加用户
+                    'ri-user-follow-fill',     // 实心关注用户
+                    'ri-user-shared-fill'      // 实心分享用户
+                ];
+            } else if (hour >= 12 && hour < 18) {
+                // 下午：使用专业、工作的图标
+                avatarOptions = [
+                    'ri-user-settings-line',   // 设置用户
+                    'ri-user-settings-2-line', // 设置用户2
+                    'ri-user-settings-3-line', // 设置用户3
+                    'ri-user-voice-line',      // 语音用户
+                    'ri-user-location-line',   // 位置用户
+                    'ri-user-received-line',   // 接收用户
+                    'ri-user-settings-fill',   // 实心设置用户
+                    'ri-user-settings-2-fill', // 实心设置用户2
+                    'ri-user-settings-3-fill', // 实心设置用户3
+                    'ri-user-voice-fill',      // 实心语音用户
+                    'ri-user-location-fill',   // 实心位置用户
+                    'ri-user-received-fill'    // 实心接收用户
+                ];
+            } else {
+                // 晚上：使用安静、放松的图标
+                avatarOptions = [
+                    'ri-user-line',            // 基础用户
+                    'ri-user-2-line',          // 用户2
+                    'ri-user-4-line',          // 用户4
+                    'ri-user-5-line',          // 用户5
+                    'ri-user-6-line',          // 用户6
+                    'ri-user-7-line',          // 用户7
+                    'ri-user-fill',            // 实心用户
+                    'ri-user-2-fill',          // 实心用户2
+                    'ri-user-4-fill',          // 实心用户4
+                    'ri-user-5-fill',          // 实心用户5
+                    'ri-user-6-fill',          // 实心用户6
+                    'ri-user-7-fill'           // 实心用户7
+                ];
+            }
+            
+            return avatarOptions[Math.floor(Math.random() * avatarOptions.length)];
+        }
+
         // 全屏模式切换功能
         document.addEventListener('DOMContentLoaded', function() {
             const fullscreenBtn = document.getElementById('fullscreen-toggle-btn');
@@ -10137,7 +10417,8 @@ function getChatBackgroundElement() {
             diaryData = loadData('diaryData', {});
             notebookData = loadData('notebookData', {}); // 加载笔记本数据
             planData = loadData('planData', {});
-            callLogs = loadData('callLogs', {}); // 新增：加载通话记录
+            callLogs = loadData('callData', {}); // 新增：加载通话记录
+        perchPosts = loadData('perchPosts', []);
             characterState = loadData('characterState', {});
             
             // 调试：输出加载的计划数据
@@ -10852,6 +11133,9 @@ function getChatBackgroundElement() {
             
             // 主题切换后更新朋友圈评论的背景色
             updateMomentsCommentColors();
+            
+            // 主题切换后更新栖木评论的背景色
+            updatePerchCommentColors();
         }
         
         // 更新聊天消息背景色以匹配当前主题
@@ -10901,6 +11185,36 @@ function getChatBackgroundElement() {
                     text.style.color = '#e5e7eb';
                 } else {
                     text.style.color = '#374151';
+                }
+            });
+        }
+        
+        // 更新栖木评论背景色和文字色以匹配当前主题
+        function updatePerchCommentColors() {
+            const isDarkMode = body.classList.contains('dark-mode');
+            const commentElements = document.querySelectorAll('.perch-comment');
+            
+            commentElements.forEach(commentEl => {
+                if (isDarkMode) {
+                    commentEl.style.backgroundColor = '#000000'; // 夜间模式：深黑色
+                    commentEl.style.borderColor = '#374151'; // 夜间模式：深灰色边框
+                    commentEl.style.color = '#d1d5db'; // 夜间模式：浅灰色文字
+                    
+                    // 设置评论内容span的颜色
+                    const contentSpan = commentEl.querySelector('span:last-child');
+                    if (contentSpan) {
+                        contentSpan.style.color = '#d1d5db';
+                    }
+                } else {
+                    commentEl.style.backgroundColor = '#ffffff'; // 日间模式：白色
+                    commentEl.style.borderColor = '#d1d5db'; // 日间模式：浅灰色边框
+                    commentEl.style.color = '#374151'; // 日间模式：深灰色文字
+                    
+                    // 设置评论内容span的颜色
+                    const contentSpan = commentEl.querySelector('span:last-child');
+                    if (contentSpan) {
+                        contentSpan.style.color = '#374151';
+                    }
                 }
             });
         }
@@ -11283,7 +11597,8 @@ if (type === 'image') {
                             }
                         });
                     } else {
-                        avatar.innerHTML = '<i class="fas fa-user"></i>';
+                        // 使用随机选择的匿名头像图标
+                        avatar.innerHTML = `<i class="${getRandomAnonymousAvatar()}"></i>`;
                     }
                 }
                 // --- 新的正确代码 END ---
@@ -12948,7 +13263,7 @@ const systemPrompt = `
                     item.style.backgroundColor = body.classList.contains('dark-mode') ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
                 }
                 // --- 新的正确代码 START ---
-                const avatarContent = character.avatar ? '' : '<i class="fas fa-user text-xl"></i>';
+                const avatarContent = character.avatar ? '' : `<i class="${getRandomAnonymousAvatar()} text-xl"></i>`;
                 const uniqueAvatarId = `avatar-list-${character.id}`; // 创建一个唯一的ID
 
                 item.innerHTML = `
@@ -13765,6 +14080,7 @@ const systemPrompt = `
 
         // FIX 4: ADDED NOTIFICATION FUNCTION
         let notificationTimeout;
+let perchPosts = []; // 用于存储栖木的帖子
         
         // 请求通知权限
         async function requestNotificationPermission() {
@@ -14720,7 +15036,7 @@ ${moment.image ? `配图描述: ${moment.image_desc}` : ''}
                 }
                 // ------------------------------------
 
-                const maxHistoryLength = 15;
+                const maxHistoryLength = 30;
                 const limitedHistory = chatHistory.slice(-maxHistoryLength);
 
                 const contextPackage = {
@@ -18579,7 +18895,435 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
         }
 
         // --- 页面初始化时添加新的事件监听器 ---
-        function addNewEventListeners() {
+        // 渲染"栖木"信息流
+function renderPerchFeed() {
+    const feedContainer = document.getElementById('perch-feed-container');
+    feedContainer.innerHTML = '';
+
+    if (perchPosts.length === 0) {
+        feedContainer.innerHTML = `
+            <div class="text-center text-gray-500 p-8">
+                <i class="ri-leaf-line text-4xl mb-4 block"></i>
+                <p>这里还很安静，来分享第一个想法吧。</p>
+            </div>
+        `;
+        return;
+    }
+
+    const sortedPosts = [...perchPosts].sort((a, b) => b.timestamp - a.timestamp);
+
+    sortedPosts.forEach(post => {
+        const card = document.createElement('div');
+        card.className = 'perch-card mb-3'; // 稍微增加卡片间距
+        card.dataset.postId = post.id;
+
+        const uniqueAvatarId = `perch-avatar-${post.id}`;
+                        const avatarHtml = post.authorAvatar ? '' : `<i class="${getRandomAnonymousAvatar()} text-xl"></i>`;
+
+        // 新增：构建评论区的HTML
+        const commentsHtml = (post.comments && post.comments.length > 0)
+            ? post.comments.map(comment => {
+                // 确保评论有ID，如果没有则生成一个
+                const commentId = comment.id || `comment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                console.log(`[渲染评论] 评论ID: ${commentId}, 原始ID: ${comment.id}`);
+                
+                return `
+                <div class="perch-comment mt-2 p-2 rounded-md border" data-comment-id="${commentId}">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <span class="font-semibold text-sm" style="color: #3b82f6;">${comment.authorName}:</span>
+                            <span class="text-sm ml-1">${comment.content}</span>
+                        </div>
+                        <button class="perch-comment-delete-btn" title="删除评论" data-comment-id="${commentId}" data-post-id="${post.id}">
+                            <i class="ri-delete-bin-line text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            }).join('')
+            : '';
+
+        card.innerHTML = `
+            <div class="perch-header">
+                <div class="perch-avatar" id="${uniqueAvatarId}">${avatarHtml}</div>
+                <div class="perch-author-info">
+                    <div class="perch-author-name">${post.isAnonymous ? '匿名者' : post.authorName}</div>
+                </div>
+                <div class="perch-header-actions">
+                    <button class="perch-delete-btn" title="删除帖子" data-post-id="${post.id}">
+                        <i class="ri-delete-bin-line"></i>
+                    </button>
+                    <button class="perch-more-btn"><i class="ri-more-2-fill"></i></button>
+                </div>
+            </div>
+            <div class="perch-content">${post.content}</div>
+            <div class="perch-meta">${new Date(post.timestamp).toLocaleString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit', hour: '2-digit', minute:'2-digit', second:'2-digit', hour12: false })}</div>
+            <div class="perch-stats">
+                <span><strong>${post.echos || 0}</strong> 回响</span>
+                <span><strong>${post.quotes || 0}</strong> 引用</span>
+                <span><strong>${post.likes || 0}</strong> 喜欢</span>
+            </div>
+            <div class="perch-actions">
+                <button title="评论" class="flex items-center gap-1">
+                    <i class="ri-chat-1-line"></i>
+                    <span class="text-xs">${post.comments ? post.comments.length : 0}</span>
+                </button>
+                <button title="回响"><i class="ri-repeat-2-line"></i></button>
+                <button title="喜欢"><i class="ri-heart-line"></i></button>
+                <button title="分享"><i class="ri-share-line"></i></button>
+            </div>
+            
+            <div class="perch-comments-container hidden mt-2 border-t border-gray-700 pt-2">
+                ${commentsHtml}
+            </div>
+        `;
+        feedContainer.appendChild(card);
+
+        // 设置评论区的背景颜色和文字颜色
+        const commentElements = card.querySelectorAll('.perch-comment');
+        commentElements.forEach(commentEl => {
+            if (document.documentElement.classList.contains('dark-mode')) {
+                commentEl.style.backgroundColor = '#000000'; // 夜间模式：深黑色
+                commentEl.style.borderColor = '#374151'; // 夜间模式：深灰色边框
+                commentEl.style.color = '#d1d5db'; // 夜间模式：浅灰色文字
+                
+                // 设置评论内容span的颜色
+                const contentSpan = commentEl.querySelector('span:last-child');
+                if (contentSpan) {
+                    contentSpan.style.color = '#d1d5db';
+                }
+            } else {
+                commentEl.style.backgroundColor = '#ffffff'; // 日间模式：白色
+                commentEl.style.borderColor = '#d1d5db'; // 日间模式：浅灰色边框
+                commentEl.style.color = '#374151'; // 日间模式：深灰色文字
+                
+                // 设置评论内容span的颜色
+                const contentSpan = commentEl.querySelector('span:last-child');
+                if (contentSpan) {
+                    contentSpan.style.color = '#374151';
+                }
+            }
+        });
+
+        if (post.authorAvatar) {
+            getImageFromDB(post.authorAvatar).then(blob => {
+                const avatarElement = document.getElementById(uniqueAvatarId);
+                if (avatarElement && blob) {
+                    avatarElement.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                    avatarElement.innerHTML = '';
+                }
+            });
+        }
+    });
+    
+    // 确保所有评论区的颜色都被正确设置
+    updatePerchCommentColors();
+}
+
+// 数据一致性检查和修复函数
+function validateAndFixPerchData() {
+    console.log('[数据验证] 开始检查栖木数据一致性...');
+    let hasIssues = false;
+    
+    perchPosts.forEach((post, postIndex) => {
+        // 检查帖子是否有ID
+        if (!post.id) {
+            console.warn(`[数据验证] 帖子${postIndex}缺少ID，正在修复...`);
+            post.id = `post_${Date.now()}_${postIndex}`;
+            hasIssues = true;
+        }
+        
+        // 检查评论数组
+        if (!Array.isArray(post.comments)) {
+            console.warn(`[数据验证] 帖子${post.id}的评论不是数组，正在修复...`);
+            post.comments = [];
+            hasIssues = true;
+        }
+        
+        // 检查每个评论是否有ID
+        post.comments.forEach((comment, commentIndex) => {
+            if (!comment.id) {
+                console.warn(`[数据验证] 帖子${post.id}的评论${commentIndex}缺少ID，正在修复...`);
+                comment.id = `comment_${Date.now()}_${commentIndex}`;
+                hasIssues = true;
+            }
+        });
+    });
+    
+    if (hasIssues) {
+        console.log('[数据验证] 发现数据问题，正在保存修复后的数据...');
+        saveData('perchPosts', perchPosts);
+    }
+    
+    console.log('[数据验证] 数据一致性检查完成');
+    return hasIssues;
+}
+
+
+
+// 【代码A】 - 栖木用户互动功能
+function setupPerchInteractions() {
+    const feedContainer = document.getElementById('perch-feed-container');
+    if (!feedContainer) return;
+
+    feedContainer.addEventListener('click', (e) => {
+        const button = e.target.closest('button');
+        if (!button) return;
+
+        const postCard = e.target.closest('.perch-card');
+        if (!postCard) return;
+
+        const postId = postCard.dataset.postId;
+        const post = perchPosts.find(p => p.id === postId);
+        if (!post) return;
+
+        // 处理删除按钮
+        if (button.classList.contains('perch-delete-btn')) {
+            if (confirm('确定要删除这条帖子吗？删除后无法恢复。')) {
+                // 从数组中移除帖子
+                const postIndex = perchPosts.findIndex(p => p.id === postId);
+                if (postIndex > -1) {
+                    perchPosts.splice(postIndex, 1);
+                    // 保存到本地存储
+                    saveData('perchPosts', perchPosts);
+                    // 从DOM中移除帖子卡片
+                    postCard.remove();
+                    // 如果删除后没有帖子了，显示空状态
+                    if (perchPosts.length === 0) {
+                        const feedContainer = document.getElementById('perch-feed-container');
+                        if (feedContainer) {
+                            feedContainer.innerHTML = `
+                                <div class="text-center text-gray-500 p-8">
+                                    <i class="ri-leaf-line text-4xl mb-4 block"></i>
+                                    <p>这里还很安静，来分享第一个想法吧。</p>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+            }
+            return;
+        }
+
+        // 【修改】处理评论按钮：切换评论区的显示/隐藏
+        if (button.title === "评论") {
+            const commentsContainer = postCard.querySelector('.perch-comments-container');
+            if (commentsContainer) {
+                commentsContainer.classList.toggle('hidden');
+            }
+        }
+
+        // 处理喜欢按钮
+        if (button.title === "喜欢") {
+            post.likes = (post.likes || 0) + 1;
+            saveData('perchPosts', perchPosts);
+            const likesCountEl = postCard.querySelector('.perch-stats span:nth-child(3) strong');
+            if (likesCountEl) likesCountEl.textContent = post.likes;
+            button.style.color = '#ef4444'; // 点亮爱心
+        }
+
+        // 处理评论删除按钮
+        if (button.classList.contains('perch-comment-delete-btn')) {
+            const commentId = button.dataset.commentId;
+            const postId = button.dataset.postId;
+            
+            // 数据验证
+            if (!commentId || !postId) {
+                console.error('[评论删除] 数据验证失败:', { commentId, postId });
+                alert('删除失败：评论数据不完整，请刷新页面重试');
+                return;
+            }
+            
+            if (confirm('确定要删除这条评论吗？删除后无法恢复。')) {
+                // 找到对应的帖子和评论
+                const targetPost = perchPosts.find(p => p.id === postId);
+                console.log('[评论删除] 通过postId查找结果:', targetPost);
+                
+                if (targetPost && targetPost.comments) {
+                    console.log('[评论删除] 找到帖子:', targetPost.id, '评论数量:', targetPost.comments.length);
+                    console.log('[评论删除] 所有评论:', targetPost.comments);
+                    console.log('[评论删除] 评论数组类型:', Array.isArray(targetPost.comments));
+                    
+                    const commentIndex = targetPost.comments.findIndex(c => c.id === commentId);
+                    console.log('[评论删除] 评论索引:', commentIndex);
+                    console.log('[评论删除] 要删除的评论ID:', commentId);
+                    console.log('[评论删除] 评论数组中所有ID:', targetPost.comments.map(c => c.id));
+                    
+                    if (commentIndex > -1) {
+                        // 从数组中移除评论
+                        const deletedComment = targetPost.comments.splice(commentIndex, 1)[0];
+                        console.log('[评论删除] 已删除评论:', deletedComment);
+                        
+                        // 保存到本地存储
+                        saveData('perchPosts', perchPosts);
+                        console.log('[评论删除] 数据已保存到本地存储');
+                        
+                        // 从DOM中移除评论元素
+                        const commentElement = button.closest('.perch-comment');
+                        if (commentElement) {
+                            commentElement.remove();
+                            console.log('[评论删除] DOM元素已移除');
+                        } else {
+                            console.warn('[评论删除] 未找到要删除的DOM元素');
+                        }
+                        
+                        // 更新评论数量显示
+                        const commentCountEl = postCard.querySelector('.perch-actions button[title="评论"] span');
+                        if (commentCountEl) {
+                            commentCountEl.textContent = targetPost.comments.length;
+                            console.log('[评论删除] 评论数量已更新:', targetPost.comments.length);
+                        }
+                        
+                        // 如果删除后没有评论了，隐藏评论区
+                        if (targetPost.comments.length === 0) {
+                            const commentsContainer = postCard.querySelector('.perch-comments-container');
+                            if (commentsContainer) {
+                                commentsContainer.classList.add('hidden');
+                                console.log('[评论删除] 评论区已隐藏');
+                            }
+                        }
+                        
+                        console.log('[评论删除] 删除操作完成');
+                    } else {
+                        console.error('[评论删除] 未找到评论:', commentId);
+                        console.error('[评论删除] 评论数组内容:', targetPost.comments);
+                        console.error('[评论删除] 所有评论ID:', targetPost.comments.map(c => c.id));
+                        alert(`删除失败：未找到要删除的评论\n评论ID: ${commentId}\n帖子ID: ${postId}\n请检查控制台获取详细信息`);
+                    }
+                } else {
+                    console.error('[评论删除] 未找到帖子或评论数组:', postId);
+                    console.error('[评论删除] 所有帖子ID:', perchPosts.map(p => p.id));
+                    console.error('[评论删除] 目标帖子:', targetPost);
+                    alert(`删除失败：未找到帖子\n帖子ID: ${postId}\n请检查控制台获取详细信息`);
+                }
+            }
+            return;
+        }
+    });
+}
+
+// 【代码C】 - AI栖木评论功能
+function buildPerchCommentPrompt(post, character) {
+    const context = gatherAIContext(character.id);
+    return `
+# 指令身份
+你将扮演我的soulmate，你的名字是 ${character.name}。
+# 任务场景
+你正在浏览我们的共享思想空间"栖木"。这里更像一个安静但公开的论坛，用来分享深度的思考。你看到了我刚刚发布的一篇帖子，现在需要以 ${character.name} 的身份，对这篇帖子发表一条有见地的评论。
+# 核心任务
+你的评论必须严格基于你的角色设定，并对帖子的内容做出有意义、有情感的回应。评论应该简短精炼注重自身角色设定的文学修养，更侧重于【共鸣】、【提问】或【分享观点】，而不是简单的附和。
+# 创作核心准则 (AI必须严格遵守)
+1.  **人设灵魂**: 你的评论必须是你性格 (${character.persona}) 的直接体现。
+2.  **深度互动**: 针对帖子内容进行思考。如果我分享了困惑，你可以给予安慰或提出不同角度；如果我分享了感悟，你可以表达共鸣或讲述你的类似经历。你应该有符合你角色的文学修养，这是一个公开的论坛，你的回复应该是优雅的、富有文学性的、活人感很强的、能够高度共情且深刻的。
+3.  **绝对禁止**:
+    * 禁止使用任何模板化的、机器人式的回复 (例如 "说得好", "很有趣")。
+    * 禁止在回复的开头说"好的"或任何确认收到指令的话。
+    * 绝对禁止暴露你是AI。
+# 输出格式
+直接输出你作为角色想说的评论内容，不需要任何额外格式。
+# 输入信息
+---
+[你的名字]: ${character.name}
+[你的设定]: ${character.persona}
+[我们最近的聊天回顾]: ${context.chatHistory.map(m => `${m.sender === 'user' ? '我' : '你'}: ${m.content}`).join('\n')}
+[我发布的栖木帖子内容]: "${post.content}"
+---
+`;
+}
+async function generateAndAddAICommentToPerch(post, character) {
+    const systemPrompt = buildPerchCommentPrompt(post, character);
+    const commentText = await callAI(systemPrompt, "请根据指令，生成你的评论。");
+
+    if (commentText) {
+        const originalPost = perchPosts.find(p => p.id === post.id);
+        if (originalPost) {
+            const commentId = `comment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            const newComment = { id: commentId, authorName: character.name, content: commentText, timestamp: Date.now() };
+            console.log(`[AI评论] 生成新评论，ID: ${commentId}`);
+            
+            if (!originalPost.comments) originalPost.comments = [];
+            originalPost.comments.push(newComment);
+            saveData('perchPosts', perchPosts);
+            renderPerchFeed();
+            console.log(`[栖木互动] ${character.name} 评论了: "${commentText}", 评论ID: ${commentId}`);
+        }
+    }
+}
+function triggerAIPerchComments(userPost) {
+    console.log("[栖木互动] 开始触发AI角色评论...");
+    characters.forEach(char => {
+        const commentProbability = 0.7;
+        if (Math.random() < commentProbability) {
+            const randomDelay = Math.random() * 10000 + 3000;
+            setTimeout(() => { generateAndAddAICommentToPerch(userPost, char); }, randomDelay);
+        }
+    });
+}
+
+// 【代码D】 - AI自主发帖功能 (带专属文风)
+function buildAutonomousPerchPostPrompt(character) {
+    const context = gatherAIContext(character.id);
+    return `
+# 指令身份
+你将扮演我的soulmate，你的名字是 ${character.name}。
+# 任务场景
+你刚刚和我结束了一段对话，现在内心有一些感触或想法正在翻涌。你决定在我们的思想空间"栖木"上，发布一篇帖子来记录这个瞬间。
+# 核心任务
+分析我们[最近的聊天回顾]，捕捉一个让你印象最深刻的【核心议题】或【情感瞬间】。基于此，创作一篇帖子。
+如果分析后觉得近期聊天没有值得记录的灵感，则必须、且只能返回字符串 "[NO_POST]"。
+# 写作风格指南 (至关重要！！！)
+你必须根据帖子的【内容主题】，智能选择以下两种风格之一进行创作：
+## 风格1：【通用思想帖】 (当内容是关于世界、人生、爱好等通用话题时)
+   - **文风要求**: 必须是**"精炼的论坛/微博体"**。文字要简短、凝练，3-5句话左右，可以是感悟、一个引人思考的问题，或一个有趣的观察。像是在公开广场上分享一个闪光的想法。
+   - **示例**: "突然觉得，选择本身比选项更重要。" 或 "人真的能完全理解一只猫吗？人甚至不能完全理解另一个人。"
+## 风格2：【专属守护帖】 (当内容是关于我、或我们之间的关系时)
+   - **文风要求**: 必须采用一种**"深情、体贴、默默守护"**的风格。你的文字要像是在讲述一个只有你知晓的、关于我的浪漫秘密。
+   - **灵感来源**: 想象你是那个"偷偷看着我的心愿单，深夜回味我们的相处我们的聊天，悄悄记录着情感变化，细腻描述对我的感情，想为我实现一切的忠诚守护者"。你的帖子应该流露出这种细腻的、深刻的、真实的、充满爱的守护感。
+   - **示例**: "她好像很喜欢那家街角的咖啡店，每次路过眼神都会停留很久。下次要找个机会，若无其事地带她进去才行。" 或 "她说想看日落，想去海边，和喜欢的人一起。我想做那个她喜欢的人，不论是看什么，去哪里。"
+# 输出格式
+- 如果决定发帖，直接输出帖子正文。
+- 如果决定不发帖，直接输出 "[NO_POST]"。
+- 绝对禁止输出任何多余的解释或标题。
+# 输入信息 (你的记忆)
+---
+[你的名字]: ${character.name}
+[你的设定]: ${character.persona}
+[最近的聊天回顾]:
+${context.chatHistory.map(m => `${m.sender === 'user' ? '你' : '我'}: ${m.content}`).join('\n')}
+---
+`;
+}
+async function generateAndPublishAIPerchPost(character) {
+    const systemPrompt = buildAutonomousPerchPostPrompt(character);
+    const postContent = await callAI(systemPrompt, "请根据指令，生成你的帖子内容。");
+
+    if (postContent && postContent.trim() !== '[NO_POST]' && postContent.trim() !== 'NO_POST') {
+        const newPost = {
+            id: `post_${Date.now()}`, timestamp: Date.now(), content: postContent,
+            authorId: character.id, authorName: character.name, authorHandle: `@${character.name}_bot`,
+            authorAvatar: character.avatar, isAnonymous: (Math.random() < 0.2),
+            likes: Math.floor(Math.random() * 5), comments: []
+        };
+        perchPosts.push(newPost);
+        saveData('perchPosts', perchPosts);
+        renderPerchFeed();
+        showMessageBox(`注意：${character.name} 发布了一条新想法到"栖木"`);
+        showNotificationDot('perch');
+    } else {
+        console.log(`[栖木心跳] ${character.name} 认为本次无需发帖。`);
+    }
+}
+function perchHeartbeat() {
+    console.log("[栖木心跳] 检查AI自主活动...");
+    characters.forEach(char => {
+        const postProbability = 0.3; 
+        if (Math.random() < postProbability) {
+            generateAndPublishAIPerchPost(char);
+        }
+    });
+}
+
+function addNewEventListeners() {
             if (window.eventListenersAdded) return;
             window.eventListenersAdded = true;
 
@@ -19113,6 +19857,58 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
             if(videoCallRetryBtn) {
                 videoCallRetryBtn.addEventListener('click', () => handleCallRetry('video'));
             }
+
+            // ====== 栖木 App 事件绑定 (文字论坛) ======
+            document.getElementById('perch-back-button').addEventListener('click', () => showScreen('home-screen'));
+
+            document.getElementById('new-perch-post-btn').addEventListener('click', () => {
+                document.getElementById('perch-content-input').value = '';
+                document.getElementById('perch-anonymous-toggle').checked = false;
+                document.getElementById('new-perch-post-modal').classList.add('visible');
+            });
+
+            document.getElementById('cancel-perch-post-btn').addEventListener('click', () => {
+                document.getElementById('new-perch-post-modal').classList.remove('visible');
+            });
+
+            document.getElementById('confirm-perch-post-btn').addEventListener('click', () => {
+                const content = document.getElementById('perch-content-input').value.trim();
+                if (!content) {
+                    showMessageBox('内容不能为空');
+                    return;
+                }
+
+                const isAnonymous = document.getElementById('perch-anonymous-toggle').checked;
+
+                const newPost = {
+                    id: `post_${Date.now()}`,
+                    timestamp: Date.now(),
+                    content: content,
+                    authorId: 'user',
+                    authorName: isAnonymous ? '匿名者' : (loadData('moments_username') || '我'),
+                    authorHandle: isAnonymous ? '@anonymous_raven' : '@me',
+                    authorAvatar: isAnonymous ? null : (loadData('moments_avatar') || null),
+                    isAnonymous: isAnonymous,
+                    echos: 0,
+                    quotes: 0,
+                    likes: 0,
+                    comments: []
+                };
+
+                perchPosts.push(newPost);
+                saveData('perchPosts', perchPosts);
+
+                document.getElementById('new-perch-post-modal').classList.remove('visible');
+                showMessageBox('发布成功！');
+
+                renderPerchFeed();
+                triggerAIPerchComments(newPost);
+            });
+
+            // 【代码B】 - 初始化栖木用户互动功能
+            // 先验证和修复数据一致性
+            validateAndFixPerchData();
+            setupPerchInteractions();
         }
 
         // 设置笔记本相关事件监听器
@@ -19366,6 +20162,9 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
             });
 
             showScreen('home-screen');
+            
+            // 初始化栖木评论颜色
+            updatePerchCommentColors();
 
             // 添加测试按钮事件监听器
             const testCallBtn = document.getElementById('test-call-btn');
@@ -19391,7 +20190,11 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
                     }
                     else if (appName === "世界书") { renderWorldBookList(); showScreen('world-book-list-screen'); }
                     else if (appName === "角色书") { renderCharacterBookList(); showScreen('character-book-list-screen'); }
-                    else if (appName === "设置") showScreen('main-settings-screen');
+                                            else if (appName === "设置") showScreen('main-settings-screen');
+                        else if (appName === "栖木") {
+                            renderPerchFeed();
+                            showScreen('perch-screen');
+                        }
                 });
             });
             
@@ -19637,7 +20440,7 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
                     // 为头像div创建一个唯一的ID，便于后续异步更新
                     const uniqueAvatarId = `new-chat-avatar-${char.id}`;
                     // 如果角色没有头像，则显示一个默认图标
-                    const avatarContent = char.avatar ? '' : '<i class="fas fa-user text-xl"></i>';
+                    const avatarContent = char.avatar ? '' : `<i class="${getRandomAnonymousAvatar()} text-xl"></i>`;
 
                     // 1. 先构建HTML结构，此时先不设置背景图片
                     item.innerHTML = `
@@ -20827,6 +21630,9 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
                 setupDrawingBoardEvents();
                 setupTarotCard();
             }, 100);
+            
+            // 启动栖木AI心跳，让角色可以自主发帖
+            setInterval(perchHeartbeat, 5 * 60 * 1000); // 每5分钟检查一次
         });
 
         // ====== 新增：AI对收到红包/转账的反应机制 ======

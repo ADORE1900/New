@@ -5800,15 +5800,14 @@
         .light-mode .form-input::placeholder {
             color: rgba(0, 0, 0, 0.6);
         }
-    /* ====== 动态监控 App (Refined UI) ====== */
+    /* ====== 动态监控 App (Refined UI) - 已修复标题遮挡问题 ====== */
     #monitoring-screen {
         color: #662034;
         position: relative;
-        /* 移除 overflow: hidden，允许内容滚动 */
-        /* overflow: hidden; */
-        /* 设置合适的宽度，让内容能够居中 */
         max-width: 100%;
         width: 100%;
+        /* 新增：为顶部的状态栏留出 3.5rem 的空间，解决标题栏被覆盖的问题 */
+        padding-top: 3.5rem; 
     }
 
     /* 科技感背景 - 日间模式 */

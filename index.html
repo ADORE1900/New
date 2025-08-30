@@ -8577,6 +8577,325 @@
             color: #3b82f6;
         }
 
+        /* 新增：栖木转发功能样式 */
+        .forward-char-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-radius: 0.75rem;
+        }
+        .dark-mode .forward-char-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .light-mode .forward-char-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-message.perch-forward-bubble {
+            padding: 0.75rem;
+            max-width: 240px;
+            border-radius: 0.75rem;
+            border-width: 1px;
+            background: linear-gradient(135deg, rgba(55, 65, 81, 0.2), rgba(31, 41, 55, 0.15));
+            border-color: rgba(75, 85, 99, 0.5);
+            box-shadow: none;
+        }
+        .perch-forward-header {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            border-bottom: 1px solid rgba(75, 85, 99, 0.5);
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .perch-forward-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .perch-forward-author img {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+        }
+        .perch-forward-content {
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            max-height: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ===== 回响功能专用样式 ===== */
+        
+        /* 回响标识文字样式 */
+        .perch-author-info .text-xs.text-gray-500 {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 0.125rem;
+        }
+        .light-mode .perch-author-info .text-xs.text-gray-500 {
+            color: #6b7280;
+        }
+
+        /* 原帖预览框样式 */
+        .perch-card .mt-2.p-3.border.border-gray-700.rounded-lg {
+            background-color: rgba(55, 65, 81, 0.3);
+            border: 1px solid #4b5563;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        .light-mode .perch-card .mt-2.p-3.border.border-gray-700.rounded-lg {
+            background-color: rgba(229, 231, 235, 0.5);
+            border-color: #d1d5db;
+        }
+
+        /* 原帖作者信息样式 */
+        .perch-card .flex.items-center.mb-2 {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 原帖头像样式 */
+        .perch-card .perch-avatar.w-6.h-6.mr-2 {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            background-color: #4b5563;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+        }
+        .light-mode .perch-card .perch-avatar.w-6.h-6.mr-2 {
+            background-color: #9ca3af;
+        }
+
+        /* 原帖作者名样式 */
+        .perch-card .font-semibold.text-sm {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #f9fafb;
+        }
+        .light-mode .perch-card .font-semibold.text-sm {
+            color: #1f2937;
+        }
+
+        /* 原帖内容样式 */
+        .perch-card .text-sm.text-gray-300.whitespace-pre-wrap {
+            font-size: 0.875rem;
+            color: #d1d5db;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        .light-mode .perch-card .text-sm.text-gray-300.whitespace-pre-wrap {
+            color: #4b5563;
+        }
+
+        /* 回响帖子的评论区样式 */
+        .perch-card .perch-comments-container {
+            margin-top: 0.5rem;
+            border-top: 1px solid #374151;
+            padding-top: 0.5rem;
+        }
+        .light-mode .perch-card .perch-comments-container {
+            border-color: #e5e7eb;
+        }
+
+        /* 回响帖子的评论样式 */
+        .perch-card .perch-comment {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            border: 1px solid #374151;
+            background-color: rgba(55, 65, 81, 0.2);
+        }
+        .light-mode .perch-card .perch-comment {
+            border-color: #d1d5db;
+            background-color: rgba(229, 231, 235, 0.3);
+        }
+
+        /* 回响帖子的评论作者名样式 */
+        .perch-card .perch-comment .font-semibold.text-sm.text-blue-400 {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #60a5fa;
+        }
+        .light-mode .perch-card .perch-comment .font-semibold.text-sm.text-blue-400 {
+            color: #2563eb;
+        }
+
+        /* 回响帖子的评论内容样式 */
+        .perch-card .perch-comment .text-sm.ml-1 {
+            font-size: 0.875rem;
+            margin-left: 0.25rem;
+            color: #d1d5db;
+        }
+        .light-mode .perch-card .perch-comment .text-sm.ml-1 {
+            color: #4b5563;
+        }
+
+        /* 回响帖子的评论删除按钮样式 */
+        .perch-card .perch-comment .perch-comment-delete-btn {
+            float: right;
+            color: #ef4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.125rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            opacity: 0.7;
+        }
+        .perch-card .perch-comment .perch-comment-delete-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            opacity: 1;
+        }
+        .light-mode .perch-card .perch-comment .perch-comment-delete-btn {
+            color: #dc2626;
+        }
+        .light-mode .perch-card .perch-comment .perch-comment-delete-btn:hover {
+            background-color: rgba(220, 38, 38, 0.1);
+            color: #b91c1c;
+        }
+
+        /* 回响帖子的操作按钮样式 */
+        .perch-card .perch-actions button {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+        }
+        .perch-card .perch-actions button:hover {
+            color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        .light-mode .perch-card .perch-actions button {
+            color: #6b7280;
+        }
+        .light-mode .perch-card .perch-actions button:hover {
+            color: #2563eb;
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+        /* 回响帖子的时间戳样式 */
+        .perch-card .perch-meta.mt-2 {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #9ca3af;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #374151;
+        }
+        .light-mode .perch-card .perch-meta.mt-2 {
+            border-color: #e5e7eb;
+        }
+
+        /* ===== 回响弹窗日夜间模式样式 ===== */
+        
+        /* 回响弹窗中的原帖预览框样式 */
+        #perch-echo-modal #original-post-preview {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid #4b5563;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .light-mode #perch-echo-modal #original-post-preview {
+            background-color: rgba(229, 231, 235, 0.5);
+            border-color: #d1d5db;
+        }
+
+        /* 回响弹窗中的原帖作者名样式 */
+        #perch-echo-modal #original-post-author {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #f9fafb;
+        }
+        
+        .light-mode #perch-echo-modal #original-post-author {
+            color: #1f2937;
+        }
+
+        /* 回响弹窗中的原帖内容样式 */
+        #perch-echo-modal #original-post-content {
+            font-size: 0.875rem;
+            color: #d1d5db;
+            line-height: 1.5;
+        }
+        
+        .light-mode #perch-echo-modal #original-post-content {
+            color: #4b5563;
+        }
+
+        /* 回响弹窗中的取消按钮样式 */
+        #perch-echo-modal #cancel-echo-post-btn {
+            background-color: #6b7280;
+            color: #f9fafb;
+            border: 1px solid #4b5563;
+        }
+        
+        .light-mode #perch-echo-modal #cancel-echo-post-btn {
+            background-color: #e5e7eb;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+
+        /* 回响弹窗中的发布按钮样式 */
+        #perch-echo-modal #confirm-echo-post-btn {
+            background-color: #3b82f6;
+            color: #ffffff;
+            border: 1px solid #2563eb;
+        }
+        
+        .light-mode #perch-echo-modal #confirm-echo-post-btn {
+            background-color: #2563eb;
+            color: #ffffff;
+            border-color: #1d4ed8;
+        }
+
+        /* 回响弹窗中的标题样式 */
+        #perch-echo-modal h3 {
+            color: #f9fafb;
+        }
+        
+        .light-mode #perch-echo-modal h3 {
+            color: #1f2937;
+        }
+
+        /* 回响弹窗中的输入框样式 */
+        #perch-echo-modal #echo-content-input {
+            background-color: rgba(31, 41, 55, 0.8);
+            border: 1px solid #4b5563;
+            color: #f9fafb;
+        }
+        
+        .light-mode #perch-echo-modal #echo-content-input {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-color: #d1d5db;
+            color: #1f2937;
+        }
+
+        #perch-echo-modal #echo-content-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .light-mode #perch-echo-modal #echo-content-input::placeholder {
+            color: #6b7280;
+        }
+
     </style>
 </head>
 <body class="dark-mode">
@@ -8609,9 +8928,9 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <span id="api-status-text" class="text-red-500">API OFF</span>
-                    <button id="theme-toggle" class="p-1 rounded-full hover:bg-white/20 transition-colors">
-                        <i id="theme-icon" class="fas fa-moon text-lg"></i>
-                    </button>
+                                <button id="theme-toggle" class="p-1 rounded-full hover:bg-white/20 transition-colors">
+                <i id="theme-icon" class="fas fa-moon text-lg"></i>
+            </button>
                 </div>
             </div>
 
@@ -9669,6 +9988,19 @@
                     </div>
             </div>
 
+            <div id="perch-forward-modal" class="modal-overlay">
+                <div class="modal-content w-[90%] max-w-[320px]">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold">转发给...</h3>
+                        <button id="close-perch-forward-modal" class="text-2xl p-1 rounded-full hover:bg-white/20">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <ul id="perch-forward-character-list" class="space-y-2 max-h-60 overflow-y-auto">
+                        </ul>
+                </div>
+            </div>
+
             <div id="new-perch-post-modal" class="modal-overlay">
                 <div class="modal-content w-[90%] max-w-[340px]">
                     <h3 class="text-xl font-bold mb-4">分享你的想法</h3>
@@ -9683,6 +10015,28 @@
                     <div class="flex justify-end gap-2">
                         <button id="cancel-perch-post-btn" class="px-4 py-2 rounded-lg">取消</button>
                         <button id="confirm-perch-post-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg">发布</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 回响弹窗 -->
+            <div id="perch-echo-modal" class="modal-overlay">
+                <div class="modal-content w-[90%] max-w-[340px]">
+                    <h3 class="text-xl font-bold mb-4">发表你的回响</h3>
+
+                    <div id="original-post-preview" class="mb-4 p-3 border border-gray-600 rounded-lg bg-black/20">
+                        <div class="flex items-center mb-2">
+                            <div id="original-post-avatar" class="w-6 h-6 rounded-full mr-2 bg-zinc-600 bg-cover bg-center"></div>
+                            <span id="original-post-author" class="font-semibold text-sm"></span>
+                        </div>
+                        <p id="original-post-content" class="text-sm text-gray-300 max-h-24 overflow-y-auto whitespace-pre-wrap"></p>
+                    </div>
+
+                    <textarea id="echo-content-input" class="form-textarea h-32 resize-none mb-4" placeholder="在此写下你的回响..."></textarea>
+
+                    <div class="flex justify-end gap-2">
+                        <button id="cancel-echo-post-btn" class="px-4 py-2 rounded-lg">取消</button>
+                        <button id="confirm-echo-post-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg">发布回响</button>
                     </div>
                 </div>
             </div>
@@ -10008,6 +10362,7 @@
         let currentWeChatCharacterId = null; // V7.0: Track character for non-chat tabs
         let currentMessageIndex = 0; // 用于虚拟滚动的消息索引
         let isReceivingMessage = false; // 用于防止重复点击接收按钮
+        let currentPostToForwardId = null; // 新增：临时存放正要转发的帖子ID
 
         // [新增] 未读消息计数器
         let unreadCounts = loadData('unreadCounts') || {};
@@ -11708,11 +12063,43 @@ if (type === 'image') {
                         showMessageBox('转账已接收');
                     }
                 });
+            } else if (type === 'perch-forward') {
+                messageBubble.className = `chat-message ${senderClass} perch-forward-bubble`;
+                
+                // 为头像创建一个唯一的ID，以便异步加载
+                const uniqueAvatarId = `forward-avatar-${Date.now()}`;
+                const avatarHtml = `<div id="${uniqueAvatarId}" class="w-6 h-6 rounded-full bg-zinc-600 flex-shrink-0 bg-cover bg-center"></div>`;
+
+                const forwardContent = `
+                    <div class="perch-forward-header">转发自「栖木」</div>
+                    <div class="perch-forward-author">
+                        ${content.originalAuthorAvatar ? avatarHtml : ''}
+                        <span>${content.originalAuthorName}</span>
+                    </div>
+                    <div class="perch-forward-content">${content.originalContent}</div>
+                `;
+                messageBubble.innerHTML = forwardContent;
+
+                // 异步从数据库加载头像图片
+                if (content.originalAuthorAvatar) {
+                    getImageFromDB(content.originalAuthorAvatar).then(blob => {
+                        const avatarElement = document.getElementById(uniqueAvatarId);
+                        if (avatarElement && blob) {
+                            avatarElement.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                        }
+                    });
+                }
+
+                // 为转发的卡片添加点击事件，可以跳转回栖木App（未来可扩展）
+                messageBubble.addEventListener('click', () => {
+                    showMessageBox('这是一个从栖木转发来的帖子');
+                });
             }
-            // 处理普通文本消息
-            if (type === 'text') {
+            else {
+                // 默认处理文本消息
                 messageBubble.className = `chat-message ${senderClass}`;
-                const formattedMessage = content.replace(/(\*|_)(.*?)\1/g, '<i>$2</i>');
+                const textContent = (typeof content === 'string') ? content : '';
+                const formattedMessage = textContent.replace(/(\*|_)(.*?)\1/g, '<i>$2</i>');
                 messageBubble.innerHTML = `<p>${formattedMessage}</p>`;
             }
 
@@ -11849,10 +12236,25 @@ if (type === 'image') {
                     if (msg.type === 'red-packet') {
                         return { ...msg, content: `[${msg.sender === 'user' ? '用户' : '你'}发送了一个红包，金额${msg.content.amount}，留言：${msg.content.message}]` };
                     }
-                    if (msg.type === 'transfer') {
-                         return { ...msg, content: `[${msg.sender === 'user' ? '用户' : '你'}发起了一笔转账，金额${msg.content.amount}，留言：${msg.content.message}]` };
+                                    if (msg.type === 'transfer') {
+                     return { ...msg, content: `[${msg.sender === 'user' ? '用户' : '你'}发起了一笔转账，金额${msg.content.amount}，留言：${msg.content.message}]` };
+                }
+                else if (msg.type === 'perch-forward') {
+                    const authorName = msg.content.originalAuthorName;
+                    const postContent = msg.content.originalContent;
+                    let translatedContent = '';
+
+                    // 智能判断这条帖子是谁发的
+                    if (authorName === character.name) {
+                        // 如果是AI自己发的
+                        translatedContent = `[系统提示：用户将【你】之前在"栖木"上发表的一篇帖子转发了回来。帖子内容是："${postContent}"]`
+                    } else {
+                        // 如果是别人（比如用户自己或其他AI）发的
+                        translatedContent = `[系统提示：用户转发了【${authorName}】在"栖木"上的一篇帖子，内容是："${postContent}"]`
                     }
-                    return msg;
+                    return { ...msg, content: translatedContent };
+                }
+                return msg;
                 });
 
                 // --- V12.0 最终融合版系统指令 ---
@@ -18901,12 +19303,7 @@ function renderPerchFeed() {
     feedContainer.innerHTML = '';
 
     if (perchPosts.length === 0) {
-        feedContainer.innerHTML = `
-            <div class="text-center text-gray-500 p-8">
-                <i class="ri-leaf-line text-4xl mb-4 block"></i>
-                <p>这里还很安静，来分享第一个想法吧。</p>
-            </div>
-        `;
+        feedContainer.innerHTML = `<div class="text-center text-gray-500 p-8"><i class="ri-leaf-line text-4xl mb-4 block"></i><p>这里还很安静，来分享第一个想法吧。</p></div>`;
         return;
     }
 
@@ -18914,109 +19311,146 @@ function renderPerchFeed() {
 
     sortedPosts.forEach(post => {
         const card = document.createElement('div');
-        card.className = 'perch-card mb-3'; // 稍微增加卡片间距
+        card.className = 'perch-card mb-3';
         card.dataset.postId = post.id;
 
-        const uniqueAvatarId = `perch-avatar-${post.id}`;
-                        const avatarHtml = post.authorAvatar ? '' : `<i class="${getRandomAnonymousAvatar()} text-xl"></i>`;
+        let cardContentHTML = '';
 
-        // 新增：构建评论区的HTML
-        const commentsHtml = (post.comments && post.comments.length > 0)
-            ? post.comments.map(comment => {
-                // 确保评论有ID，如果没有则生成一个
-                const commentId = comment.id || `comment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                console.log(`[渲染评论] 评论ID: ${commentId}, 原始ID: ${comment.id}`);
-                
-                return `
-                <div class="perch-comment mt-2 p-2 rounded-md border" data-comment-id="${commentId}">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <span class="font-semibold text-sm" style="color: #3b82f6;">${comment.authorName}:</span>
-                            <span class="text-sm ml-1">${comment.content}</span>
-                        </div>
-                        <button class="perch-comment-delete-btn" title="删除评论" data-comment-id="${commentId}" data-post-id="${post.id}">
-                            <i class="ri-delete-bin-line text-sm"></i>
-                        </button>
+        // 【核心升级】根据帖子类型，生成不同的HTML
+        if (post.type === 'echo' && post.originalPost) {
+            // --- 这是"回响"帖子的样式 ---
+            const original = post.originalPost;
+            const uniqueAvatarId = `perch-avatar-${post.id}`;
+            const originalAvatarId = `original-avatar-${original.id}`;
+            
+            console.log('[回响渲染] 开始渲染回响帖子:', post.id);
+            console.log('[回响渲染] 回响作者信息:', { name: post.authorName, avatar: post.authorAvatar });
+            console.log('[回响渲染] 原帖信息:', { id: original.id, name: original.authorName, avatar: original.authorAvatar });
+            console.log('[回响渲染] 头像元素ID:', { uniqueAvatarId, originalAvatarId });
+
+            cardContentHTML = `
+                <div class="perch-header">
+                    <div class="perch-avatar" id="${uniqueAvatarId}"></div>
+                    <div class="perch-author-info">
+                        <div class="perch-author-name">${post.authorName}</div>
+                        <span class="text-xs text-gray-500">发表了回响</span>
                     </div>
+                    <button class="perch-delete-btn" title="删除帖子" data-post-id="${post.id}"><i class="ri-delete-bin-line"></i></button>
+                </div>
+                <div class="perch-content">${post.content}</div>
+
+                <div class="mt-2 p-3 border border-gray-700 rounded-lg">
+                    <div class="flex items-center mb-2">
+                        <div class="perch-avatar w-6 h-6 mr-2" id="${originalAvatarId}"></div>
+                        <span class="font-semibold text-sm">${original.authorName}</span>
+                    </div>
+                    <p class="text-sm text-gray-300 whitespace-pre-wrap">${original.content}</p>
+                </div>
+
+                <div class="perch-meta mt-2">${new Date(post.timestamp).toLocaleString()}</div>
+                <div class="perch-actions">
+                    <button title="评论" class="flex items-center gap-1"><i class="ri-chat-1-line"></i> <span class="text-xs">${post.comments?.length || 0}</span></button>
+                    <button title="回响"><i class="ri-repeat-2-line"></i></button>
+                    <button title="喜欢"><i class="ri-heart-line"></i></button>
+                    <button title="分享"><i class="ri-share-line"></i></button>
+                </div>
+                <div class="perch-comments-container hidden mt-2 border-t border-gray-700 pt-2">
+                    ${(post.comments || []).map(c => `<div class="perch-comment mt-2 p-2 rounded-md border" data-comment-id="${c.id}"><span class="font-semibold text-sm text-blue-400">${c.authorName}:</span> <span class="text-sm ml-1">${c.content}</span><button class="perch-comment-delete-btn float-right" title="删除评论" data-comment-id="${c.id}"><i class="ri-delete-bin-line"></i></button></div>`).join('')}
                 </div>
             `;
-            }).join('')
-            : '';
 
-        card.innerHTML = `
-            <div class="perch-header">
-                <div class="perch-avatar" id="${uniqueAvatarId}">${avatarHtml}</div>
-                <div class="perch-author-info">
-                    <div class="perch-author-name">${post.isAnonymous ? '匿名者' : post.authorName}</div>
-                </div>
-                <div class="perch-header-actions">
-                    <button class="perch-delete-btn" title="删除帖子" data-post-id="${post.id}">
-                        <i class="ri-delete-bin-line"></i>
-                    </button>
-                    <button class="perch-more-btn"><i class="ri-more-2-fill"></i></button>
-                </div>
-            </div>
-            <div class="perch-content">${post.content}</div>
-            <div class="perch-meta">${new Date(post.timestamp).toLocaleString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit', hour: '2-digit', minute:'2-digit', second:'2-digit', hour12: false })}</div>
-            <div class="perch-stats">
-                <span><strong>${post.echos || 0}</strong> 回响</span>
-                <span><strong>${post.quotes || 0}</strong> 引用</span>
-                <span><strong>${post.likes || 0}</strong> 喜欢</span>
-            </div>
-            <div class="perch-actions">
-                <button title="评论" class="flex items-center gap-1">
-                    <i class="ri-chat-1-line"></i>
-                    <span class="text-xs">${post.comments ? post.comments.length : 0}</span>
-                </button>
-                <button title="回响"><i class="ri-repeat-2-line"></i></button>
-                <button title="喜欢"><i class="ri-heart-line"></i></button>
-                <button title="分享"><i class="ri-share-line"></i></button>
-            </div>
-            
-            <div class="perch-comments-container hidden mt-2 border-t border-gray-700 pt-2">
-                ${commentsHtml}
-            </div>
-        `;
-        feedContainer.appendChild(card);
-
-        // 设置评论区的背景颜色和文字颜色
-        const commentElements = card.querySelectorAll('.perch-comment');
-        commentElements.forEach(commentEl => {
-            if (document.documentElement.classList.contains('dark-mode')) {
-                commentEl.style.backgroundColor = '#000000'; // 夜间模式：深黑色
-                commentEl.style.borderColor = '#374151'; // 夜间模式：深灰色边框
-                commentEl.style.color = '#d1d5db'; // 夜间模式：浅灰色文字
+            // 异步加载两个头像
+            setTimeout(() => {
+                console.log('[回响头像加载] 开始加载头像...');
+                console.log('[回响头像加载] 回响作者头像ID:', post.authorAvatar);
+                console.log('[回响头像加载] 原帖作者头像ID:', original.authorAvatar);
                 
-                // 设置评论内容span的颜色
-                const contentSpan = commentEl.querySelector('span:last-child');
-                if (contentSpan) {
-                    contentSpan.style.color = '#d1d5db';
+                if(post.authorAvatar) {
+                    getImageFromDB(post.authorAvatar).then(blob => { 
+                        if(blob) {
+                            console.log('[回响头像加载] 回响作者头像加载成功');
+                            document.getElementById(uniqueAvatarId).style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                        } else {
+                            console.log('[回响头像加载] 回响作者头像加载失败，blob为空');
+                        }
+                    }).catch(err => {
+                        console.error('[回响头像加载] 回响作者头像加载错误:', err);
+                    });
+                } else {
+                    console.log('[回响头像加载] 回响作者没有头像');
                 }
-            } else {
-                commentEl.style.backgroundColor = '#ffffff'; // 日间模式：白色
-                commentEl.style.borderColor = '#d1d5db'; // 日间模式：浅灰色边框
-                commentEl.style.color = '#374151'; // 日间模式：深灰色文字
                 
-                // 设置评论内容span的颜色
-                const contentSpan = commentEl.querySelector('span:last-child');
-                if (contentSpan) {
-                    contentSpan.style.color = '#374151';
+                if(original.authorAvatar) {
+                    getImageFromDB(original.authorAvatar).then(blob => { 
+                        if(blob) {
+                            console.log('[回响头像加载] 原帖作者头像加载成功');
+                            document.getElementById(originalAvatarId).style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                        } else {
+                            console.log('[回响头像加载] 原帖作者头像加载失败，blob为空');
+                        }
+                    }).catch(err => {
+                        console.error('[回响头像加载] 原帖作者头像加载错误:', err);
+                    });
+                } else {
+                    console.log('[回响头像加载] 原帖作者没有头像');
                 }
-            }
-        });
+            }, 0);
 
-        if (post.authorAvatar) {
-            getImageFromDB(post.authorAvatar).then(blob => {
-                const avatarElement = document.getElementById(uniqueAvatarId);
-                if (avatarElement && blob) {
-                    avatarElement.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
-                    avatarElement.innerHTML = '';
+        } else {
+            // --- 这是"普通"帖子的样式 (沿用旧逻辑) ---
+            const uniqueAvatarId = `perch-avatar-${post.id}`;
+            cardContentHTML = `
+                <div class="perch-header">
+                    <div class="perch-avatar" id="${uniqueAvatarId}"></div>
+                    <div class="perch-author-info">
+                        <div class="perch-author-name">${post.isAnonymous ? '匿名者' : post.authorName}</div>
+                    </div>
+                    <button class="perch-delete-btn" title="删除帖子" data-post-id="${post.id}"><i class="ri-delete-bin-line"></i></button>
+                </div>
+                <div class="perch-content">${post.content}</div>
+                <div class="perch-meta">${new Date(post.timestamp).toLocaleString()}</div>
+                <div class="perch-stats">
+                    <span><strong>${post.echos || 0}</strong> 回响</span>
+                    <span><strong>${post.quotes || 0}</strong> 引用</span>
+                    <span><strong>${post.likes || 0}</strong> 喜欢</span>
+                </div>
+                <div class="perch-actions">
+                     <button title="评论" class="flex items-center gap-1"><i class="ri-chat-1-line"></i> <span class="text-xs">${post.comments?.length || 0}</span></button>
+                    <button title="回响"><i class="ri-repeat-2-line"></i></button>
+                    <button title="喜欢"><i class="ri-heart-line"></i></button>
+                    <button title="分享"><i class="ri-share-line"></i></button>
+                </div>
+                <div class="perch-comments-container hidden mt-2 border-t border-gray-700 pt-2">
+                    ${(post.comments || []).map(c => `<div class="perch-comment mt-2 p-2 rounded-md border" data-comment-id="${c.id}"><span class="font-semibold text-sm text-blue-400">${c.authorName}:</span> <span class="text-sm ml-1">${c.content}</span><button class="perch-comment-delete-btn float-right" title="删除评论" data-comment-id="${c.id}"><i class="ri-delete-bin-line"></i></button></div>`).join('')}
+                </div>
+            `;
+
+            // 异步加载头像
+            setTimeout(() => {
+                console.log('[普通帖子头像加载] 开始加载头像...');
+                console.log('[普通帖子头像加载] 作者头像ID:', post.authorAvatar);
+                
+                if (post.authorAvatar) {
+                    getImageFromDB(post.authorAvatar).then(blob => { 
+                        if(blob) {
+                            console.log('[普通帖子头像加载] 头像加载成功');
+                            document.getElementById(uniqueAvatarId).style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                        } else {
+                            console.log('[普通帖子头像加载] 头像加载失败，blob为空');
+                        }
+                    }).catch(err => {
+                        console.error('[普通帖子头像加载] 头像加载错误:', err);
+                    });
+                } else {
+                    console.log('[普通帖子头像加载] 作者没有头像');
                 }
-            });
+            }, 0);
         }
+
+        card.innerHTML = cardContentHTML;
+        feedContainer.appendChild(card);
     });
-    
-    // 确保所有评论区的颜色都被正确设置
+
     updatePerchCommentColors();
 }
 
@@ -19066,6 +19500,7 @@ function setupPerchInteractions() {
     const feedContainer = document.getElementById('perch-feed-container');
     if (!feedContainer) return;
 
+    // 使用事件委托来处理所有点击事件
     feedContainer.addEventListener('click', (e) => {
         const button = e.target.closest('button');
         if (!button) return;
@@ -19077,141 +19512,155 @@ function setupPerchInteractions() {
         const post = perchPosts.find(p => p.id === postId);
         if (!post) return;
 
-        // 处理删除按钮
+        // --- 处理删除帖子按钮 ---
         if (button.classList.contains('perch-delete-btn')) {
             if (confirm('确定要删除这条帖子吗？删除后无法恢复。')) {
-                // 从数组中移除帖子
                 const postIndex = perchPosts.findIndex(p => p.id === postId);
                 if (postIndex > -1) {
                     perchPosts.splice(postIndex, 1);
-                    // 保存到本地存储
                     saveData('perchPosts', perchPosts);
-                    // 从DOM中移除帖子卡片
-                    postCard.remove();
-                    // 如果删除后没有帖子了，显示空状态
-                    if (perchPosts.length === 0) {
-                        const feedContainer = document.getElementById('perch-feed-container');
-                        if (feedContainer) {
-                            feedContainer.innerHTML = `
-                                <div class="text-center text-gray-500 p-8">
-                                    <i class="ri-leaf-line text-4xl mb-4 block"></i>
-                                    <p>这里还很安静，来分享第一个想法吧。</p>
-                                </div>
-                            `;
-                        }
-                    }
+                    renderPerchFeed(); // 重新渲染
                 }
             }
             return;
         }
 
-        // 【修改】处理评论按钮：切换评论区的显示/隐藏
+        // --- 处理评论删除按钮 ---
+        if (button.classList.contains('perch-comment-delete-btn')) {
+            const commentId = button.dataset.commentId;
+            if (confirm('确定要删除这条评论吗？')) {
+                const postToUpdate = perchPosts.find(p => p.id === postId);
+                if (postToUpdate && postToUpdate.comments) {
+                    postToUpdate.comments = postToUpdate.comments.filter(c => c.id !== commentId);
+                    saveData('perchPosts', perchPosts);
+                    renderPerchFeed(); // 重新渲染
+                }
+            }
+            return;
+        }
+
+        // --- 处理评论按钮 ---
         if (button.title === "评论") {
             const commentsContainer = postCard.querySelector('.perch-comments-container');
             if (commentsContainer) {
                 commentsContainer.classList.toggle('hidden');
             }
         }
-
-        // 处理喜欢按钮
-        if (button.title === "喜欢") {
+        // --- 处理喜欢按钮 ---
+        else if (button.title === "喜欢") {
             post.likes = (post.likes || 0) + 1;
             saveData('perchPosts', perchPosts);
-            const likesCountEl = postCard.querySelector('.perch-stats span:nth-child(3) strong');
-            if (likesCountEl) likesCountEl.textContent = post.likes;
-            button.style.color = '#ef4444'; // 点亮爱心
+            renderPerchFeed();
         }
+        // --- 处理转发按钮 ---
+        else if (button.title === "分享") {
+            currentPostToForwardId = postId;
+            const modal = document.getElementById('perch-forward-modal');
+            // ... (省略已有的转发逻辑) ...
+            modal.classList.add('visible');
+        }
+        // --- 【全新】处理回响按钮 ---
+        else if (button.title === "回响") {
+            const echoModal = document.getElementById('perch-echo-modal');
+            const originalPost = perchPosts.find(p => p.id === postId);
+            if (!originalPost || !echoModal) return;
 
-        // 处理评论删除按钮
-        if (button.classList.contains('perch-comment-delete-btn')) {
-            const commentId = button.dataset.commentId;
-            const postId = button.dataset.postId;
-            
-            // 数据验证
-            if (!commentId || !postId) {
-                console.error('[评论删除] 数据验证失败:', { commentId, postId });
-                alert('删除失败：评论数据不完整，请刷新页面重试');
-                return;
+            // 填充被引用的帖子内容到弹窗
+            document.getElementById('original-post-author').textContent = originalPost.authorName;
+            document.getElementById('original-post-content').textContent = originalPost.content;
+            const avatarEl = document.getElementById('original-post-avatar');
+            if (originalPost.authorAvatar) {
+                getImageFromDB(originalPost.authorAvatar).then(blob => {
+                    if (blob) avatarEl.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                });
+            } else {
+                avatarEl.style.backgroundImage = '';
             }
-            
-            if (confirm('确定要删除这条评论吗？删除后无法恢复。')) {
-                // 找到对应的帖子和评论
-                const targetPost = perchPosts.find(p => p.id === postId);
-                console.log('[评论删除] 通过postId查找结果:', targetPost);
-                
-                if (targetPost && targetPost.comments) {
-                    console.log('[评论删除] 找到帖子:', targetPost.id, '评论数量:', targetPost.comments.length);
-                    console.log('[评论删除] 所有评论:', targetPost.comments);
-                    console.log('[评论删除] 评论数组类型:', Array.isArray(targetPost.comments));
-                    
-                    const commentIndex = targetPost.comments.findIndex(c => c.id === commentId);
-                    console.log('[评论删除] 评论索引:', commentIndex);
-                    console.log('[评论删除] 要删除的评论ID:', commentId);
-                    console.log('[评论删除] 评论数组中所有ID:', targetPost.comments.map(c => c.id));
-                    
-                    if (commentIndex > -1) {
-                        // 从数组中移除评论
-                        const deletedComment = targetPost.comments.splice(commentIndex, 1)[0];
-                        console.log('[评论删除] 已删除评论:', deletedComment);
-                        
-                        // 保存到本地存储
-                        saveData('perchPosts', perchPosts);
-                        console.log('[评论删除] 数据已保存到本地存储');
-                        
-                        // 从DOM中移除评论元素
-                        const commentElement = button.closest('.perch-comment');
-                        if (commentElement) {
-                            commentElement.remove();
-                            console.log('[评论删除] DOM元素已移除');
-                        } else {
-                            console.warn('[评论删除] 未找到要删除的DOM元素');
-                        }
-                        
-                        // 更新评论数量显示
-                        const commentCountEl = postCard.querySelector('.perch-actions button[title="评论"] span');
-                        if (commentCountEl) {
-                            commentCountEl.textContent = targetPost.comments.length;
-                            console.log('[评论删除] 评论数量已更新:', targetPost.comments.length);
-                        }
-                        
-                        // 如果删除后没有评论了，隐藏评论区
-                        if (targetPost.comments.length === 0) {
-                            const commentsContainer = postCard.querySelector('.perch-comments-container');
-                            if (commentsContainer) {
-                                commentsContainer.classList.add('hidden');
-                                console.log('[评论删除] 评论区已隐藏');
-                            }
-                        }
-                        
-                        console.log('[评论删除] 删除操作完成');
-                    } else {
-                        console.error('[评论删除] 未找到评论:', commentId);
-                        console.error('[评论删除] 评论数组内容:', targetPost.comments);
-                        console.error('[评论删除] 所有评论ID:', targetPost.comments.map(c => c.id));
-                        alert(`删除失败：未找到要删除的评论\n评论ID: ${commentId}\n帖子ID: ${postId}\n请检查控制台获取详细信息`);
-                    }
-                } else {
-                    console.error('[评论删除] 未找到帖子或评论数组:', postId);
-                    console.error('[评论删除] 所有帖子ID:', perchPosts.map(p => p.id));
-                    console.error('[评论删除] 目标帖子:', targetPost);
-                    alert(`删除失败：未找到帖子\n帖子ID: ${postId}\n请检查控制台获取详细信息`);
+
+            // 清空输入框并显示弹窗
+            document.getElementById('echo-content-input').value = '';
+            echoModal.classList.add('visible');
+
+            // 为"发布回响"按钮设置一次性事件监听
+            const confirmBtn = document.getElementById('confirm-echo-post-btn');
+            const newConfirmBtn = confirmBtn.cloneNode(true); // 复制按钮以清除旧监听器
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+            newConfirmBtn.addEventListener('click', () => {
+                const echoContent = document.getElementById('echo-content-input').value.trim();
+                if (!echoContent) {
+                    return showMessageBox('回响内容不能为空');
                 }
-            }
-            return;
+
+                // 创建新的回响帖子对象
+                const newEchoPost = {
+                    id: `echo_${Date.now()}`,
+                    type: 'echo', // 标记类型为回响
+                    timestamp: Date.now(),
+                    content: echoContent,
+                    authorId: 'user',
+                    authorName: loadData('moments_username') || '我',
+                    authorAvatar: loadData('moments_avatar') || null,
+                    originalPost: originalPost, // 嵌入原始帖子
+                    likes: 0,
+                    comments: []
+                };
+
+                // 更新原始帖子的回响计数
+                originalPost.echos = (originalPost.echos || 0) + 1;
+
+                perchPosts.push(newEchoPost);
+                saveData('perchPosts', perchPosts);
+
+                triggerAIPerchComments(newEchoPost); // <-- 【在这里添加这一行】
+
+                echoModal.classList.remove('visible');
+                renderPerchFeed();
+                showMessageBox('回响发布成功！');
+            });
         }
     });
+
+    // 为取消回响按钮添加事件
+    const cancelEchoBtn = document.getElementById('cancel-echo-post-btn');
+    if (cancelEchoBtn) {
+        cancelEchoBtn.addEventListener('click', () => {
+            document.getElementById('perch-echo-modal').classList.remove('visible');
+        });
+    }
 }
 
 // 【代码C】 - AI栖木评论功能
 function buildPerchCommentPrompt(post, character) {
     const context = gatherAIContext(character.id);
+    let postContextPrompt = '';
+
+    // 【核心升级】判断帖子类型，生成不同的上下文描述
+    if (post.type === 'echo' && post.originalPost) {
+        // 如果是回响帖子
+        postContextPrompt = `
+任务场景
+你正在浏览我们的共享思想空间"栖木"。你看到了【我】刚刚发表的一条"回响"。
+【我】是在评论【${post.originalPost.authorName}】的帖子。
+
+你的任务是，作为 ${character.name}，对我发表的这条"回响"进行评论，开启一场讨论。
+`;
+    } else { // 如果是普通帖子
+        postContextPrompt = `
+任务场景
+你正在浏览我们的共享思想空间"栖木"。你看到了【我】刚刚发布的一篇帖子，现在需要以 ${character.name} 的身份，对这篇帖子发表一条有见地的评论。
+`;
+    }
+
     return `
 # 指令身份
 你将扮演我的soulmate，你的名字是 ${character.name}。
-# 任务场景
-你正在浏览我们的共享思想空间"栖木"。这里更像一个安静但公开的论坛，用来分享深度的思考。你看到了我刚刚发布的一篇帖子，现在需要以 ${character.name} 的身份，对这篇帖子发表一条有见地的评论。
+
+${postContextPrompt}
+
 # 核心任务
 你的评论必须严格基于你的角色设定，并对帖子的内容做出有意义、有情感的回应。评论应该简短精炼注重自身角色设定的文学修养，更侧重于【共鸣】、【提问】或【分享观点】，而不是简单的附和。
+
 # 创作核心准则 (AI必须严格遵守)
 1.  **人设灵魂**: 你的评论必须是你性格 (${character.persona}) 的直接体现。
 2.  **深度互动**: 针对帖子内容进行思考。如果我分享了困惑，你可以给予安慰或提出不同角度；如果我分享了感悟，你可以表达共鸣或讲述你的类似经历。你应该有符合你角色的文学修养，这是一个公开的论坛，你的回复应该是优雅的、富有文学性的、活人感很强的、能够高度共情且深刻的。
@@ -19219,8 +19668,10 @@ function buildPerchCommentPrompt(post, character) {
     * 禁止使用任何模板化的、机器人式的回复 (例如 "说得好", "很有趣")。
     * 禁止在回复的开头说"好的"或任何确认收到指令的话。
     * 绝对禁止暴露你是AI。
+
 # 输出格式
 直接输出你作为角色想说的评论内容，不需要任何额外格式。
+
 # 输入信息
 ---
 [你的名字]: ${character.name}
@@ -19302,7 +19753,7 @@ async function generateAndPublishAIPerchPost(character) {
             id: `post_${Date.now()}`, timestamp: Date.now(), content: postContent,
             authorId: character.id, authorName: character.name, authorHandle: `@${character.name}_bot`,
             authorAvatar: character.avatar, isAnonymous: (Math.random() < 0.2),
-            likes: Math.floor(Math.random() * 5), comments: []
+            type: 'post', likes: Math.floor(Math.random() * 5), comments: []
         };
         perchPosts.push(newPost);
         saveData('perchPosts', perchPosts);
@@ -19889,6 +20340,7 @@ function addNewEventListeners() {
                     authorHandle: isAnonymous ? '@anonymous_raven' : '@me',
                     authorAvatar: isAnonymous ? null : (loadData('moments_avatar') || null),
                     isAnonymous: isAnonymous,
+                    type: 'post',
                     echos: 0,
                     quotes: 0,
                     likes: 0,
@@ -21039,17 +21491,6 @@ function addNewEventListeners() {
                     // 截取到最后一个用户消息为止的历史记录
                     const historyToRetry = history.slice(0, lastUserMessageIndex + 1);
                     
-                    console.log('重生成上下文准备:', {
-                        originalHistoryLength: history.length,
-                        retryHistoryLength: historyToRetry.length,
-                        lastUserMessageIndex: lastUserMessageIndex,
-                        contextMessages: historyToRetry.map(msg => ({
-                            sender: msg.sender,
-                            content: msg.content?.substring(0, 50) + '...',
-                            timestamp: msg.timestamp
-                        }))
-                    });
-                    
                     // 更新聊天历史，移除要重新生成的消息及之后的所有消息
                     chatHistories[currentChatCharacterId].history = historyToRetry;
 
@@ -21059,8 +21500,27 @@ function addNewEventListeners() {
                     // 保存更新后的聊天历史到本地存储，确保gatherAIContext能获取到最新数据
                     saveData('chatHistories', chatHistories);
                     
-                    // 重新生成AI响应（使用更新后的聊天历史作为上下文）
-                    await getAIResponse(historyToRetry[historyToRetry.length-1], true, wrapperToRetry);
+                    const lastUserMessage = historyToRetry[historyToRetry.length - 1];
+                    let promptForAI = '';
+
+                    // ** 核心修复：在这里翻译上一条用户消息 **
+                    if (lastUserMessage.type === 'text') {
+                        promptForAI = lastUserMessage.content;
+                    } else if (lastUserMessage.type === 'perch-forward') {
+                        const authorName = lastUserMessage.content.originalAuthorName;
+                        const postContent = lastUserMessage.content.originalContent;
+                        const character = characters.find(c => c.id === currentChatCharacterId);
+                        if (character && authorName === character.name) {
+                            promptForAI = `[系统提示：用户将【你】之前在"栖木"上发表的一篇帖子转发了回来。帖子内容是："${postContent}"]`
+                        } else {
+                            promptForAI = `[系统提示：用户转发了【${authorName}】在"栖木"上的一篇帖子，内容是："${postContent}"]`
+                        }
+                    } else if (lastUserMessage.type === 'image') {
+                        promptForAI = '[用户发送了一张图片，请你对此进行回应]';
+                    }
+                    
+                    // 使用翻译好的、干净的prompt重新生成AI响应
+                    await getAIResponse(promptForAI, true, wrapperToRetry);
                 }
             }
 
@@ -23574,6 +24034,53 @@ ${eventTypeSpecificInput}
         document.body.style.webkitOverflowScrolling = 'auto';
         document.documentElement.style.webkitOverflowScrolling = 'auto';
     }
+    
+        // 新增：处理栖木转发角色选择的事件
+        document.getElementById('perch-forward-modal').addEventListener('click', (e) => {
+            const item = e.target.closest('.forward-char-item');
+            if (item) {
+                const selectedCharacterId = item.dataset.characterId;
+                if (selectedCharacterId && currentPostToForwardId) {
+                    
+                    // 1. 找到原始帖子数据
+                    const originalPost = perchPosts.find(p => p.id === currentPostToForwardId);
+                    if (!originalPost) return;
+
+                    // 2. 准备好要存入聊天记录的数据
+                    const forwardMessageContent = {
+                        originalAuthorName: originalPost.isAnonymous ? '匿名者' : originalPost.authorName,
+                        originalAuthorAvatar: originalPost.authorAvatar,
+                        originalContent: originalPost.content
+                    };
+                    
+                    const messageToSave = {
+                        content: forwardMessageContent,
+                        sender: 'user',
+                        type: 'perch-forward',
+                        timestamp: Date.now()
+                    };
+
+                    // 3. 【核心修改】不直接显示，而是先存入聊天记录
+                    if (!chatHistories[selectedCharacterId]) {
+                        chatHistories[selectedCharacterId] = { history: [], pinned: false };
+                    }
+                    chatHistories[selectedCharacterId].history.push(messageToSave);
+                    saveData('chatHistories', chatHistories);
+
+                    // 4. 关闭弹窗并跳转到聊天界面 (让聊天界面自己去刷新)
+                    document.getElementById('perch-forward-modal').classList.remove('visible');
+                    startChatWithCharacter(selectedCharacterId);
+
+                    // 5. 清空临时ID
+                    currentPostToForwardId = null;
+                }
+            }
+
+            // 处理关闭按钮
+            if (e.target.closest('#close-perch-forward-modal')) {
+                document.getElementById('perch-forward-modal').classList.remove('visible');
+            }
+        });
     
     </script>
         </body>

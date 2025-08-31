@@ -21853,56 +21853,8 @@ function addNewEventListeners() {
             
             // 初始化一些示例計劃數據（如果還沒有的話）
             if (Object.keys(planData).length === 0) {
-                // 創建示例角色
-                if (characters.length === 0) {
-                    characters.push({
-                        id: 'char_example_1',
-                        name: '小紅',
-                        avatar: 'https://placehold.co/96x96/ef4444/ffffff?text=小紅',
-                        personality: '活潑開朗，喜歡戶外活動'
-                    });
-                    characters.push({
-                        id: 'char_example_2',
-                        name: '小明',
-                        avatar: 'https://placehold.co/96x96/3b82f6/ffffff?text=小明',
-                        personality: '溫和友善，喜歡讀書'
-                    });
-                    saveData('characters', characters);
-                }
-                
-                // 創建示例計劃
-                planData['char_example_1'] = [
-                    {
-                        id: 'plan_example_1',
-                        title: '週末野餐約會',
-                        details: '在中央公園舉辦野餐，帶上三明治和水果，享受陽光和微風。',
-                        status: '已約定',
-                        createdAt: Date.now() - 86400000, // 1天前
-                        completedAt: null
-                    },
-                    {
-                        id: 'plan_example_2',
-                        title: '電影之夜',
-                        details: '一起看最新的科幻電影，然後討論劇情和特效。',
-                        status: '進行中',
-                        createdAt: Date.now() - 172800000, // 2天前
-                        completedAt: null
-                    }
-                ];
-                
-                planData['char_example_2'] = [
-                    {
-                        id: 'plan_example_3',
-                        title: '圖書館學習日',
-                        details: '在圖書館一起學習，互相幫助解決難題，然後去咖啡廳放鬆。',
-                        status: '已完成',
-                        createdAt: Date.now() - 259200000, // 3天前
-                        completedAt: Date.now() - 86400000 // 1天前完成
-                    }
-                ];
-                
-                saveData('planData', planData);
-                console.log('[示例數據] 已創建示例計劃數據');
+                // 示例角色已移除，用戶需要自行創建角色
+                console.log('[初始化] 角色系統已準備就緒，請創建您自己的角色');
             }
             
 

@@ -23,6 +23,28 @@
     <!-- 星空图缩放库 -->
     <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
     <style>
+        /* --- V13.0 头像结构性终极修正 --- */
+        .avatar-frame {
+            /* 这是外层的"圆形相框" */
+            width: 2.5rem; /* 40px */
+            height: 2.5rem; /* 40px */
+            border-radius: 50%;
+            overflow: hidden; /* 这是最重要的属性，用于"裁剪"照片边角 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #4b5563; /* 图片加载失败时的底色 */
+            flex-shrink: 0; /* 防止被挤压变形 */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* 增加一点边框质感 */
+        }
+
+        .avatar-frame img {
+            /* 这是里面的"照片" */
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 这一行保证图片能填满相框且不变形 */
+        }
+
         /* CSS变量定义 */
         :root {
             --moments-cover-image: url('https://placehold.co/375x192/333/fff?text=Cover');
@@ -8442,7 +8464,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
+            /* 【核心修改】我们将padding: 1rem; 修改为了 padding: 0.25rem 1rem; */
+            /* 这表示"上下内边距为0.25rem，左右内边距为1rem" */
+            padding: 0.25rem 1rem;
             background: rgba(255, 255, 255, 0.03);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -8474,6 +8498,11 @@
             transition: all 0.3s ease;
             border: 2px solid rgba(255, 255, 255, 0.2);
             overflow: hidden; /* 确保图片不会超出圆形边界 */
+
+            /* 【核心修正】在这里添加这三行，强制处理所有背景图 */
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
         }
         
         .light-mode .perch-user-avatar {
@@ -8634,11 +8663,12 @@
             display: flex;
             align-items: center;
             margin-bottom: 0.75rem;
+            padding: 0;
         }
         .perch-avatar {
             width: 2.5rem; height: 2.5rem; border-radius: 50%;
             margin-right: 0.75rem; background-color: #4b5563;
-            background-size: cover; background-position: center; flex-shrink: 0;
+            background-position: center; flex-shrink: 0;
             display: flex; align-items: center; justify-content: center;
         }
         .perch-author-info { flex-grow: 1; }
@@ -8734,20 +8764,31 @@
             color: #1f2937;
         }
 
+        /* --- V12.2 互动栏高度最终修正 --- */
         .perch-actions {
             display: flex;
-            justify-content: space-around; /* 均匀分布 */
+            justify-content: space-between; 
             align-items: center;
             font-size: 1.125rem;
             color: #9ca3af;
-            padding-top: 0.75rem;
+            /* 【核心修改】将上下内边距彻底设为 0 */
+            padding: 0; 
+            max-width: 280px; 
+            margin: 0 auto;
+            /* 【新增】为配合下方按钮的调整，增加一点上边距，与分割线分隔开 */
+            margin-top: 0.5rem;
         }
+
+        /* 【新增】精确控制按钮本身的上下间距 */
         .perch-actions button {
             background: none;
             border: none;
             color: inherit;
             cursor: pointer;
             transition: color 0.2s;
+            /* 将按钮的上下内边距设为非常小的值，几乎为零 */
+            padding-top: 0.1rem;
+            padding-bottom: 0.1rem;
         }
         .perch-actions button:hover {
             color: #3b82f6;
@@ -10320,8 +10361,8 @@
                 <!-- 栖木互动栏 -->
                 <div class="perch-interaction-bar">
                     <div class="perch-user-profile">
-                        <div class="perch-user-avatar" id="perch-user-avatar" title="点击更换头像" onclick="changePerchAvatar()">
-                            <i class="ri-user-line"></i>
+                        <div class="avatar-frame" id="perch-user-avatar" title="点击更换头像" onclick="changePerchAvatar()">
+                            <i class="ri-user-line" style="font-size: 1.5rem; color: white;"></i>
                         </div>
                         <div class="perch-user-name" id="perch-user-name" title="点击更换名字" onclick="editPerchName()">
                             我的名字
@@ -10550,7 +10591,7 @@
     <div id="image-cropper-modal" class="fixed inset-0 z-[16000] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
         <div class="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-800">裁剪横幅图片</h3>
+                <h3 class="text-lg font-semibold text-gray-800" id="cropper-title">裁剪图片</h3>
                 <button id="close-cropper-btn" class="text-gray-500 hover:text-gray-700 text-xl">
                     <i class="ri-close-line"></i>
                 </button>
@@ -11330,9 +11371,21 @@ function getChatBackgroundElement() {
         // 图片裁剪功能
         let cropperInstance = null;
         let currentCropCallback = null;
+        let currentCropAspectRatio = 1000 / 500; // 默认横幅比例
 
-        function showImageCropper(file, callback) {
+        function showImageCropper(file, callback, aspectRatio = 1000 / 500) {
             currentCropCallback = callback;
+            currentCropAspectRatio = aspectRatio; // 设置当前宽高比
+            
+            // 根据用途设置标题
+            const titleElement = document.getElementById('cropper-title');
+            if (titleElement) {
+                if (aspectRatio === 1) {
+                    titleElement.textContent = '裁剪头像图片';
+                } else {
+                    titleElement.textContent = '裁剪横幅图片';
+                }
+            }
             
             // 显示模态框
             $('#image-cropper-modal').classList.remove('hidden');
@@ -11345,20 +11398,20 @@ function getChatBackgroundElement() {
                 
                 // 等待图片加载完成后初始化裁剪器
                 img.onload = function() {
-                    initCropper(img);
+                    initCropper(img, aspectRatio);
                 };
             };
             reader.readAsDataURL(file);
         }
 
-        function initCropper(img) {
+        function initCropper(img, aspectRatio = 1000 / 500) {
             // 销毁之前的裁剪器实例
             if (cropperInstance) {
                 cropperInstance.destroy();
             }
 
             const container = document.getElementById('cropper-container');
-            const aspectRatio = 1000 / 500; // 横幅宽高比 2:1
+            // 默认横幅宽高比 2:1，头像使用 1:1
             
             // 创建裁剪选择框
             const cropBox = document.createElement('div');
@@ -11789,9 +11842,20 @@ function getChatBackgroundElement() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            // 设置目标尺寸
-            canvas.width = 1000;
-            canvas.height = 500;
+            // 根据当前裁切器的宽高比设置目标尺寸
+            let targetWidth, targetHeight;
+            if (currentCropAspectRatio === 1) {
+                // 头像：1:1比例，128x128
+                targetWidth = 128;
+                targetHeight = 128;
+            } else {
+                // 横幅：2:1比例，1000x500
+                targetWidth = 1000;
+                targetHeight = 500;
+            }
+            
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
             
             // 获取裁剪参数
             const imgRect = img.getBoundingClientRect();
@@ -11825,16 +11889,21 @@ function getChatBackgroundElement() {
             
             // 填充白色背景
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, 1000, 500);
+            ctx.fillRect(0, 0, targetWidth, targetHeight);
             
-            // 直接拉伸选择的区域到横幅尺寸，不留白
+            // 直接拉伸选择的区域到目标尺寸，不留白
             ctx.drawImage(
                 img,
                 sourceX, sourceY, sourceWidth, sourceHeight,
-                0, 0, 1000, 500  // 直接拉伸到横幅尺寸
+                0, 0, targetWidth, targetHeight  // 直接拉伸到目标尺寸
             );
             
-            return canvas.toDataURL('image/jpeg', 0.9);
+            // 返回Blob对象，更适合头像上传
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => {
+                    resolve(blob);
+                }, 'image/jpeg', 0.9);
+            });
         }
 
         function updateTime() {
@@ -12030,67 +12099,58 @@ function getChatBackgroundElement() {
             });
         }
         
-        // 更新栖木用户头像
+        // ================== 【V13.0 头像JS终极修正】 ==================
+        /**
+         * 更新栖木用户头像 (结构性修正版)
+         * @param {string | null} imageId - 图片的ID或URL，或者null来重置
+         */
         function updatePerchUserAvatar(imageId) {
-            const avatarElement = document.getElementById('perch-user-avatar');
-            if (!avatarElement) {
-                console.error('找不到栖木头像元素');
-                return;
-            }
-            
-            console.log('更新栖木头像，imageId:', imageId);
-            console.log('当前头像元素:', avatarElement);
-            
+            const avatarFrame = document.getElementById('perch-user-avatar');
+            if (!avatarFrame) return;
+
+            // 清空相框内的所有内容（包括旧的<img>或<i>图标）
+            avatarFrame.innerHTML = '';
+
             if (imageId) {
-                // 检查是否是图床链接
-                if (imageId.startsWith('http://') || imageId.startsWith('https://')) {
-                    console.log('检测到图床链接，正在设置...');
-                    // 直接使用图床链接
-                    avatarElement.style.backgroundImage = `url("${imageId}")`;
-                    avatarElement.style.backgroundSize = 'cover';
-                    avatarElement.style.backgroundPosition = 'center';
-                    avatarElement.style.backgroundRepeat = 'no-repeat';
-                    avatarElement.classList.add('has-custom-image');
-                    avatarElement.innerHTML = ''; // 移除默认图标
-                    console.log('图床头像设置成功:', imageId);
-                    console.log('当前样式:', avatarElement.style.backgroundImage);
-                    console.log('当前类名:', avatarElement.className);
+                // 创建一个新的<img>元素
+                const imgElement = document.createElement('img');
+                imgElement.alt = 'avatar';
+
+                // 判断是外部URL还是本地数据库ID
+                if (imageId.startsWith('http')) {
+                    // 如果是外部链接，直接赋值
+                    imgElement.src = imageId;
+                    // 将图片插入相框
+                    avatarFrame.appendChild(imgElement);
                 } else {
-                    console.log('检测到数据库ID，正在从数据库加载...');
-                    // 从数据库加载头像
+                    // 如果是本地ID，从数据库读取
                     getImageFromDB(imageId).then(blob => {
                         if (blob) {
-                            avatarElement.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
-                            avatarElement.style.backgroundSize = 'cover';
-                            avatarElement.style.backgroundPosition = 'center';
-                            avatarElement.style.backgroundRepeat = 'no-repeat';
-                            avatarElement.classList.add('has-custom-image');
-                            avatarElement.innerHTML = ''; // 移除默认图标
-                            console.log('数据库头像设置成功');
+                            imgElement.src = URL.createObjectURL(blob);
+                            // 将图片插入相框
+                            avatarFrame.appendChild(imgElement);
+                        } else {
+                            // 如果数据库找不到图片，显示默认图标
+                            avatarFrame.innerHTML = '<i class="ri-user-line" style="font-size: 1.5rem; color: white;"></i>';
                         }
-                    }).catch(err => {
-                        console.error('加载栖木用户头像失败:', err);
-                        // 如果加载失败，重置为默认
-                        resetPerchUserAvatar();
+                    }).catch(error => {
+                        console.error('从数据库加载头像失败:', error);
+                        avatarFrame.innerHTML = '<i class="ri-user-line" style="font-size: 1.5rem; color: white;"></i>';
                     });
                 }
             } else {
-                console.log('重置为默认头像');
-                resetPerchUserAvatar();
+                // 如果没有imageId，则显示默认的占位图标
+                avatarFrame.innerHTML = '<i class="ri-user-line" style="font-size: 1.5rem; color: white;"></i>';
             }
         }
         
         // 重置栖木用户头像为默认
         function resetPerchUserAvatar() {
-            const avatarElement = document.getElementById('perch-user-avatar');
-            if (!avatarElement) return;
+            const avatarFrame = document.getElementById('perch-user-avatar');
+            if (!avatarFrame) return;
             
-            avatarElement.style.backgroundImage = '';
-            avatarElement.style.backgroundSize = '';
-            avatarElement.style.backgroundPosition = '';
-            avatarElement.style.backgroundRepeat = '';
-            avatarElement.classList.remove('has-custom-image');
-            avatarElement.innerHTML = '<i class="ri-user-line"></i>';
+            // 清空相框内容并显示默认图标
+            avatarFrame.innerHTML = '<i class="ri-user-line" style="font-size: 1.5rem; color: white;"></i>';
         }
         
         // 更新栖木用户名字
@@ -12213,6 +12273,38 @@ function getChatBackgroundElement() {
             } catch (error) {
                 console.error("图片处理或存储失败:", error);
                 showMessageBox("图片处理失败，请重试。");
+                return null;
+            }
+        }
+        
+        // 处理裁切后的图片上传（用于头像等需要裁切的场景）
+        async function handleImageUploadWithBlob(blob, displayElement, storageKey, options = {}) {
+            try {
+                const imageId = `${storageKey || 'image'}_${Date.now()}`;
+
+                await saveImageToDB(imageId, blob);
+
+                if (displayElement) {
+                    const objectURL = URL.createObjectURL(blob);
+                    displayElement.style.backgroundImage = `url(${objectURL})`;
+                    displayElement.style.backgroundSize = 'cover';
+                    displayElement.style.backgroundPosition = 'center';
+
+                    const icon = displayElement.querySelector('i');
+                    if (icon) icon.style.display = 'none';
+                }
+
+                if (storageKey) {
+                    saveData(storageKey, imageId);
+                }
+
+                if (options.hideTextElement) $(options.hideTextElement).style.opacity = 0;
+
+                return imageId;
+
+            } catch (error) {
+                console.error("裁切图片处理或存储失败:", error);
+                showMessageBox("裁切图片处理失败，请重试。");
                 return null;
             }
         }
@@ -16804,30 +16896,39 @@ ${moment.image ? `配图描述: ${moment.image_desc}` : ''}
                     const file = e.target.files[0];
                     if (file) {
                         try {
-                            // 使用统一的图片处理函数，添加压缩选项
-                            const imageId = await handleImageUpload(e.target, null, null, { 
-                                compression: { maxWidth: 128, maxHeight: 128 } // 适合栖木头像的尺寸
-                            });
-                            
-                            if (imageId) {
-                                // 保存头像图片ID
-                                saveData('perch_avatar', imageId);
-                                
-                                // 更新头像显示
-                                updatePerchUserAvatar(imageId);
-                                
-                                // 【新增】同步更新所有用户帖子的头像
-                                updateAllUserPostAvatars(imageId);
-                                
-                                showMessageBox('栖木头像更换成功！');
-                                document.body.removeChild(dialog);
-                                
-                                // 调试信息
-                                console.log('栖木头像图片ID已保存:', imageId);
-                            }
+                            // 先显示裁切界面，让用户选择头像区域（1:1比例）
+                            showImageCropper(file, async (croppedBlob) => {
+                                if (croppedBlob) {
+                                    try {
+                                        // 直接使用裁切后的图片，无需额外压缩
+                                        const imageId = `perch_avatar_${Date.now()}`;
+                                        
+                                        // 保存到数据库
+                                        await saveImageToDB(imageId, croppedBlob);
+                                        
+                                        // 保存头像图片ID
+                                        saveData('perch_avatar', imageId);
+                                        
+                                        // 更新头像显示
+                                        updatePerchUserAvatar(imageId);
+                                        
+                                        // 【新增】同步更新所有用户帖子的头像
+                                        updateAllUserPostAvatars(imageId);
+                                        
+                                        showMessageBox('栖木头像更换成功！');
+                                        document.body.removeChild(dialog);
+                                        
+                                        // 调试信息
+                                        console.log('栖木头像图片ID已保存:', imageId);
+                                    } catch (error) {
+                                        console.error('栖木头像图片处理失败:', error);
+                                        showMessageBox('栖木头像图片处理失败，请重试');
+                                    }
+                                }
+                            }, 1); // 头像使用1:1比例
                         } catch (error) {
-                            console.error('栖木头像图片处理失败:', error);
-                            showMessageBox('栖木头像图片处理失败，请重试');
+                            console.error('栖木头像裁切失败:', error);
+                            showMessageBox('栖木头像裁切失败，请重试');
                         }
                     }
                 };
@@ -21739,18 +21840,23 @@ function addNewEventListeners() {
             });
 
             // 确认裁剪
-            $('#confirm-crop-btn').addEventListener('click', () => {
-                const croppedDataUrl = cropImage();
-                if (croppedDataUrl && currentCropCallback) {
-                    // 关闭模态框
-                    $('#image-cropper-modal').classList.add('hidden');
-                    if (cropperInstance) {
-                        cropperInstance.destroy();
+            $('#confirm-crop-btn').addEventListener('click', async () => {
+                try {
+                    const croppedBlob = await cropImage();
+                    if (croppedBlob && currentCropCallback) {
+                        // 关闭模态框
+                        $('#image-cropper-modal').classList.add('hidden');
+                        if (cropperInstance) {
+                            cropperInstance.destroy();
+                        }
+                        
+                        // 调用回调函数
+                        currentCropCallback(croppedBlob);
+                        currentCropCallback = null;
                     }
-                    
-                    // 调用回调函数
-                    currentCropCallback(croppedDataUrl);
-                    currentCropCallback = null;
+                } catch (error) {
+                    console.error('裁切失败:', error);
+                    showMessageBox('裁切失败，请重试');
                 }
             });
 
@@ -25475,64 +25581,41 @@ ${eventTypeSpecificInput}
          * 处理用户点击"评论"按钮的逻辑
          * @param {string} postId - 被评论的帖子的ID
          */
+        /**
+         * 处理用户点击"评论"按钮的逻辑 (V12.0 评论归属修正版)
+         * @param {string} postId - 被评论的帖子的ID
+         */
         function handleCommentAction(postId) {
-            console.log('handleCommentAction 被調用，postId:', postId);
-            
-            try {
-                const post = perchPosts.find(p => p.id === postId);
-                if (!post) {
-                    console.error('未找到帖子，postId:', postId);
-                    return;
-                }
+            const post = perchPosts.find(p => p.id === postId);
+            if (!post) return;
 
-                const commentContent = prompt(`评论 ${post.authorName} 的帖子:`);
-                if (commentContent && commentContent.trim()) {
-                    if (!post.comments) post.comments = [];
-                    const newComment = {
-                        id: `comment_${Date.now()}`,
-                        authorId: 'user',
-                        authorName: loadData('moments_username') || '我',
-                        content: commentContent.trim(),
-                        timestamp: Date.now()
-                    };
-                    post.comments.push(newComment);
-                    saveData('perchPosts', perchPosts);
-                    renderPerchFeed(); // 重新渲染以显示新评论
-                    
-                    // 检查帖子的作者是否是AI角色
-                    if (post.authorId !== 'user') {
-                        // 触发AI角色来回复用户的评论
-                        triggerAICommentReply(postId, commentContent.trim(), post.authorId);
+            const commentContent = prompt(`评论 ${post.authorName} 的帖子:`);
+            if (commentContent && commentContent.trim()) {
+                if (!post.comments) post.comments = [];
+                const newComment = {
+                    id: `comment_${Date.now()}`,
+                    authorId: 'user',
+                    authorName: loadData('perch_username') || '我', // 使用栖木的用户名
+                    content: commentContent.trim(),
+                    timestamp: Date.now()
+                };
+                post.comments.push(newComment);
+                saveData('perchPosts', perchPosts);
+
+                // **【核心修正】**
+                // 不再触发所有NPC，而是只触发帖子的作者来回复
+                triggerAuthorReply(post, commentContent.trim());
+
+                renderPerchFeed();
+
+                // 评论后自动展开评论区
+                setTimeout(() => {
+                    const updatedCard = document.querySelector(`.perch-card[data-post-id="${postId}"]`);
+                    if(updatedCard) {
+                        const commentsContainer = updatedCard.querySelector('.perch-comments-container');
+                        if(commentsContainer) commentsContainer.classList.remove('hidden');
                     }
-                    
-                    // 【新增】检查是否有其他AI角色需要回复用户的评论
-                    // 遍历所有评论，找到AI角色的评论，触发它们回复用户
-                    if (post.comments && post.comments.length > 0) {
-                        post.comments.forEach(comment => {
-                            if (comment.authorId !== 'user' && comment.authorId !== post.authorId) {
-                                // 延迟触发，让对话更自然
-                                setTimeout(() => {
-                                    triggerNpcReplyToUser(postId, comment.id);
-                                }, Math.random() * 5000 + 3000); // 3-8秒延迟
-                            }
-                        });
-                    }
-                    
-                    // 评论后自动展开评论区
-                    setTimeout(() => {
-                        const updatedCard = document.querySelector(`.perch-card[data-post-id="${postId}"]`);
-                        if(updatedCard) {
-                            const commentsContainer = updatedCard.querySelector('.perch-comments-container');
-                            if(commentsContainer) commentsContainer.classList.remove('hidden');
-                        }
-                    }, 100);
-                    
-                    console.log('評論已添加');
-                } else {
-                    console.log('用戶取消評論或輸入為空');
-                }
-            } catch (error) {
-                console.error('handleCommentAction 執行失敗:', error);
+                }, 100);
             }
         }
 
@@ -26561,6 +26644,94 @@ ${coreTask}
             simulateLikeGrowth(newPost.id);
             
             console.log(`[社区氛围系统]：已激活帖子 "${newPost.content.substring(0, 10)}..." 的社区模拟功能`);
+        }
+
+        // ================== 【V12.0 评论归属系统 - 最终版】 ==================
+
+        /**
+         * 智能"对话执行官"：只触发【帖子作者】进行回复
+         * @param {object} post - 被评论的帖子对象
+         * @param {string} userCommentContent - 您的评论内容
+         */
+        function triggerAuthorReply(post, userCommentContent) {
+            const authorId = post.authorId;
+            if (authorId === 'user') return;
+
+            const coreCharacter = characters.find(c => c.id === authorId);
+            if (coreCharacter) {
+                console.log(`[对话归属] 评论指向核心角色: ${coreCharacter.name}，触发回复...`);
+                triggerCoreCharacterReply(post, userCommentContent, coreCharacter);
+                return;
+            }
+
+            const npcProfile = npcProfiles.find(npc => npc.npcId === authorId);
+            if (npcProfile) {
+                console.log(`[对话归属] 评论指向NPC: ${npcProfile.name}，触发回复...`);
+                triggerNpcAuthorReply(post, userCommentContent, npcProfile);
+                return;
+            }
+        }
+
+        /**
+         * 【最终版】核心角色回复您的评论
+         */
+        async function triggerCoreCharacterReply(post, userCommentContent, character) {
+            const randomDelay = Math.random() * 8000 + 4000;
+            setTimeout(async () => {
+                // **【关键】**：我们复用之前为核心角色设计的、能感知您身份的`buildCoreCharacterCommentPrompt`指令
+                const systemPrompt = buildCoreCharacterCommentPrompt({ ...post, content: post.content }, character);
+                const aiReplyContent = await callAI(systemPrompt, userCommentContent);
+
+                if (aiReplyContent) {
+                    const postToUpdate = perchPosts.find(p => p.id === post.id);
+                    if (postToUpdate) {
+                        if (!postToUpdate.comments) postToUpdate.comments = [];
+                        const newComment = {
+                            id: `comment_core_reply_${Date.now()}`,
+                            authorId: character.id, authorName: character.name,
+                            content: aiReplyContent, // 核心角色的回复更亲密，不需要"回复@xxx"
+                            timestamp: Date.now()
+                        };
+                        postToUpdate.comments.push(newComment);
+                        saveData('perchPosts', perchPosts);
+                        if (!$('#perch-screen').classList.contains('hidden')) renderPerchFeed();
+                        showMessageBox(`${character.name} 回复了你`);
+                        // 创建通知
+                        createNotification(post.id, newComment.id, character.name, post.content, aiReplyContent);
+                    }
+                }
+            }, randomDelay);
+        }
+
+        /**
+         * 【最终版】NPC作者回复您的评论
+         */
+        async function triggerNpcAuthorReply(post, userCommentContent, npcProfile) {
+            const randomDelay = Math.random() * 12000 + 6000;
+            setTimeout(async () => {
+                // **【关键】**：我们复用之前为NPC设计的、将您视为特殊用户的`buildNpcToUserCommentPrompt`指令
+                const systemPrompt = buildNpcToUserCommentPrompt(post, npcProfile);
+                const aiReplyContent = await callAI(systemPrompt, userCommentContent);
+                if (aiReplyContent) {
+                    const postToUpdate = perchPosts.find(p => p.id === post.id);
+                    if (postToUpdate) {
+                        if (!postToUpdate.comments) postToUpdate.comments = [];
+                        const myUsername = loadData('perch_username') || '我';
+                        const newComment = {
+                            id: `comment_core_reply_${Date.now()}`,
+                            authorId: npcProfile.npcId, authorName: npcProfile.name,
+                            content: `回复 @${myUsername}: ${aiReplyContent}`, // NPC的回复更符合公共论坛礼仪
+                            timestamp: Date.now()
+                        };
+                        postToUpdate.comments.push(newComment);
+                        saveData('perchPosts', perchPosts);
+                        if (!$('#perch-screen').classList.contains('hidden')) renderPerchFeed();
+                        showMessageBox(`${npcProfile.name} 回复了你`);
+                        // 创建通知
+                        createNotification(post.id, newComment.id, npcProfile.name, post.content, aiReplyContent);
+                    }
+                }
+            }, randomDelay);
         }
 
     </script>

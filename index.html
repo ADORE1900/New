@@ -8492,27 +8492,17 @@
         }
         
         .perch-user-avatar.has-custom-image {
-            background: none !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
+            background: none;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         
         /* 确保自定义头像图片能够正确显示 */
         .perch-user-avatar.has-custom-image[style*="background-image"] {
-            background: var(--custom-avatar-bg) !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
-        }
-        
-        /* 强制覆盖默认背景，确保自定义头像显示 */
-        .perch-user-avatar.has-custom-image {
-            background-image: var(--custom-avatar-bg) !important;
-            background: var(--custom-avatar-bg) !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         
         .perch-user-name {
@@ -8915,11 +8905,29 @@
         .perch-card .perch-comment {
             margin-top: 0.5rem;
             padding: 0.5rem;
+            padding-right: 2.5rem; /* 为删除按钮留出空间 */
             border-radius: 0.375rem;
             border: 1px solid #374151;
             background-color: rgba(55, 65, 81, 0.2);
+            position: relative; /* 为绝对定位的删除按钮提供定位上下文 */
+        }
+        
+        /* 普通帖子的评论样式 */
+        .perch-comment {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            padding-right: 2.5rem; /* 为删除按钮留出空间 */
+            border-radius: 0.375rem;
+            border: 1px solid #374151;
+            background-color: rgba(55, 65, 81, 0.2);
+            position: relative; /* 为绝对定位的删除按钮提供定位上下文 */
         }
         .light-mode .perch-card .perch-comment {
+            border-color: #d1d5db;
+            background-color: rgba(229, 231, 235, 0.3);
+        }
+        
+        .light-mode .perch-comment {
             border-color: #d1d5db;
             background-color: rgba(229, 231, 235, 0.3);
         }
@@ -8941,6 +8949,26 @@
             color: #d1d5db;
         }
         .light-mode .perch-card .perch-comment .text-sm.ml-1 {
+            color: #4b5563;
+        }
+        
+        /* 普通帖子的评论作者名样式 */
+        .perch-comment .font-semibold.text-sm.text-blue-400 {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #60a5fa;
+        }
+        .light-mode .perch-comment .font-semibold.text-sm.text-blue-400 {
+            color: #2563eb;
+        }
+        
+        /* 普通帖子的评论内容样式 */
+        .perch-comment .text-sm.ml-1 {
+            font-size: 0.75rem;
+            margin-left: 0.25rem;
+            color: #d1d5db;
+        }
+        .light-mode .perch-comment .text-sm.ml-1 {
             color: #4b5563;
         }
 
@@ -8968,6 +8996,34 @@
             color: #dc2626;
         }
         .light-mode .perch-card .perch-comment .perch-comment-delete-btn:hover {
+            background-color: rgba(220, 38, 38, 0.1);
+            color: #b91c1c;
+        }
+        
+        /* 普通帖子的评论删除按钮样式 */
+        .perch-comment .perch-comment-delete-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            color: #ef4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.125rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        .perch-comment .perch-comment-delete-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            opacity: 1;
+        }
+        .light-mode .perch-comment .perch-comment-delete-btn {
+            color: #dc2626;
+        }
+        .light-mode .perch-comment .perch-comment-delete-btn:hover {
             background-color: rgba(220, 38, 38, 0.1);
             color: #b91c1c;
         }
@@ -11977,22 +12033,49 @@ function getChatBackgroundElement() {
         // 更新栖木用户头像
         function updatePerchUserAvatar(imageId) {
             const avatarElement = document.getElementById('perch-user-avatar');
-            if (!avatarElement) return;
+            if (!avatarElement) {
+                console.error('找不到栖木头像元素');
+                return;
+            }
+            
+            console.log('更新栖木头像，imageId:', imageId);
+            console.log('当前头像元素:', avatarElement);
             
             if (imageId) {
-                // 加载自定义头像
-                getImageFromDB(imageId).then(blob => {
-                    if (blob) {
-                        avatarElement.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
-                        avatarElement.classList.add('has-custom-image');
-                        avatarElement.innerHTML = ''; // 移除默认图标
-                    }
-                }).catch(err => {
-                    console.error('加载栖木用户头像失败:', err);
-                    // 如果加载失败，重置为默认
-                    resetPerchUserAvatar();
-                });
+                // 检查是否是图床链接
+                if (imageId.startsWith('http://') || imageId.startsWith('https://')) {
+                    console.log('检测到图床链接，正在设置...');
+                    // 直接使用图床链接
+                    avatarElement.style.backgroundImage = `url("${imageId}")`;
+                    avatarElement.style.backgroundSize = 'cover';
+                    avatarElement.style.backgroundPosition = 'center';
+                    avatarElement.style.backgroundRepeat = 'no-repeat';
+                    avatarElement.classList.add('has-custom-image');
+                    avatarElement.innerHTML = ''; // 移除默认图标
+                    console.log('图床头像设置成功:', imageId);
+                    console.log('当前样式:', avatarElement.style.backgroundImage);
+                    console.log('当前类名:', avatarElement.className);
+                } else {
+                    console.log('检测到数据库ID，正在从数据库加载...');
+                    // 从数据库加载头像
+                    getImageFromDB(imageId).then(blob => {
+                        if (blob) {
+                            avatarElement.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                            avatarElement.style.backgroundSize = 'cover';
+                            avatarElement.style.backgroundPosition = 'center';
+                            avatarElement.style.backgroundRepeat = 'no-repeat';
+                            avatarElement.classList.add('has-custom-image');
+                            avatarElement.innerHTML = ''; // 移除默认图标
+                            console.log('数据库头像设置成功');
+                        }
+                    }).catch(err => {
+                        console.error('加载栖木用户头像失败:', err);
+                        // 如果加载失败，重置为默认
+                        resetPerchUserAvatar();
+                    });
+                }
             } else {
+                console.log('重置为默认头像');
                 resetPerchUserAvatar();
             }
         }
@@ -12003,6 +12086,9 @@ function getChatBackgroundElement() {
             if (!avatarElement) return;
             
             avatarElement.style.backgroundImage = '';
+            avatarElement.style.backgroundSize = '';
+            avatarElement.style.backgroundPosition = '';
+            avatarElement.style.backgroundRepeat = '';
             avatarElement.classList.remove('has-custom-image');
             avatarElement.innerHTML = '<i class="ri-user-line"></i>';
         }
@@ -12540,14 +12626,24 @@ if (type === 'image') {
                 `;
                 messageBubble.innerHTML = forwardContent;
 
-                // 异步从数据库加载头像图片
+                // 异步加载头像图片（支持图床链接和数据库存储）
                 if (content.originalAuthorAvatar) {
-                    getImageFromDB(content.originalAuthorAvatar).then(blob => {
+                    // 检查是否是图床链接（以http或https开头）
+                    if (content.originalAuthorAvatar.startsWith('http://') || content.originalAuthorAvatar.startsWith('https://')) {
+                        // 直接使用图床链接
                         const avatarElement = document.getElementById(uniqueAvatarId);
-                        if (avatarElement && blob) {
-                            avatarElement.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                        if (avatarElement) {
+                            avatarElement.style.backgroundImage = `url(${content.originalAuthorAvatar})`;
                         }
-                    });
+                    } else {
+                        // 从数据库加载头像图片
+                        getImageFromDB(content.originalAuthorAvatar).then(blob => {
+                            const avatarElement = document.getElementById(uniqueAvatarId);
+                            if (avatarElement && blob) {
+                                avatarElement.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                            }
+                        });
+                    }
                 }
 
                 // 为转发的卡片添加点击事件，可以跳转回栖木App（未来可扩展）
@@ -16481,6 +16577,10 @@ ${moment.image ? `配图描述: ${moment.image_desc}` : ''}
                             
                             // 保存头像图片ID
                             saveData('moments_avatar', imageId);
+                            
+                            // 【新增】同步更新所有用户帖子的头像
+                            updateAllUserPostAvatars(imageId);
+                            
                             showMessageBox('头像更换成功！');
                             
                             // 调试信息
@@ -16493,6 +16593,56 @@ ${moment.image ? `配图描述: ${moment.image_desc}` : ''}
                 }
             };
             input.click();
+        }
+
+        // 【新增】同步更新所有用户帖子的头像
+        async function updateAllUserPostAvatars(newAvatarId) {
+            console.log('[头像同步] 开始更新所有用户帖子的头像...');
+            
+            try {
+                // 获取新的头像数据
+                const newAvatarBlob = await getImageFromDB(newAvatarId);
+                if (!newAvatarBlob) {
+                    console.warn('[头像同步] 无法获取新头像数据');
+                    return;
+                }
+                
+                const newAvatarURL = URL.createObjectURL(newAvatarBlob);
+                console.log('[头像同步] 新头像URL已创建:', newAvatarURL);
+                
+                // 更新所有用户发布的帖子头像
+                let updatedCount = 0;
+                perchPosts.forEach(post => {
+                    if (post.authorId === 'user') {
+                        // 更新帖子数据中的头像
+                        post.authorAvatar = newAvatarId;
+                        updatedCount++;
+                        
+                        // 查找并更新页面上的头像元素
+                        const avatarElement = document.getElementById(`perch-avatar-${post.id}`);
+                        if (avatarElement) {
+                            avatarElement.style.backgroundImage = `url(${newAvatarURL})`;
+                            avatarElement.style.backgroundSize = 'cover';
+                            avatarElement.style.backgroundPosition = 'center';
+                            avatarElement.style.backgroundRepeat = 'no-repeat';
+                            avatarElement.textContent = '';
+                            avatarElement.innerHTML = '';
+                            console.log(`[头像同步] 已更新帖子 ${post.id} 的头像显示`);
+                        }
+                    }
+                });
+                
+                // 保存更新后的数据
+                saveData('perchPosts', perchPosts);
+                
+                console.log(`[头像同步] 完成！共更新了 ${updatedCount} 个帖子的头像`);
+                
+                // 重新渲染栖木动态，确保所有头像都正确显示
+                renderPerchFeed();
+                
+            } catch (error) {
+                console.error('[头像同步] 更新头像时发生错误:', error);
+            }
         }
 
         // 编辑朋友圈用户名
@@ -16511,57 +16661,178 @@ ${moment.image ? `配图描述: ${moment.image_desc}` : ''}
 
         // 更换栖木头像
         async function changePerchAvatar() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    try {
-                        // 使用统一的图片处理函数，添加压缩选项
-                        const imageId = await handleImageUpload(e.target, null, null, { 
-                            compression: { maxWidth: 128, maxHeight: 128 } // 适合栖木头像的尺寸
-                        });
+            // 创建选择对话框
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: white;
+                padding: 2rem;
+                border-radius: 1rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                max-width: 400px;
+                width: 90%;
+            `;
+            
+            content.innerHTML = `
+                <h3 style="margin: 0 0 1rem 0; color: #333;">更换栖木头像</h3>
+                <div style="margin-bottom: 1rem;">
+                    <button id="upload-btn" style="
+                        background: #667eea;
+                        color: white;
+                        border: none;
+                        padding: 0.75rem 1.5rem;
+                        border-radius: 0.5rem;
+                        cursor: pointer;
+                        margin-right: 0.5rem;
+                        font-size: 1rem;
+                    ">上传图片</button>
+                    <button id="url-btn" style="
+                        background: #10b981;
+                        color: white;
+                        border: none;
+                        padding: 0.75rem 1.5rem;
+                        border-radius: 0.5rem;
+                        cursor: pointer;
+                        font-size: 1rem;
+                    ">输入链接</button>
+                </div>
+                <div id="url-input" style="display: none; margin-bottom: 1rem;">
+                    <input type="url" id="avatar-url" placeholder="请输入图床链接" style="
+                        width: 100%;
+                        padding: 0.75rem;
+                        border: 1px solid #ddd;
+                        border-radius: 0.5rem;
+                        font-size: 1rem;
+                        box-sizing: border-box;
+                    ">
+                </div>
+                <div style="text-align: right;">
+                    <button id="cancel-btn" style="
+                        background: #6b7280;
+                        color: white;
+                        border: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 0.5rem;
+                        cursor: pointer;
+                        margin-right: 0.5rem;
+                    ">取消</button>
+                    <button id="confirm-btn" style="
+                        background: #667eea;
+                        color: white;
+                        border: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 0.5rem;
+                        cursor: pointer;
+                        display: none;
+                    ">确认</button>
+                </div>
+            `;
+            
+            dialog.appendChild(content);
+            document.body.appendChild(dialog);
+            
+            // 绑定事件
+            const uploadBtn = content.querySelector('#upload-btn');
+            const urlBtn = content.querySelector('#url-btn');
+            const urlInput = content.querySelector('#url-input');
+            const avatarUrl = content.querySelector('#avatar-url');
+            const confirmBtn = content.querySelector('#confirm-btn');
+            const cancelBtn = content.querySelector('#cancel-btn');
+            
+            let currentMode = 'upload'; // 'upload' 或 'url'
+            
+            uploadBtn.onclick = () => {
+                currentMode = 'upload';
+                uploadBtn.style.background = '#667eea';
+                urlBtn.style.background = '#6b7280';
+                urlInput.style.display = 'none';
+                confirmBtn.style.display = 'none';
+            };
+            
+            urlBtn.onclick = () => {
+                currentMode = 'url';
+                urlBtn.style.background = '#10b981';
+                uploadBtn.style.background = '#6b7280';
+                urlInput.style.display = 'block';
+                confirmBtn.style.display = 'inline-block';
+            };
+            
+            confirmBtn.onclick = async () => {
+                if (currentMode === 'url') {
+                    const url = avatarUrl.value.trim();
+                    if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                        // 保存图床链接
+                        saveData('perch_avatar', url);
                         
-                        if (imageId) {
-                            const perchAvatar = $('#perch-user-avatar');
-                            // 异步加载头像
-                            getImageFromDB(imageId).then(blob => {
-                                if (blob) {
-                                    const objectURL = URL.createObjectURL(blob);
-                                    
-                                    // 设置元素样式
-                                    perchAvatar.style.setProperty('--custom-avatar-bg', `url(${objectURL})`);
-                                    perchAvatar.style.backgroundImage = `url(${objectURL})`;
-                                    perchAvatar.style.backgroundSize = 'cover';
-                                    perchAvatar.style.backgroundPosition = 'center';
-                                    perchAvatar.style.backgroundRepeat = 'no-repeat';
-                                    
-                                    // 隐藏默认图标
-                                    const icon = perchAvatar.querySelector('i');
-                                    if (icon) icon.style.display = 'none';
-                                    
-                                    // 添加自定义头像样式类
-                                    perchAvatar.classList.add('has-custom-image');
-                                    
-                                    console.log('栖木头像更换成功，样式已设置');
-                                }
-                            });
-                            
-                            // 保存头像图片ID
-                            saveData('perch_avatar', imageId);
-                            showMessageBox('栖木头像更换成功！');
-                            
-                            // 调试信息
-                            console.log('栖木头像图片ID已保存:', imageId);
-                        }
-                    } catch (error) {
-                        console.error('栖木头像图片处理失败:', error);
-                        showMessageBox('栖木头像图片处理失败，请重试');
+                        // 更新头像显示
+                        updatePerchUserAvatar(url);
+                        
+                        // 同步更新所有用户帖子的头像
+                        updateAllUserPostAvatars(url);
+                        
+                        showMessageBox('栖木头像更换成功！');
+                        document.body.removeChild(dialog);
+                    } else {
+                        alert('请输入有效的图片链接！');
                     }
                 }
             };
-            input.click();
+            
+            cancelBtn.onclick = () => {
+                document.body.removeChild(dialog);
+            };
+            
+            // 点击上传按钮
+            uploadBtn.onclick = () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        try {
+                            // 使用统一的图片处理函数，添加压缩选项
+                            const imageId = await handleImageUpload(e.target, null, null, { 
+                                compression: { maxWidth: 128, maxHeight: 128 } // 适合栖木头像的尺寸
+                            });
+                            
+                            if (imageId) {
+                                // 保存头像图片ID
+                                saveData('perch_avatar', imageId);
+                                
+                                // 更新头像显示
+                                updatePerchUserAvatar(imageId);
+                                
+                                // 【新增】同步更新所有用户帖子的头像
+                                updateAllUserPostAvatars(imageId);
+                                
+                                showMessageBox('栖木头像更换成功！');
+                                document.body.removeChild(dialog);
+                                
+                                // 调试信息
+                                console.log('栖木头像图片ID已保存:', imageId);
+                            }
+                        } catch (error) {
+                            console.error('栖木头像图片处理失败:', error);
+                            showMessageBox('栖木头像图片处理失败，请重试');
+                        }
+                    }
+                };
+                input.click();
+            };
         }
 
         // 编辑栖木用户名
@@ -16587,28 +16858,47 @@ ${moment.image ? `配图描述: ${moment.image_desc}` : ''}
             if (savedAvatar) {
                 const perchAvatar = $('#perch-user-avatar');
                 if (perchAvatar) {
-                    // 异步加载头像
-                    getImageFromDB(savedAvatar).then(blob => {
-                        if (blob) {
-                            const objectURL = URL.createObjectURL(blob);
-                            
-                            // 设置元素样式
-                            perchAvatar.style.setProperty('--custom-avatar-bg', `url(${objectURL})`);
-                            perchAvatar.style.backgroundImage = `url(${objectURL})`;
-                            perchAvatar.style.backgroundSize = 'cover';
-                            perchAvatar.style.backgroundPosition = 'center';
-                            perchAvatar.style.backgroundRepeat = 'no-repeat';
-                            
-                            // 隐藏默认图标
-                            const icon = perchAvatar.querySelector('i');
-                            if (icon) icon.style.display = 'none';
-                            
-                            // 添加自定义头像样式类
-                            perchAvatar.classList.add('has-custom-image');
-                            
-                            console.log('栖木头像加载成功，样式已设置');
-                        }
-                    });
+                    // 检查是否是图床链接
+                    if (savedAvatar.startsWith('http://') || savedAvatar.startsWith('https://')) {
+                        // 直接使用图床链接
+                        perchAvatar.style.setProperty('--custom-avatar-bg', `url(${savedAvatar})`);
+                        perchAvatar.style.backgroundImage = `url(${savedAvatar})`;
+                        perchAvatar.style.backgroundSize = 'cover';
+                        perchAvatar.style.backgroundPosition = 'center';
+                        perchAvatar.style.backgroundRepeat = 'no-repeat';
+                        
+                        // 隐藏默认图标
+                        const icon = perchAvatar.querySelector('i');
+                        if (icon) icon.style.display = 'none';
+                        
+                        // 添加自定义头像样式类
+                        perchAvatar.classList.add('has-custom-image');
+                        
+                        console.log('栖木头像（图床链接）加载成功');
+                    } else {
+                        // 从数据库加载头像
+                        getImageFromDB(savedAvatar).then(blob => {
+                            if (blob) {
+                                const objectURL = URL.createObjectURL(blob);
+                                
+                                // 设置元素样式
+                                perchAvatar.style.setProperty('--custom-avatar-bg', `url(${objectURL})`);
+                                perchAvatar.style.backgroundImage = `url(${objectURL})`;
+                                perchAvatar.style.backgroundSize = 'cover';
+                                perchAvatar.style.backgroundPosition = 'center';
+                                perchAvatar.style.backgroundRepeat = 'no-repeat';
+                                
+                                // 隐藏默认图标
+                                const icon = perchAvatar.querySelector('i');
+                                if (icon) icon.style.display = 'none';
+                                
+                                // 添加自定义头像样式类
+                                perchAvatar.classList.add('has-custom-image');
+                                
+                                console.log('栖木头像（数据库）加载成功，样式已设置');
+                            }
+                        });
+                    }
                 } else {
                     console.error('找不到栖木头像元素');
                 }
@@ -20597,7 +20887,7 @@ function setupPerchInteractions() {
                     content: echoContent,
                     authorId: 'user',
                     authorName: loadData('moments_username') || '我',
-                    authorAvatar: loadData('moments_avatar') || null,
+                    authorAvatar: loadData('perch_avatar') || null, // 【修复】使用栖木头像，不是微信动态头像
                     originalPost: originalPost, // 嵌入原始帖子
                     likes: 0,
                     comments: []
@@ -21700,20 +21990,25 @@ function addNewEventListeners() {
                 const urlInput = document.getElementById('perch-avatar-url');
                 const url = urlInput.value.trim();
                 if (url) {
-                    try {
-                        const response = await fetch(url);
-                        const blob = await response.blob();
-                        const imageId = await uploadImageToDB(blob, 'perch_user_avatar');
-                        if (imageId) {
-                            saveData('perch_avatar', imageId);
-                            updatePerchUserAvatar(imageId);
-                            urlInput.value = '';
-                            document.getElementById('perch-avatar-modal').classList.add('hidden');
-                        }
-                    } catch (error) {
-                        console.error('URL图片上传失败:', error);
-                        showMessageBox('图片URL无效或无法访问');
+                    // 验证URL格式
+                    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                        showMessageBox('请输入有效的图片URL（以http://或https://开头）');
+                        return;
                     }
+                    
+                    try {
+                        // 对于图床链接，直接保存URL
+                        saveData('perch_avatar', url);
+                        updatePerchUserAvatar(url);
+                        urlInput.value = '';
+                        document.getElementById('perch-avatar-modal').classList.add('hidden');
+                        showMessageBox('图床头像设置成功！');
+                    } catch (error) {
+                        console.error('图床头像设置失败:', error);
+                        showMessageBox('图床头像设置失败，请重试');
+                    }
+                } else {
+                    showMessageBox('请输入图片URL');
                 }
             });
             

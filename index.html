@@ -756,7 +756,13 @@
             font-weight: 700;
         }
         #memory-card-content .card-timestamp { font-size: 0.75rem; opacity: 0.6; }
-        #memory-card-content .card-body { padding: 1.25rem; overflow-y: auto; }
+        /* 【【请用这个新版本，替换旧的 #memory-card-content .card-body 样式】】 */
+        #memory-card-content .card-body {
+            padding: 1.25rem;
+            overflow-y: auto; /* 【核心】允许内容区垂直滚动 */
+            flex: 1; /* 【核心】让内容区占据所有可用的剩余空间 */
+            min-height: 0; /* 【核心】一个flex布局中的重要技巧，确保在内容过多时可以正确收缩和滚动 */
+        }
         #memory-card-content .card-section-title { font-weight: 600; margin-bottom: 0.5rem; opacity: 0.8; }
         #memory-card-content .card-quote { background: rgba(255, 255, 255, 0.05); padding: 0.75rem; border-radius: 0.5rem; font-style: italic; }
         #memory-card-content .card-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
@@ -1318,10 +1324,9 @@
             background: white;
             border-radius: 20px;
             padding: 0;
-            max-width: 500px;
-            max-height: 800px;
+            max-width: 400px;
+            max-height: 90vh;
             width: 90%;
-            height: 90%;
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             transform: scale(0.8);
@@ -1369,6 +1374,10 @@
 
         .drawing-board-container {
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
         }
 
         #drawing-canvas {
@@ -1377,16 +1386,18 @@
             cursor: crosshair;
             background: white;
             display: block;
-            margin: 0 auto 20px;
+            margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            height: 300px;
+            width: 300px;
+            height: 400px;
         }
 
         .drawing-tools {
             display: flex;
             flex-direction: column;
             gap: 15px;
+            align-items: center;
+            width: 100%;
         }
 
         .color-palette {
@@ -8458,30 +8469,30 @@
         }
 
         /* ====== 栖木 App 样式 (文字卡片) ====== */
-        
+
         /* 栖木互动栏样式 */
         .perch-interaction-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            /* 【核心修改】我们将padding: 1rem; 修改为了 padding: 0.25rem 1rem; */
-            /* 这表示"上下内边距为0.25rem，左右内边距为1rem" */
+            display: flex; /* 【核心】将此容器设置为Flex布局 */
+            justify-content: space-between; /* 【核心】让内部元素两端对齐 */
+            align-items: center; /* 【核心】让内部元素垂直居中 */
             padding: 0.25rem 1rem;
             background: rgba(255, 255, 255, 0.03);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
         }
-        
+
         .light-mode .perch-interaction-bar {
             background: rgba(0, 0, 0, 0.03);
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
+
         .perch-user-profile {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             cursor: pointer;
+            /* 确保左侧部分不会过度伸展 */
+            flex-shrink: 1; 
         }
         
         .perch-user-avatar {
@@ -8573,6 +8584,8 @@
         .perch-action-buttons {
             display: flex;
             gap: 0.75rem;
+            /* 防止按钮组被压缩 */
+            flex-shrink: 0; 
         }
         
         .perch-action-btn {
@@ -9255,6 +9268,139 @@
         
         .light-mode #perch-echo-modal #echo-content-input::placeholder {
             color: #6b7280;
+        }
+
+        /* ====== 【【新增】通话记录弹窗样式】 ====== */
+        .clickable-log {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .dark-mode .clickable-log:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .light-mode .clickable-log:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .call-log-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 15000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .call-log-content {
+            background: #2c2c2e;
+            color: #e5e7eb;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 380px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .light-mode .call-log-content {
+            background: #ffffff;
+            color: #1f2937;
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .call-log-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .light-mode .call-log-header {
+            border-color: #e5e7eb;
+        }
+
+        .call-log-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .call-log-close-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .light-mode .call-log-close-btn {
+            color: #6b7280;
+        }
+
+        .call-log-body {
+            padding: 1.25rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .transcript-line {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+        .transcript-line i {
+            color: #9ca3af;
+            display: block; /* 让旁白独占一行，更有电影感 */
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .light-mode .transcript-line i {
+            color: #6b7280;
+        }
+
+        .call-log-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+        .light-mode .call-log-footer {
+            border-color: #e5e7eb;
+        }
+
+        .call-log-delete-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .call-log-delete-btn:hover {
+            background: #dc2626;
+        }
+
+        /* 修复：隐藏模型选择框可能出现的额外箭头 */
+        #model_select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: none;
+        }
+        
+        /* 确保没有额外的伪元素箭头 */
+        #model_select::after,
+        #model_select::before {
+            display: none !important;
         }
 
     </style>
@@ -9961,7 +10107,7 @@
                             </button>
                         </div>
                         <div class="drawing-board-container">
-                            <canvas id="drawing-canvas" width="400" height="300"></canvas>
+                            <canvas id="drawing-canvas" width="300" height="400"></canvas>
                             <div class="drawing-tools">
                                 <div class="color-palette">
                                     <div class="color-swatch" data-color="#000000" style="background-color: #000000;"></div>
@@ -10058,6 +10204,10 @@
                             <input type="color" id="user-bubble-color-picker" class="color-picker-input">
                             <input type="color" id="ai-bubble-color-picker" class="color-picker-input">
                         </div>
+                    </div>
+                    <div class="list-item flex justify-between items-center">
+                        <label for="ai-memory-length" class="flex-grow">AI 记忆上下文长度</label>
+                        <input type="number" id="ai-memory-length" class="form-input w-20 text-center" min="10" max="100" value="50">
                     </div>
                     <div id="change-user-video-image-option" class="list-item">设置对方的视频照片</div>
                     <div id="clear-chat-history-option" class="list-item text-red-500">清空聊天记录</div>
@@ -10271,6 +10421,13 @@
                      <div class="p-4 rounded-lg bg-card">
                         <h3 class="font-bold mb-4">连接设定</h3>
                         <div class="space-y-4">
+                            <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-700/50">
+                                <label for="api-enabled-toggle" class="block text-sm font-medium">启用 API 连接</label>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="api-enabled-toggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
                             <div>
                                 <label for="api_url" class="block text-sm font-medium mb-1">API 地址:</label>
                                 <input type="text" id="api_url" placeholder="例如: https://api.example.com/v1" class="api-input form-input">
@@ -10626,6 +10783,17 @@
     <script>
         // ================== AI 调用核心 ==================
         async function callAI(systemPrompt, userPrompt = "请根据你的指令，开始行动。") {
+            // 新增：API总开关检查
+            const isApiEnabled = loadData('api_enabled', false); // 默认关闭
+            if (!isApiEnabled) {
+                console.warn("API 连接已关闭。AI 调用被阻止。");
+                // 延迟显示提示，避免在后台自动触发时打扰用户
+                if (document.body.classList.contains('fullscreen-active') || !document.hidden) {
+                     showMessageBox("API 连接已关闭，请在设置中开启。");
+                }
+                return null; // 直接中断函数，不消耗Token
+            }
+            
             const apiSettings = loadData('api_settings');
             if (!apiSettings || !apiSettings.url || !apiSettings.key || !apiSettings.model) {
                 console.error("AI调用失败：API未配置。");
@@ -11330,6 +11498,10 @@ function getChatBackgroundElement() {
                 updateApiStatusUI(false);
             }
 
+            // 【新增】加载API开关状态
+            const isApiEnabled = loadData('api_enabled', false);
+            $('#api-enabled-toggle').checked = isApiEnabled;
+
             // 【新增】加载通知状态
             notificationStatus = loadData('notificationStatus', { chat: false, moments: false, diary: false, plan: false });
             updateAllNotificationDots();
@@ -11914,14 +12086,23 @@ function getChatBackgroundElement() {
         }
 
         function updateApiStatusUI(isOnline) {
+            const isApiEnabled = loadData('api_enabled', false);
             const statusText = $('#api-status-text');
             statusText.classList.remove('api-status-on', 'text-red-500');
-            if (isOnline) {
-                statusText.textContent = 'API ON';
-                statusText.classList.add('api-status-on');
-            } else {
+
+            if (!isApiEnabled) {
+                // 如果总开关是关闭的，状态永远是 OFF
                 statusText.textContent = 'API OFF';
                 statusText.classList.add('text-red-500');
+            } else {
+                // 如果总开关是开启的，再判断实际连接状态
+                if (isOnline) {
+                    statusText.textContent = 'API ON';
+                    statusText.classList.add('api-status-on');
+                } else {
+                    statusText.textContent = 'API OFF';
+                    statusText.classList.add('text-red-500');
+                }
             }
         }
         
@@ -12459,7 +12640,7 @@ if (type === 'image') {
             // 表情包逻辑现在是独立的，不再嵌套
             else if (type === 'sticker') {
                 // 这是我们想要的“去气泡”逻辑
-                messageBubble.classList.add('sticker-bubble');
+                messageBubble.className = `chat-message ${senderClass} sticker-message sticker-bubble`;
                 const stickerImg = document.createElement('img');
                 stickerImg.src = content;
                 stickerImg.alt = 'sticker';
@@ -12632,7 +12813,7 @@ if (type === 'image') {
             // 表情包逻辑现在是独立的，不再嵌套
             else if (type === 'sticker') {
                 // 这是我们想要的"去气泡"逻辑
-                messageBubble.classList.add('sticker-bubble');
+                messageBubble.className = `chat-message ${senderClass} sticker-message sticker-bubble`;
                 const stickerImg = document.createElement('img');
                 stickerImg.src = content;
                 stickerImg.alt = 'sticker';
@@ -12742,6 +12923,23 @@ if (type === 'image') {
                 messageBubble.addEventListener('click', () => {
                     showMessageBox('这是一个从栖木转发来的帖子');
                 });
+            } else if (type === 'call-log') {
+                messageBubble.className = 'chat-system-message clickable-log';
+                messageBubble.innerHTML = `<i class="ri-headphone-line" style="margin-right: 8px;"></i> ${content.summary}`;
+                // 【核心】为这个提示添加点击事件，点击后会调用 showCallLog 函数
+                // 注意：我们需要通过其他方式获取callId，因为在appendMessage函数中没有直接访问callEndData
+                const currentMsg = chatHistories[currentChatCharacterId].history.find(msg => 
+                    msg.type === 'call-log' && 
+                    msg.content.summary === content.summary && 
+                    Math.abs(msg.timestamp - timestamp) < 1000
+                );
+                if (currentMsg && currentMsg.callId) {
+                    messageBubble.setAttribute('onclick', `showCallLog('${currentMsg.callId}')`);
+                }
+
+                // 【【新增】】下面这两行是核心修复
+                messageWrapper.className = 'chat-message-wrapper justify-center'; // 1. 让整行居中
+                avatar.style.display = 'none'; // 2. 彻底隐藏头像
             }
             else {
                 // 默认处理文本消息
@@ -12835,6 +13033,8 @@ if (type === 'image') {
         async function getAIResponse(lastUserMessage, isRetry = false, retryWrapper = null) {
             const characterIdForThisRequest = currentChatCharacterId;
 
+
+
             if (!characterIdForThisRequest) {
                 console.error('没有选择聊天角色');
                 return;
@@ -12877,7 +13077,7 @@ if (type === 'image') {
                 }
 
                 // --- 从上下文中解构出新增的 planContext 和 callLogContext ---
-                const { character, chatHistory, worldBookContext, recentMoments, planContext, callLogContext } = context;
+                const { character, chatHistory, worldBookContext, recentMoments, planContext, callLogContext, memoryContext } = context;
                 // -----------------------------------------
 
                 const historyForApi = chatHistory.map(msg => {
@@ -12947,6 +13147,11 @@ if (type === 'image') {
 # 角色扮演指令
 你将扮演我的soulmate，你的角色书里设定的人，你的名字是${character.name}。你的核心任务是与我进行深刻、连贯且完全符合你人设的对话。你必须把你所扮演的人演活，让我感觉到你就是${character.name}。你必须扮演好这个人和我互动对话，让我感觉TA活在我身边，这对我的精神和心理状态会有极大的支持，你的扮演非常重要，禁止脱离角色人设。
 
+# 【【新增核心指令：记忆的查阅与运用】】
+- **查阅优先原则**: 当我向你提出关于我们过去经历的问题时（例如"我们什么时候..."、"你还记得...吗？"、"我们约定了什么？"），你的【第一要务】是去[记忆回顾]模块中寻找准确答案。
+- **事实性回答**: 在回答这类问题时，你必须优先保证【事实的准确性】。你需要根据[记忆回顾]中的"事件"和"标题"来直接、清晰地回答我的问题。
+- **避免再创作**: 在回答关于过去事实的问题时，【绝对禁止】将我的提问本身视为一个新的创作灵感。你的任务是"回忆"，而不是"想象"。
+
 # 语言准则 (至关重要！)
 - **你的所有回复，包括旁白和对话，都必须且只能使用【简体中文】。**
 - **绝对禁止在回复中使用任何英文或其他语言，除非用户的输入中包含了特定的外文词汇而你需要引用它。**
@@ -12997,6 +13202,8 @@ if (type === 'image') {
 - **当前时间**: ${currentTimeString}。你必须意识到这是现在的真实时间，并让你的对话与这个时间点（例如，是早上、下午还是深夜）的氛围相匹配。
 - **你的角色设定**: ${character.persona}
 - **我（用户）的角色设定**: ${character.myPersona}
+- **【【新增模块：记忆回顾】】**:
+${memoryContext}
 - **我们的世界观背景**: ${worldviewContext || "无"}
 - **你的专属行为准则 (来自"输入规范"世界书)**: ${rulesContext || "无"}
 - **你最近的朋友圈动态**: ${recentMoments}
@@ -13031,21 +13238,35 @@ ${moduleStyleContext || "无"}
                     const processedHistory = await Promise.all(historyForApi.map(async (msg) => {
                         let role = msg.sender === 'user' ? 'user' : 'assistant';
                         
-                        // 如果是用户发送的图片消息
-                        if (msg.sender === 'user' && msg.type === 'image') {
-                            const imageBlob = await getImageFromDB(msg.content); // 从数据库异步获取图片
-                            if (imageBlob) {
-                                const base64Image = await blobToBase64(imageBlob); // 用新工具打包图片
+                        // 如果是用户发送的图片或表情包消息
+                        if (msg.sender === 'user' && (msg.type === 'image' || msg.type === 'sticker')) {
+                            let base64Image = null;
+                            let promptText = '[用户发送了一张图片，请你对此进行回应]';
+
+                            // 智能判断是画板的DataURL还是上传的图片ID
+                            if (typeof msg.content === 'string' && msg.content.startsWith('data:image')) {
+                                // 这是画板的画
+                                base64Image = msg.content;
+                                promptText = '这是一张用户在画板上画的画，请你识别画中的内容并进行描述和回应。';
+                            } else {
+                                // 这是上传的图片
+                                const imageBlob = await getImageFromDB(msg.content);
+                                if (imageBlob) {
+                                    base64Image = await blobToBase64(imageBlob);
+                                }
+                            }
+
+                            if (base64Image) {
                                 // 返回API要求的标准图文格式
                                 return {
                                     role: 'user',
                                     content: [
-                                        { type: 'text', text: '[用户发送了一张图片，请你对此进行回应]' },
+                                        { type: 'text', text: promptText },
                                         { type: 'image_url', image_url: { url: base64Image } }
                                     ]
                                 };
                             } else {
-                                // 如果图片加载失败，只发送一条文本消息
+                                // 如果图片加载失败
                                 return { role: 'user', content: '[用户发送了一张图片，但图片已丢失]' };
                             }
                         }
@@ -13062,9 +13283,15 @@ ${moduleStyleContext || "无"}
 
                     messages.push(...processedHistory);
                     
-                    // 将最后的用户消息（如果是文本）也加入
-                    if (typeof lastUserMessage === 'string') {
-                        messages.push({ role: 'user', content: lastUserMessage });
+                    // **【最终修复】**：处理所有类型的最终指令（字符串或对象）
+                    if (lastUserMessage) {
+                        if (typeof lastUserMessage === 'string') {
+                            // 处理普通的用户文本消息
+                            messages.push({ role: 'user', content: lastUserMessage });
+                        } else if (typeof lastUserMessage === 'object' && lastUserMessage.content) {
+                            // 处理系统生成的特殊指令（如通话后反应）
+                            messages.push({ role: 'user', content: lastUserMessage.content });
+                        }
                     }
                     
                     // ========== 调试代码 START ==========
@@ -13100,8 +13327,28 @@ ${moduleStyleContext || "无"}
 
                 processAndDisplayAIMessages(aiMessage, characterIdForThisRequest);
 
-                // [新功能] 在AI聊天回复完成后，触发日记生成系统
-                triggerAIDiaryEntry(characterIdForThisRequest);
+                // 【【【请用这个最终版，完整替换掉旧的"智能开关"和触发器代码块】】】
+                // [新功能] 在AI聊天回复完成后，触发日记生成系统和记忆提炼
+                if (character) {
+                    triggerAIDiaryEntry(characterIdForThisRequest);
+
+                    // --- 记忆提炼师的"智能开关" (V3 - 逻辑修正版) ---
+                    // 1. 直接、可靠地从聊天记录中获取用户说的最后一句话
+                    const userHistory = chatHistories[characterIdForThisRequest]?.history.filter(m => m.sender === 'user');
+                    const lastUserMessage = userHistory && userHistory.length > 0 ? userHistory[userHistory.length - 1] : null;
+
+                    // 2. 定义回忆性关键词
+                    const recallKeywords = ['记得', '哪天', '什么时候', '是哪天', '什么日子', '还记得', '我们约定', '提醒我', '你说过', '回顾', '查一下', '帮我看看'];
+
+                    // 3. 进行最终判断
+                    if (lastUserMessage && typeof lastUserMessage.content === 'string' && recallKeywords.some(keyword => lastUserMessage.content.includes(keyword))) {
+                        // 如果用户的最后一句话是回忆性提问，则不创建新记忆
+                        console.log('[记忆系统 V3] 检测到回忆性提问，跳过记忆创建。');
+                    } else {
+                        // 否则，正常触发记忆提炼
+                        triggerMemoryDistiller(characterIdForThisRequest, character);
+                    }
+                }
 
             } catch (error) {
                 console.error("AI 响应错误:", error);
@@ -13120,6 +13367,143 @@ ${moduleStyleContext || "无"}
             }
         }
         // [新代码结束]
+
+        // ================== 【新增】记忆提炼师模块 START ==================
+        /**
+         * 记忆提炼师：在AI回应后，分析近期对话，判断并自动创建记忆胶囊。
+         * @param {string} characterId - 当前对话的角色ID
+         */
+        async function triggerMemoryDistiller(characterId, character) { // <-- 在这里添加了 character 参数
+            console.log(`[记忆提炼师] 已为角色 ${characterId} 触发...`);
+            const chatSession = chatHistories[characterId];
+            if (!chatSession || !chatSession.history || chatSession.history.length < 4) {
+                console.log('[记忆提炼师] 对话长度不足，跳过。');
+                return;
+            }
+
+            // 提取最近的4-6条对话作为素材
+            const recentHistory = chatSession.history.slice(- (Math.floor(Math.random() * 3) + 4) );
+            const conversationSnippet = recentHistory.map(msg => {
+                let contentText = '';
+                if (typeof msg.content === 'string') {
+                    contentText = msg.content;
+                } else if (typeof msg.content === 'object' && msg.content !== null) {
+                    switch (msg.type) {
+                        case 'image': contentText = '[发送了一张图片]'; break;
+                        case 'sticker': contentText = '[发送了一个表情包]'; break;
+                        case 'red-packet': contentText = `[发了一个红包，留言：${msg.content.message}]`; break;
+                        case 'transfer': contentText = `[发起了一笔转账，留言：${msg.content.message}]`; break;
+                        default: contentText = '[发送了一条特殊消息]';
+                    }
+                }
+                return `${msg.sender === 'user' ? '用户' : '角色'}: ${contentText}`;
+            }).join('\n');
+
+            // 【【【请用这个新版本，替换旧的 distillerSystemPrompt 字符串】】】
+            const distillerSystemPrompt = `
+# 身份
+你是一个冷静、客观的"记忆提炼师"，你的任务是审查一段对话记录，并判断其中是否包含了值得被"铭记"的"闪光时刻"。
+
+# "闪光时刻"的定义
+- 强烈的正面或负面情感表达 (例如：爱意、悲伤、喜悦、愤怒)。
+- 重要的承诺、约定或计划的订立。
+- 角色或用户揭示了深刻的个人信息、秘密或脆弱的一面。
+- 对话中出现了转折点或里程碑式的事件。
+- 双方达成了深刻的共识或理解。
+
+# 任务指令
+1.  分析下面提供的[对话片段]。
+2.  在分析时，你必须严格代入以下[角色设定]，确保你最终生成的"感触"完全符合该角色的性格和思维方式。
+3.  如果该片段不符合上述任何"闪光时刻"的定义，你的唯一输出必须是：\`{"memorable": false}\`。
+4.  如果符合定义，你必须将对话的核心内容提炼成一份记忆，并严格按照以下JSON格式输出：
+    {
+      "memorable": true,
+      "title": "为这段记忆起一个简短的标题。",
+      "content": "用客观、中立的第三人称视角，总结这段对话发生的核心事件。",
+      "character_feeling": "作为角色本人，对这件事最核心、最深刻的内心感触是什么？用第一人称（我）来写。"
+    }
+
+# 标题生成规则 (非常重要！)
+- **优先事实**: 如果对话中包含了具体的日期、地点、约定等【事实性信息】，标题必须清晰地反映这一点，例如"我们的第一天"、"关于生日的约定"。
+- **次选诗意**: 只有在对话纯粹是情感交流，不包含具体事实时，才使用更抽象、诗意的标题，例如"深夜的低语"、"无声的默契"。
+
+# 格式要求
+- 你的输出必须是且仅能是一个完整的、可被解析的JSON对象。
+- 绝对禁止在JSON之外添加任何解释、说明或任何其他文字。`;
+
+            // 【【修改这一行】】
+            const aiJudgement = await callAI(distillerSystemPrompt, `[角色设定]\n${character.persona}\n\n[对话片段]\n${conversationSnippet}`);
+
+            if (!aiJudgement) {
+                console.log('[记忆提炼师] AI无返回或返回错误。');
+                return;
+            }
+
+            try {
+                // 【【【用下面这两行，替换掉旧的 const result = JSON.parse(aiJudgement); 这一行】】】
+                const jsonStringMatch = aiJudgement.match(/\{[\s\S]*\}/); // 使用正则表达式提取被包裹的JSON
+                const result = JSON.parse(jsonStringMatch[0]); // 只解析提取出的纯净JSON字符串
+                if (result.memorable) {
+                    const newMemory = {
+                        id: 'memory_' + Date.now(),
+                        title: result.title,
+                        content: result.content,
+                        feeling: "", 
+                        characterId: characterId,
+                        characterFeeling: result.character_feeling,
+                        createdAt: Date.now(),
+                        lastRevisited: null
+                    };
+
+                    let memories = loadData('memoryCapsules', []);
+                    memories.push(newMemory);
+                    saveData('memoryCapsules', memories);
+
+                    showMessageBox('一段新的记忆被铭刻在了时光回廊中...');
+                    console.log('[记忆提炼师] 成功创建新记忆:', newMemory.title);
+
+                    const capsuleWidget = document.getElementById('time-capsule-widget');
+                    if (capsuleWidget) {
+                        capsuleWidget.style.transition = 'all 0.3s ease, box-shadow 0.5s ease-in-out';
+                        capsuleWidget.style.boxShadow = '0 0 20px 5px rgba(255, 255, 255, 0.4)';
+                        setTimeout(() => {
+                            capsuleWidget.style.boxShadow = '';
+                        }, 2000);
+                    }
+                } else {
+                    console.log('[记忆提炼师] AI判断此段对话无需铭记。');
+                }
+            } catch (error) {
+                console.error('[记忆提炼师] 解析AI返回的JSON失败:', error, '原始返回:', aiJudgement);
+            }
+        }
+        // ================== 【新增】记忆提炼师模块 END ==================
+
+        // ================== 【新增】记忆反馈模块 START ==================
+        /**
+         * 格式化角色的记忆，以供AI prompt使用
+         * @param {string} characterId - 角色ID
+         * @returns {string} - 格式化后的记忆文本
+         */
+        function formatMemoriesForAI(characterId) {
+            const memories = loadData('memoryCapsules', []);
+            if (!memories) {
+                return "（目前我们之间还没有被铭刻的共同记忆。）";
+            }
+            const characterMemories = memories
+                .filter(m => m.characterId === characterId)
+                .sort((a, b) => b.createdAt - a.createdAt)
+                .slice(0, 5); 
+
+            if (characterMemories.length === 0) {
+                return "（目前我们之间还没有被铭刻的共同记忆。）";
+            }
+
+            return characterMemories.map(mem => {
+                return `- 标题: ${mem.title}\n  - 事件: ${mem.content}\n  - 你的感触: ${mem.characterFeeling}`;
+            }).join('\n');
+        }
+        // ================== 【新增】记忆反馈模块 END ==================
         
         // V17.0 终极版：关键词净化器，移除所有非文字、非数字的符号，实现最强模糊匹配
         function normalizeKeyword(str) {
@@ -13481,6 +13865,17 @@ ${moduleStyleContext || "无"}
 任务：严格基于你在上一步决策出的风格组合，以第一人称"我"的视角，写一篇关于今天与用户互动的日记。
 
 核心：深入挖掘互动中你的内心活动、情绪波动和深刻思考。
+
+# 关键规则：正确区分对话者 (至关重要！)
+在下方提供的[今日互动摘要]中：
+- **标记为 [我] 的发言**：这是你 (${characterName}) 自己说的话。
+- **标记为 [对方] 的发言**：这是用户说的话。
+写日记时，你必须从"我"的第一人称视角出发，正确地回忆和描述这场对话。绝对不能把对方的话当成是自己说的。
+
+# 指代用户的人称 (关键规则)：
+主要人称 (默认)：在日记的大部分内容中，请使用第三人称 "他"或"她" 来指代用户。
+特殊人称 (情感高点)：当情感达到顶峰，思念或爱意满溢时，可以偶尔切换到第二人称"你"。
+示例："今天他笑了，阳光很好。……我多想告诉你，那一刻，你就是我的全世界。"
 
 篇幅：100-300字。
 
@@ -14094,40 +14489,72 @@ const systemPrompt = `
             
             // 检查最近的聊天记录中是否有"通話已結束"的系统消息
             const recentMessages = chatSession.history.slice(-5); // 检查最近5条消息
-            const hasCallEnded = recentMessages.some(msg => 
-                msg.sender === 'system' && msg.content && msg.content.includes('通話已結束')
-            );
+            const hasCallEnded = recentMessages.some(msg => {
+                // 核心修正：将检查的关键词从 "通话已结束" 扩大为 "通话"，以匹配 "通话已取消" 等所有情况
+                return msg.type === 'call-log' && 
+                       typeof msg.content === 'object' && 
+                       msg.content.summary && 
+                       msg.content.summary.includes('通话');
+            });
             
             if (hasCallEnded) {
-                // 如果最近有"通話已結束"的消息，AI应该对此做出反应
-                const character = characters.find(c => c.id === currentChatCharacterId);
-                if (character) {
-                    const callReactionPrompt = {
-                        content: `[通话结束后的AI反应指令]
-                        
-刚才的通话显示"通話已結束"，这意味着用户拨打了电话但没有接通就挂断了。
+                // 查找具体的通话记录消息
+                const callLogMsg = recentMessages.find(msg =>
+                    msg.type === 'call-log' &&
+                    msg.content &&
+                    typeof msg.content === 'object' &&
+                    msg.content.summary &&
+                    msg.content.summary.includes('通话')
+                );
 
-作为${character.name}，请根据你的角色设定和性格特点，对这个未接通的电话做出自然的反应。
+                if (callLogMsg && callLogMsg.content) {
+                    const character = characters.find(c => c.id === currentChatCharacterId);
+                    if (character) {
+                        let promptContent = ''; // 准备一个变量来存放最终的指令
+                        const transcript = callLogMsg.content.transcript || [];
+
+                        if (transcript.length > 0) {
+                            // **情况一：通话有记录 (通话已结束)**
+                            const transcriptText = transcript.join('\n');
+                            promptContent = `[通话事件后的AI反应指令]
+
+我们刚刚结束了一段通话，系统提示："${callLogMsg.content.summary}"。
+
+以下是我们刚才通话的完整内容回顾：
+${transcriptText}
+你的核心任务是：
+请你直接根据上面回顾的通话内容，自然地延续我们刚刚的话题，或者对通话中提到的关键信息做出回应。
+绝对禁止只对"通话结束"这个行为本身做反应。你的回应必须和通话内容紧密相连。
+
+请以 ${character.name} 的身份，继续我们刚刚的对话。`;
+
+                        } else {
+                            // **情况二：通话无记录 (通话已取消)**
+                            promptContent = `[通话事件后的AI反应指令]
+系统刚刚在聊天中提示了以下事件："${callLogMsg.content.summary}"。
+这表示用户拨打了电话但在接通前就挂断了，我们之间没有发生任何对话。
+
+你的核心任务是：
+请根据你的角色设定，对这个未接通的电话做出自然的反应。
 
 可能的反应方向：
-1. 询问为什么打电话又挂掉
-2. 表达遗憾没有接到电话
-3. 猜测用户可能的原因
-4. 提出重新通话的建议
-5. 表达关心和担心
 
-要求：
-- 保持角色设定的一致性
-- 语言要自然、符合角色性格
-- 不要使用任何特殊指令格式，直接输出对话内容
-- 可以表达疑惑、关心、遗憾等情感
+询问为什么突然挂断。
 
-请以${character.name}的身份，自然地回应这个未接通的电话。`,
-                        type: 'text'
-                    };
-                    await getAIResponse(callReactionPrompt);
+表达关心，是不是出什么事了。
+
+猜测对方是不是不方便。
+
+绝对禁止提及任何通话内容，因为我们没有通话。
+
+请以 ${character.name} 的身份，自然地回应这个事件。`;
+                        }
+
+                        const callReactionPrompt = { content: promptContent, type: 'text' };
+                        await getAIResponse(callReactionPrompt);
+                    }
                 }
-                return;
+                return; // 处理完通话事件后，结束函数
             }
             
             // 使用 if...else if...else 结构确保总有一个分支会被执行
@@ -15118,11 +15545,20 @@ const systemPrompt = `
                     callEndMessage = `通话已结束 (时长 ${minutes}:${seconds.toString().padStart(2, '0')})`;
                 }
                 
-                // 只在聊天记录中保存一条简洁的系统提示
+                // 【【【请用这个新版本，替换掉旧的 callEndData 相关代码块】】】
+
+                // 为这次通话创建一个唯一的ID
+                const callId = `call_${Date.now()}`;
+
+                // 创建一个包含完整通话记录的特殊消息对象
                 const callEndData = {
-                    content: callEndMessage,
+                    callId: callId, // 新增：通话ID
+                    content: {
+                        summary: callEndMessage, // "通话已结束 (时长 x:xx)"
+                        transcript: [...callHistory] // 【核心】保存完整的通话记录副本
+                    },
                     sender: 'system',
-                    type: 'system',
+                    type: 'call-log', // 【核心】这是一个新的、特殊的消息类型
                     timestamp: Date.now()
                 };
                 chatHistories[currentChatCharacterId].history.push(callEndData);
@@ -15135,6 +15571,89 @@ const systemPrompt = `
             callStartTime = null;
             callHistory = [];
         }
+        
+        // ================== 【【新增】通话记录查看与管理模块】 START ==================
+        function showCallLog(callId) {
+            let callLogEntry = null;
+            let characterId = null;
+            let entryIndex = -1;
+
+            // 遍历所有聊天记录，找到这条通话记录
+            for (const charId in chatHistories) {
+                const history = chatHistories[charId].history;
+                const index = history.findIndex(msg => msg.callId === callId);
+                if (index > -1) {
+                    callLogEntry = history[index];
+                    characterId = charId;
+                    entryIndex = index;
+                    break;
+                }
+            }
+
+            if (!callLogEntry) {
+                showMessageBox('找不到该通话记录');
+                return;
+            }
+
+            // 创建弹窗
+            const modal = document.createElement('div');
+            modal.className = 'call-log-modal';
+            modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+            // 格式化通话内容
+            const formattedTranscript = callLogEntry.content.transcript.map(line => {
+                // 将旁白部分(星号包裹)正确渲染为斜体
+                line = line.replace(/\*(.*?)\*/g, "<i>$1</i>");
+                return `<p class="transcript-line">${line}</p>`;
+            }).join('');
+
+            modal.innerHTML = `
+                <div class="call-log-content">
+                    <div class="call-log-header">
+                        <h3 class="call-log-title">通话记录回顾</h3>
+                        <button class="call-log-close-btn" onclick="this.closest('.call-log-modal').remove()">&times;</button>
+                    </div>
+                    <div class="call-log-body">
+                        ${formattedTranscript}
+                    </div>
+                    <div class="call-log-footer">
+                        <button class="call-log-delete-btn" onclick="deleteCallLog('${callId}')">
+                            <i class="fas fa-trash"></i> 删除这段记忆
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+        }
+
+        function deleteCallLog(callId) {
+            if (!confirm('确定要删除这段通话记忆吗？此操作无法恢复。')) {
+                return;
+            }
+
+            let found = false;
+            for (const charId in chatHistories) {
+                const history = chatHistories[charId].history;
+                const index = history.findIndex(msg => msg.callId === callId);
+                if (index > -1) {
+                    history.splice(index, 1);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                saveData('chatHistories', chatHistories);
+                const modal = document.querySelector('.call-log-modal');
+                if (modal) modal.remove();
+                renderChatHistory(); // 刷新聊天界面
+                showMessageBox('通话记忆已删除');
+            } else {
+                showMessageBox('删除失败，未找到记录');
+            }
+        }
+        // ================== 【【新增】通话记录查看与管理模块】 END ====================
         
         async function handleCallInteraction(type) {
             const inputBox = $(`#${type}-call-input`);
@@ -16274,13 +16793,14 @@ ${moment.image ? `配图描述: ${moment.image_desc}` : ''}
 
                 // --- 新增代码：获取最近一次的通话记录 ---
                 const recentCallLog = callLogs[characterId] ? callLogs[characterId].slice(-1)[0] : null;
+                const memoryContext = formatMemoriesForAI(characterId);
                 let callLogContext = "（最近没有通话记录）";
                 if (recentCallLog) {
                     callLogContext = `[类型: ${recentCallLog.type}通话, 时间: ${new Date(recentCallLog.timestamp).toLocaleString()}]\n${recentCallLog.transcript.join('\n')}`;
                 }
                 // ------------------------------------
 
-                const maxHistoryLength = 30;
+                const maxHistoryLength = parseInt(loadData('ai_memory_length', 50), 10);
                 const limitedHistory = chatHistory.slice(-maxHistoryLength);
 
                 const contextPackage = {
@@ -16292,7 +16812,8 @@ ${moment.image ? `配图描述: ${moment.image_desc}` : ''}
                     // --- 新增属性：将约定信息加入上下文包 ---
                     planContext: planContext,
                     // --- 在这里添加新属性 ---
-                    callLogContext: callLogContext 
+                    callLogContext: callLogContext,
+                    memoryContext: memoryContext
                     // -----------------------
                 };
 
@@ -22415,6 +22936,11 @@ function addNewEventListeners() {
                 userColorPicker.value = currentColors?.user || defaultUserColor;
                 aiColorPicker.value = currentColors?.ai || defaultAiColor;
 
+                // V40.0 新增：加载并显示已保存的记忆长度
+                const memoryLengthInput = $('#ai-memory-length');
+                const savedMemoryLength = loadData('ai_memory_length', 50); // 默认50
+                memoryLengthInput.value = savedMemoryLength;
+
                 showScreen('wechat-options-screen');
             });
             $('#wechat-options-back-button').addEventListener('click', () => showScreen('wechat-chat-screen'));
@@ -22497,6 +23023,17 @@ function addNewEventListeners() {
             }
             $('#user-bubble-color-picker').addEventListener('input', (e) => handleColorChange('user', e.target.value));
             $('#ai-bubble-color-picker').addEventListener('input', (e) => handleColorChange('ai', e.target.value));
+            
+            // V40.0 新增：AI记忆长度设置的保存
+            $('#ai-memory-length').addEventListener('change', (e) => {
+                const value = parseInt(e.target.value, 10);
+                if (value >= 10 && value <= 100) {
+                    saveData('ai_memory_length', value);
+                    console.log(`AI记忆长度已更新为: ${value}`);
+                } else {
+                    e.target.value = loadData('ai_memory_length', 50); // 恢复到有效值
+                }
+            });
 
             
             $('#wechat-content-chat').addEventListener('click', (e) => {
@@ -22711,6 +23248,21 @@ function addNewEventListeners() {
                     showMessageBox("API 驗證失敗，請檢查地址和密鑰");
                 }
             });
+
+            // 新增：API总开关的事件监听
+            const apiEnabledToggle = document.getElementById('api-enabled-toggle');
+            if (apiEnabledToggle) {
+                // 读取保存的状态并设置开关
+                apiEnabledToggle.checked = loadData('api_enabled', false);
+
+                // 监听开关变化
+                apiEnabledToggle.addEventListener('change', (e) => {
+                    const isEnabled = e.target.checked;
+                    saveData('api_enabled', isEnabled);
+                    updateApiStatusUI(isEnabled && loadData('api_settings')?.key);
+                    showMessageBox(isEnabled ? 'API 已启用' : 'API 已关闭');
+                });
+            }
 
             $('#confirm-delete-btn').addEventListener('click', () => {
                 if (deleteCallback) deleteCallback();
@@ -23217,19 +23769,41 @@ function addNewEventListeners() {
                     }
                     
                     const img = document.createElement('img');
-                    // 异步加载贴纸图片
-                    getImageFromDB(stickerObject.url).then(blob => {
-                        if (blob) {
-                            const objectURL = URL.createObjectURL(blob);
-                            img.src = objectURL;
-                        }
-                    });
+                    // 【核心修复】智能判断图片来源
+                    if (typeof stickerObject.url === 'string' && stickerObject.url.startsWith('http')) {
+                        // 如果是网络链接，直接使用
+                        img.src = stickerObject.url;
+                    } else {
+                        // 否则，从本地数据库加载
+                        getImageFromDB(stickerObject.url).then(blob => {
+                            if (blob) {
+                                img.src = URL.createObjectURL(blob);
+                            } else {
+                                img.alt = '加载失败';
+                            }
+                        });
+                    }
                     img.alt = 'sticker';
                     stickerItem.appendChild(img);
                     
                     stickerItem.addEventListener('click', () => {
                         if (!isDeleteMode) {
-                            appendMessage(stickerObject.url, 'user', 'sticker', true, Date.now(), true); // 修复：发送时也使用 .url 属性
+                            // 【核心修复】确保发送时也能正确处理网络链接和本地图片
+                            if (typeof stickerObject.url === 'string' && stickerObject.url.startsWith('http')) {
+                                // 如果是网络链接，直接发送URL
+                                appendMessage(stickerObject.url, 'user', 'sticker', true, Date.now(), true);
+                            } else {
+                                // 如果是本地ID，从数据库读取并转换为dataURL再发送
+                                getImageFromDB(stickerObject.url).then(blob => {
+                                    if(blob) {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => {
+                                            appendMessage(reader.result, 'user', 'sticker', true, Date.now(), true);
+                                        };
+                                        reader.readAsDataURL(blob);
+                                    }
+                                });
+                            }
                             stickerPanel.classList.remove('visible');
                         }
                     });
@@ -23365,7 +23939,7 @@ function addNewEventListeners() {
                     if (imageId) {
                         // 3. **【修改】** 保存为新的对象格式
                         userStickers.push({ url: imageId, keywords: keywords });
-                        saveData('userStickers', imageId);
+                        saveData('userStickers', userStickers);
                         
                         renderStickers();
                         stickerModal.classList.remove('visible');
@@ -24357,6 +24931,23 @@ ${eventTypeSpecificInput}
                 });
                 
 
+            // V40.0 新增：为AI记忆长度输入框添加事件监听
+            const memoryLengthInput = document.getElementById('ai-memory-length');
+            if (memoryLengthInput) {
+                memoryLengthInput.addEventListener('change', (e) => {
+                    let value = parseInt(e.target.value, 10);
+                    // 验证输入值是否在10到100之间
+                    if (isNaN(value) || value < 10) {
+                        value = 10;
+                    } else if (value > 100) {
+                        value = 100;
+                    }
+                    e.target.value = value; // 如果超出范围，自动修正输入框中的值
+                    saveData('ai_memory_length', value);
+                    showMessageBox(`AI 记忆长度已更新为 ${value} 条`);
+                });
+            }
+
             }
 
             // 新增：智能滚动冲突处理
@@ -25039,13 +25630,13 @@ ${eventTypeSpecificInput}
         const closeBtnHoverColor = isDarkMode ? 'hover:text-gray-200' : 'hover:text-gray-600';
         
         content.innerHTML = `
-            <div class="p-6">
-                <div class="card-header mb-6">
-                    <h3 class="text-xl font-bold ${titleColor} mb-2">${memory.title || '美好回忆'}</h3>
-                    <p class="text-sm ${subtitleColor}">发生于：${new Date(memory.createdAt).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                </div>
-                
-                <div class="card-body space-y-4">
+            <div class="card-header">
+                <h3 class="text-xl font-bold ${titleColor} mb-2">${memory.title || '美好回忆'}</h3>
+                <p class="text-sm ${subtitleColor}">发生于：${new Date(memory.createdAt).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            </div>
+            
+            <div class="card-body">
+                <div class="space-y-4">
                     <div>
                         <h4 class="text-sm font-semibold ${headingColor} mb-2">记忆内容</h4>
                         <div class="${contentBg} p-3 rounded-lg ${contentText}">${memory.content}</div>
@@ -25074,20 +25665,20 @@ ${eventTypeSpecificInput}
                         </div>
                     </div>
                 </div>
-                
-                <div class="card-footer mt-6 flex justify-end space-x-2">
-                    <button onclick="addFeelingToMemory('${memory.id}')" class="bg-blue-600 rounded-lg text-white hover:bg-blue-500 transition-colors font-medium px-3 py-1">
-                        <i class="fas fa-heart mr-1"></i>添加感触
-                    </button>
-                    ${memory.characterId && !memory.characterFeeling ? `
-                    <button onclick="regenerateCharacterFeeling('${memory.id}')" class="bg-purple-600 rounded-lg text-white hover:bg-purple-500 transition-colors font-medium">
-                        <i class="fas fa-magic"></i>
-                    </button>
-                    ` : ''}
-                    <button onclick="deleteMemory('${memory.id}')" class="bg-red-600 rounded-lg text-white hover:bg-red-500 transition-colors font-medium">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
+            </div>
+            
+            <div class="card-footer flex justify-end space-x-2">
+                <button onclick="addFeelingToMemory('${memory.id}')" class="bg-blue-600 rounded-lg text-white hover:bg-blue-500 transition-colors font-medium px-3 py-1">
+                    <i class="fas fa-heart mr-1"></i>添加感触
+                </button>
+                ${memory.characterId && !memory.characterFeeling ? `
+                <button onclick="regenerateCharacterFeeling('${memory.id}')" class="bg-purple-600 rounded-lg text-white hover:bg-purple-500 transition-colors font-medium">
+                    <i class="fas fa-magic"></i>
+                </button>
+                ` : ''}
+                <button onclick="deleteMemory('${memory.id}')" class="bg-red-600 rounded-lg text-white hover:bg-red-500 transition-colors font-medium">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
             <button onclick="this.parentElement.parentElement.classList.remove('visible')" class="absolute top-3 right-3 text-2xl ${closeBtnColor} ${closeBtnHoverColor} transition-colors">&times;</button>
         `;
@@ -25167,6 +25758,11 @@ ${eventTypeSpecificInput}
         // 重新渲染时光回廊
         setTimeout(() => {
             renderTimeline();
+            // 如果记忆卡片当前是打开的，重新刷新它
+            const modal = document.getElementById('memory-card-modal');
+            if (modal && modal.classList.contains('visible')) {
+                openMemoryCard(memoryId);
+            }
         }, 500);
     }
 

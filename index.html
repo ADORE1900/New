@@ -331,7 +331,7 @@
 
         /* 基础字体样式 */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Noto Serif SC', 'Inter', sans-serif;
+            font-family: 'SF Pro Display', 'SF Pro Text', 'Inter', sans-serif;
             margin: 0;
             overflow: hidden; /* 防止意外滚动 */
         }
@@ -339,7 +339,7 @@
         /* 字体大小调整 */
         #phone-screen {
             /* V36.0 新增：定义一个CSS变量用于自定义字体 */
-            --custom-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Noto Serif SC', 'Inter', sans-serif;
+            --custom-font: 'SF Pro Display', 'SF Pro Text', 'Inter', sans-serif;
 
             font-size: 15px; /* 中 (默认) */
             transition: font-size 0.2s ease-in-out;
@@ -5366,7 +5366,6 @@
             width: 90% !important;
             outline: none !important;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-            font-family: inherit !important;
             transition: all 0.3s ease !important;
         }
 
@@ -8165,22 +8164,31 @@
         }
     }
 
-    /* V36.1 终极版：强制保护所有图标，确保万无一失 */
-    .fab, .fa-brands {
+    /* V36.2 终极版：强制保护所有图标，确保万无一失 */
+    .fab, .fa-brands,
+    i.fab, i.fa-brands {
         font-family: "Font Awesome 6 Brands" !important;
-        font-weight: 400;
+        font-weight: 400 !important;
     }
-    .fas, .fa-solid {
+    .fas, .fa-solid,
+    i.fas, i.fa-solid {
         font-family: "Font Awesome 6 Free" !important;
-        font-weight: 900;
+        font-weight: 900 !important;
     }
-    .far, .fa-regular {
+    .far, .fa-regular,
+    i.far, i.fa-regular {
         font-family: "Font Awesome 6 Free" !important;
-        font-weight: 400;
+        font-weight: 400 !important;
     }
-    [class^="ri-"] {
+    [class^="ri-"], [class*=" ri-"],
+    i[class^="ri-"], i[class*=" ri-"] {
         font-family: "RemixIcon" !important;
-        font-weight: normal; /* RemixIcon 通常使用 normal 权重 */
+        font-weight: normal !important;
+    }
+    /* 所有fa-开头的类 */
+    [class^="fa-"], [class*=" fa-"] {
+        font-family: "Font Awesome 6 Free" !important;
+        font-weight: 900 !important;
     }
 
         /* ====== 记忆胶囊App - 时光回廊 V2.0 ====== */
@@ -11108,12 +11116,28 @@ function getChatBackgroundElement() {
             }
         }
 
+        // 【最终修复版 - 请用此函数完整替换旧的 loadData 函数】
         function loadData(key, defaultValue = null) {
             try {
                 const data = localStorage.getItem(key);
-                return data ? JSON.parse(data) : defaultValue;
+                
+                // 如果localStorage中根本没有这个键，直接返回默认值
+                if (data === null) {
+                    return defaultValue;
+                }
+
+                // 关键修复：尝试按JSON解析，如果失败，则直接返回原始的字符串值
+                try {
+                    // 这能成功处理对象、数组、以及被正确存储的字符串(例如 "dark")
+                    return JSON.parse(data);
+                } catch (e) {
+                    // 如果解析失败，说明它是一个历史遗留的、未被引号包裹的纯字符串 (例如 dark)
+                    // 此时，我们直接返回这个原始字符串即可
+                    return data; 
+                }
             } catch (e) {
-                console.error("加载数据失败:", e);
+                // 捕获其他可能的localStorage读取错误
+                console.error(`加载数据时发生意外错误 (key: ${key}):`, e);
                 return defaultValue;
             }
         }
@@ -15165,18 +15189,71 @@ ${transcriptText}
             // 【核心修改】
             // 我们现在只更新CSS变量的值，而不是用!important去覆盖所有东西
             if (url) {
-                // 如果有URL，就加载并应用自定义字体
+                // 如果有URL，就加载并应用自定义字体 - 最高优先级
                 styleElement.innerHTML = `
                     @font-face {
                         font-family: 'CustomFont';
                         src: url('${url}');
+                        font-display: swap;
+                    }
+                    /* 图标字体 - 第一优先级，确保不被任何规则覆盖 */
+                    .fab, .fa-brands,
+                    i.fab, i.fa-brands {
+                        font-family: "Font Awesome 6 Brands" !important;
+                        font-weight: 400 !important;
+                    }
+                    .fas, .fa-solid,
+                    i.fas, i.fa-solid {
+                        font-family: "Font Awesome 6 Free" !important;
+                        font-weight: 900 !important;
+                    }
+                    .far, .fa-regular,
+                    i.far, i.fa-regular {
+                        font-family: "Font Awesome 6 Free" !important;
+                        font-weight: 400 !important;
+                    }
+                    [class^="ri-"], [class*=" ri-"],
+                    i[class^="ri-"], i[class*=" ri-"] {
+                        font-family: "RemixIcon" !important;
+                        font-weight: normal !important;
+                    }
+                    /* 所有fa-开头的类 */
+                    [class^="fa-"], [class*=" fa-"] {
+                        font-family: "Font Awesome 6 Free" !important;
+                        font-weight: 900 !important;
+                    }
+                    /* 自定义字体应用 - 排除图标元素 */
+                    html *:not(.fab):not(.fa-brands):not(.fas):not(.fa-solid):not(.far):not(.fa-regular):not([class^="ri-"]):not([class*=" ri-"]):not([class^="fa-"]):not([class*=" fa-"]):not(i[class^="fa"]):not(i[class*=" fa"]):not(i[class^="ri"]):not(i[class*=" ri"]),
+                    html *:not(.fab):not(.fa-brands):not(.fas):not(.fa-solid):not(.far):not(.fa-regular):not([class^="ri-"]):not([class*=" ri-"]):not([class^="fa-"]):not([class*=" fa-"]):not(i[class^="fa"]):not(i[class*=" fa"]):not(i[class^="ri"]):not(i[class*=" ri"])::before,
+                    html *:not(.fab):not(.fa-brands):not(.fas):not(.fa-solid):not(.far):not(.fa-regular):not([class^="ri-"]):not([class*=" ri-"]):not([class^="fa-"]):not([class*=" fa-"]):not(i[class^="fa"]):not(i[class*=" fa"]):not(i[class^="ri"]):not(i[class*=" ri"])::after {
+                        font-family: 'CustomFont' !important;
+                    }
+                    /* 保护特殊容器的monospace字体 */
+                    .sleeve-content .subtitle,
+                    .ticket-type,
+                    code,
+                    pre,
+                    .code,
+                    [class*="code"],
+                    .monospace {
+                        font-family: 'Source Code Pro', monospace !important;
+                    }
+                    /* 超级强化：覆盖Tailwind和任何可能的冲突 */
+                    i.fas, i.far, i.fab,
+                    i[class^="fa-"], i[class*=" fa-"],
+                    i[class^="ri-"], i[class*=" ri-"] {
+                        font-style: normal !important;
+                        font-variant: normal !important;
+                        text-rendering: auto !important;
+                        -webkit-font-smoothing: antialiased !important;
+                        -moz-osx-font-smoothing: grayscale !important;
                     }
                 `;
-                document.documentElement.style.setProperty('--custom-font', `'CustomFont', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Noto Serif SC', 'Inter', sans-serif`);
+                document.documentElement.style.setProperty('--custom-font', `'CustomFont'`);
             } else {
                 // 如果URL为空，就恢复默认字体
                 styleElement.innerHTML = ''; // 清空@font-face规则
-                document.documentElement.style.setProperty('--custom-font', `-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Noto Serif SC', 'Inter', sans-serif`);
+                document.documentElement.style.setProperty('--custom-font', `'SF Pro Display', 'SF Pro Text', 'Inter', sans-serif`);
             }
         }
 
@@ -24020,62 +24097,152 @@ function addNewEventListeners() {
             });
 
             // 數據導入/導出
-            $('#export-data-btn').addEventListener('click', () => {
-                const allData = {};
-                // Iterate over all keys in localStorage
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    try {
-                        allData[key] = JSON.parse(localStorage.getItem(key));
-                    } catch (e) {
-                        allData[key] = localStorage.getItem(key);
+            // 【请用这个全新的代码块替换旧的 export-data-btn 事件监听器】
+            // 【最终版 - 请用这个代码块替换导出功能】
+            $('#export-data-btn').addEventListener('click', async () => {
+                showMessageBox('正在准备您的时光储藏室，请稍候...');
+                
+                try {
+                    const allData = {
+                        localStorageData: {},
+                        indexedDBData: []
+                    };
+
+                    // 1. 导出所有 LocalStorage 数据 (已增强兼容性)
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        const rawValue = localStorage.getItem(key);
+                        try {
+                            // 尝试按标准JSON解析
+                            allData.localStorageData[key] = JSON.parse(rawValue);
+                        } catch (e) {
+                            // 如果解析失败，说明它可能是个纯字符串（如此次的"fullscreen"）
+                            // 我们直接按原样保存它，不再报错
+                            allData.localStorageData[key] = rawValue;
+                        }
                     }
+
+                    // 2. 导出所有 IndexedDB 数据
+                    if (!db) await initDB();
+                    const transaction = db.transaction(['images'], 'readonly');
+                    const store = transaction.objectStore('images');
+                    const allRecords = await new Promise((resolve, reject) => {
+                        const request = store.getAll();
+                        request.onsuccess = () => resolve(request.result);
+                        request.onerror = (event) => reject(event.target.error);
+                    });
+
+                    for (const record of allRecords) {
+                        if (record.data instanceof Blob) {
+                            const base64Data = await blobToBase64(record.data);
+                            allData.indexedDBData.push({ id: record.id, data: base64Data });
+                        }
+                    }
+
+                    // 3. 创建并下载完整的备份文件
+                    const dataStr = JSON.stringify(allData);
+                    const dataBlob = new Blob([dataStr], {type: "application/json"});
+                    const url = URL.createObjectURL(dataBlob);
+                    const a = document.createElement('a');
+                    const timestamp = new Date().toISOString().slice(0, 19).replace(/[-T:]/g, "");
+                    a.href = url;
+                    a.download = `RavenPhone_Backup_${timestamp}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showMessageBox('时光储藏室已成功导出！');
+
+                } catch (error) {
+                    console.error("导出数据时发生严重错误:", error);
+                    showMessageBox('导出失败，详情请查看控制台。');
                 }
-
-                const dataStr = JSON.stringify(allData, null, 2);
-                const dataBlob = new Blob([dataStr], {type: "application/json"});
-                const url = URL.createObjectURL(dataBlob);
-
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'wechat_simulator_backup.json';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                showMessageBox('數據已導出');
             });
 
             $('#import-data-btn').addEventListener('click', () => {
                 $('#import-data-input').click();
             });
 
+            // 【最终修正版 - 请用这个代码块替换导入功能】
             $('#import-data-input').addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
 
+                if (!confirm('警告：导入将完全覆盖当前所有数据。此操作不可撤销！\n\n您确定要继续吗？')) {
+                    e.target.value = '';
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = async (event) => {
+                    showMessageBox('正在打开时光储藏室，请勿关闭页面...');
                     try {
                         const importedData = JSON.parse(event.target.result);
+
+                        if (!importedData.localStorageData || !importedData.indexedDBData) {
+                            throw new Error('备份文件格式无效，缺少必要的数据块。');
+                        }
+
+                        // 1. 清空当前所有数据
                         localStorage.clear();
-                        Object.keys(importedData).forEach(key => {
-                            localStorage.setItem(key, JSON.stringify(importedData[key]));
+                        await clearIndexedDBStore('images');
+
+                        // 2. 导入 LocalStorage 数据
+                        Object.keys(importedData.localStorageData).forEach(key => {
+                            const value = importedData.localStorageData[key];
+                            if (typeof value === 'string') {
+                                localStorage.setItem(key, value);
+                            } else {
+                                localStorage.setItem(key, JSON.stringify(value));
+                            }
                         });
-                        showMessageBox('數據導入成功，正在刷新...');
-                        // Reload all data and update UI
-                        await loadAllSavedData();
-                        // Go to a neutral screen
-                        renderWeChatList();
-                        showScreen('wechat-list-screen');
+
+                        // 3. 导入 IndexedDB 数据 (已修复异步事务问题)
+                        if (importedData.indexedDBData.length > 0) {
+                            if (!db) await initDB();
+
+                            // 【核心修复-步骤1】: 先将所有Base64数据异步转换为Blob对象
+                            console.log("正在预处理所有媒体文件...");
+                            const recordsToPut = await Promise.all(
+                                importedData.indexedDBData.map(async (record) => {
+                                    const blob = await base64ToBlob(record.data);
+                                    return { id: record.id, data: blob };
+                                })
+                            );
+                            console.log("所有文件预处理完成。");
+
+                            // 【核心修复-步骤2】: 所有数据准备好后，再开始一个事务
+                            const transaction = db.transaction(['images'], 'readwrite');
+                            const store = transaction.objectStore('images');
+
+                            // 【核心修复-步骤3】: 在这个活跃的事务中，一次性添加所有数据
+                            console.log("开始将文件写入数据库...");
+                            recordsToPut.forEach(record => {
+                                store.put(record);
+                            });
+
+                            await new Promise((resolve, reject) => {
+                                transaction.oncomplete = () => {
+                                    console.log("数据库写入完成。");
+                                    resolve();
+                                };
+                                transaction.onerror = (event) => reject(event.target.error);
+                            });
+                        }
+
+                        // 4. 重新加载整个应用
+                        showMessageBox('数据恢复成功，正在重启应用...');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+
                     } catch (err) {
-                        showMessageBox('導入失敗，文件格式錯誤');
-                        console.error("Import error:", err);
+                        showMessageBox('导入失败，文件可能已损坏或格式不正确。');
+                        console.error("导入错误:", err);
                     }
                 };
                 reader.readAsText(file);
-                e.target.value = ''; // Reset input
+                e.target.value = '';
             });
 
 
@@ -25186,6 +25353,25 @@ ${eventTypeSpecificInput}
             };
             reader.onerror = reject;
             reader.readAsDataURL(blob);
+        });
+    }
+
+    // 【新增辅助函数1：将Base64转回Blob，用于导入】
+    async function base64ToBlob(base64) {
+        const response = await fetch(base64);
+        const blob = await response.blob();
+        return blob;
+    }
+
+    // 【新增辅助函数2：清空IndexedDB的存储空间，用于导入前清场】
+    async function clearIndexedDBStore(storeName) {
+        if (!db) await initDB();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction([storeName], 'readwrite');
+            const store = transaction.objectStore(storeName);
+            const request = store.clear();
+            request.onsuccess = () => resolve();
+            request.onerror = (event) => reject(event.target.error);
         });
     }
 

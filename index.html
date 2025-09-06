@@ -10799,6 +10799,12 @@
                                <h4 class="font-semibold">API 设定</h4>
                             </div>
                         </div>
+                        <div id="heartbeat-settings-link" class="list-item flex justify-between items-center">
+                            <div class="flex items-center">
+                               <i class="fas fa-heartbeat w-6 text-center mr-3"></i>
+                               <h4 class="font-semibold">角色心跳</h4>
+                            </div>
+                        </div>
                     </div>
                     <div class="space-y-2 mt-8">
                         <div id="beautify-settings-link" class="list-item flex justify-between items-center">
@@ -10881,6 +10887,151 @@
                         <input type="text" id="font-url-input" class="form-input w-full" placeholder="https://example.com/font.ttf">
                         <button id="font-save-button" class="w-full mt-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-md">应用字体</button>
                         </div>
+                </div>
+            </div>
+
+            <div id="heartbeat-settings-screen" class="app-screen-view heartbeat-settings-screen flex-col hidden">
+                <div class="app-header">
+                    <button id="heartbeat-settings-back-button" class="app-header-btn"><i class="fas fa-chevron-left"></i></button>
+                    <h3 class="app-header-title flex-grow text-center">角色心跳设置</h3>
+                </div>
+                <div class="settings-content flex-1 p-2 overflow-y-auto space-y-4">
+                    
+                    <!-- 系统心跳设置 -->
+                    <div class="p-4 rounded-lg bg-card">
+                        <h3 class="font-bold mb-4 flex items-center">
+                            <i class="fas fa-cogs mr-2"></i>
+                            系统心跳
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="system-heartbeat-interval" class="block text-sm font-medium mb-2">心跳间隔 (小时)</label>
+                                <input type="number" id="system-heartbeat-interval" min="0.1" max="24" step="0.1" value="1" class="form-input w-full">
+                                <p class="text-xs text-gray-400 mt-1">系统检查角色是否需要触发AI行动的间隔时间</p>
+                            </div>
+                            <div>
+                                <label for="system-trigger-threshold" class="block text-sm font-medium mb-2">触发阈值 (分钟)</label>
+                                <input type="number" id="system-trigger-threshold" min="1" max="1440" step="1" value="1" class="form-input w-full">
+                                <p class="text-xs text-gray-400 mt-1">角色无交互多久后触发AI行动</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 栖木心跳设置 -->
+                    <div class="p-4 rounded-lg bg-card">
+                        <h3 class="font-bold mb-4 flex items-center">
+                            <i class="fas fa-tree mr-2"></i>
+                            栖木心跳
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="perch-heartbeat-interval" class="block text-sm font-medium mb-2">心跳间隔 (分钟)</label>
+                                <input type="number" id="perch-heartbeat-interval" min="1" max="1440" step="1" value="5" class="form-input w-full">
+                                <p class="text-xs text-gray-400 mt-1">AI角色自主发帖到栖木的检查间隔</p>
+                            </div>
+                            <div>
+                                <label for="perch-post-probability" class="block text-sm font-medium mb-2">发帖概率 (%)</label>
+                                <input type="number" id="perch-post-probability" min="0" max="100" step="1" value="30" class="form-input w-full">
+                                <p class="text-xs text-gray-400 mt-1">每次心跳检查时触发发帖的概率</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NPC文学创作心跳设置 -->
+                    <div class="p-4 rounded-lg bg-card">
+                        <h3 class="font-bold mb-4 flex items-center">
+                            <i class="fas fa-pen-fancy mr-2"></i>
+                            NPC文学创作心跳
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="npc-writing-min-interval" class="block text-sm font-medium mb-2">最小间隔 (分钟)</label>
+                                <input type="number" id="npc-writing-min-interval" min="1" max="1440" step="1" value="5" class="form-input w-full">
+                            </div>
+                            <div>
+                                <label for="npc-writing-max-interval" class="block text-sm font-medium mb-2">最大间隔 (分钟)</label>
+                                <input type="number" id="npc-writing-max-interval" min="1" max="1440" step="1" value="15" class="form-input w-full">
+                            </div>
+                            <div>
+                                <label for="npc-writing-probability" class="block text-sm font-medium mb-2">触发概率 (%)</label>
+                                <input type="number" id="npc-writing-probability" min="0" max="100" step="1" value="35" class="form-input w-full">
+                                <p class="text-xs text-gray-400 mt-1">NPC文学创作的触发概率</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 匿名树洞心跳设置 -->
+                    <div class="p-4 rounded-lg bg-card">
+                        <h3 class="font-bold mb-4 flex items-center">
+                            <i class="fas fa-user-secret mr-2"></i>
+                            匿名树洞心跳
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="anonymous-min-interval" class="block text-sm font-medium mb-2">最小间隔 (分钟)</label>
+                                <input type="number" id="anonymous-min-interval" min="1" max="1440" step="1" value="20" class="form-input w-full">
+                            </div>
+                            <div>
+                                <label for="anonymous-max-interval" class="block text-sm font-medium mb-2">最大间隔 (分钟)</label>
+                                <input type="number" id="anonymous-max-interval" min="1" max="1440" step="1" value="40" class="form-input w-full">
+                            </div>
+                            <div>
+                                <label for="anonymous-probability" class="block text-sm font-medium mb-2">触发概率 (%)</label>
+                                <input type="number" id="anonymous-probability" min="0" max="100" step="1" value="50" class="form-input w-full">
+                                <p class="text-xs text-gray-400 mt-1">匿名树洞分享的触发概率</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NPC定时发帖心跳设置 -->
+                    <div class="p-4 rounded-lg bg-card">
+                        <h3 class="font-bold mb-4 flex items-center">
+                            <i class="fas fa-robot mr-2"></i>
+                            NPC定时发帖心跳
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="npc-post-min-interval" class="block text-sm font-medium mb-2">最小间隔 (分钟)</label>
+                                <input type="number" id="npc-post-min-interval" min="1" max="1440" step="1" value="2" class="form-input w-full">
+                            </div>
+                            <div>
+                                <label for="npc-post-max-interval" class="block text-sm font-medium mb-2">最大间隔 (分钟)</label>
+                                <input type="number" id="npc-post-max-interval" min="1" max="1440" step="1" value="5" class="form-input w-full">
+                            </div>
+                            <div>
+                                <label for="npc-post-probability" class="block text-sm font-medium mb-2">触发概率 (%)</label>
+                                <input type="number" id="npc-post-probability" min="0" max="100" step="1" value="25" class="form-input w-full">
+                                <p class="text-xs text-gray-400 mt-1">NPC定时发帖的触发概率</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 朋友圈最小间隔设置 -->
+                    <div class="p-4 rounded-lg bg-card">
+                        <h3 class="font-bold mb-4 flex items-center">
+                            <i class="fas fa-users mr-2"></i>
+                            朋友圈发布间隔
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="moments-min-interval" class="block text-sm font-medium mb-2">最小间隔 (分钟)</label>
+                                <input type="number" id="moments-min-interval" min="1" max="1440" step="1" value="30" class="form-input w-full">
+                                <p class="text-xs text-gray-400 mt-1">发布朋友圈的最小时间间隔</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 控制按钮 -->
+                    <div class="flex gap-2 mt-6">
+                        <button id="save-heartbeat-settings" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium">
+                            <i class="fas fa-save mr-2"></i>保存设置
+                        </button>
+                        <button id="reset-heartbeat-settings" class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md font-medium">
+                            <i class="fas fa-undo mr-2"></i>重置默认
+                        </button>
+                    </div>
+
+                    <div id="heartbeat-status" class="mt-4 p-4 rounded-lg text-center font-semibold text-sm hidden"></div>
                 </div>
             </div>
 
@@ -11018,10 +11169,7 @@
             <div id="perch-screen" class="app-screen-view flex-col hidden">
                 <div class="app-header">
                     <button id="perch-back-button" class="app-header-btn"><i class="fas fa-chevron-left"></i></button>
-                    <div class="text-center flex-grow flex justify-center">
-                        <h3 class="app-header-title">栖木</h3>
-                    </div>
-                    <div class="w-10"></div>
+                    <h3 class="app-header-title flex-grow text-center">栖木</h3>
                 </div>
                 
                 <!-- 栖木互动栏 -->
@@ -11732,6 +11880,149 @@ function getChatBackgroundElement() {
                 console.error(`加载数据时发生意外错误 (key: ${key}):`, e);
                 return defaultValue;
             }
+        }
+
+        // ================== 【心跳设置功能】 ==================
+        
+        // 默认心跳设置
+        const defaultHeartbeatSettings = {
+            systemHeartbeatInterval: 1, // 小时
+            systemTriggerThreshold: 1, // 分钟
+            perchHeartbeatInterval: 5, // 分钟
+            perchPostProbability: 30, // 百分比
+            npcWritingMinInterval: 5, // 分钟
+            npcWritingMaxInterval: 15, // 分钟
+            npcWritingProbability: 35, // 百分比
+            anonymousMinInterval: 20, // 分钟
+            anonymousMaxInterval: 40, // 分钟
+            anonymousProbability: 50, // 百分比
+            npcPostMinInterval: 2, // 分钟
+            npcPostMaxInterval: 5, // 分钟
+            npcPostProbability: 25, // 百分比
+            momentsMinInterval: 30 // 分钟
+        };
+
+        // 加载心跳设置到界面
+        function loadHeartbeatSettings() {
+            const settings = loadData('heartbeatSettings', defaultHeartbeatSettings);
+            
+            document.getElementById('system-heartbeat-interval').value = settings.systemHeartbeatInterval;
+            document.getElementById('system-trigger-threshold').value = settings.systemTriggerThreshold;
+            document.getElementById('perch-heartbeat-interval').value = settings.perchHeartbeatInterval;
+            document.getElementById('perch-post-probability').value = settings.perchPostProbability;
+            document.getElementById('npc-writing-min-interval').value = settings.npcWritingMinInterval;
+            document.getElementById('npc-writing-max-interval').value = settings.npcWritingMaxInterval;
+            document.getElementById('npc-writing-probability').value = settings.npcWritingProbability;
+            document.getElementById('anonymous-min-interval').value = settings.anonymousMinInterval;
+            document.getElementById('anonymous-max-interval').value = settings.anonymousMaxInterval;
+            document.getElementById('anonymous-probability').value = settings.anonymousProbability;
+            document.getElementById('npc-post-min-interval').value = settings.npcPostMinInterval;
+            document.getElementById('npc-post-max-interval').value = settings.npcPostMaxInterval;
+            document.getElementById('npc-post-probability').value = settings.npcPostProbability;
+            document.getElementById('moments-min-interval').value = settings.momentsMinInterval;
+        }
+
+        // 保存心跳设置
+        function saveHeartbeatSettings() {
+            const settings = {
+                systemHeartbeatInterval: parseFloat(document.getElementById('system-heartbeat-interval').value),
+                systemTriggerThreshold: parseInt(document.getElementById('system-trigger-threshold').value),
+                perchHeartbeatInterval: parseInt(document.getElementById('perch-heartbeat-interval').value),
+                perchPostProbability: parseInt(document.getElementById('perch-post-probability').value),
+                npcWritingMinInterval: parseInt(document.getElementById('npc-writing-min-interval').value),
+                npcWritingMaxInterval: parseInt(document.getElementById('npc-writing-max-interval').value),
+                npcWritingProbability: parseInt(document.getElementById('npc-writing-probability').value),
+                anonymousMinInterval: parseInt(document.getElementById('anonymous-min-interval').value),
+                anonymousMaxInterval: parseInt(document.getElementById('anonymous-max-interval').value),
+                anonymousProbability: parseInt(document.getElementById('anonymous-probability').value),
+                npcPostMinInterval: parseInt(document.getElementById('npc-post-min-interval').value),
+                npcPostMaxInterval: parseInt(document.getElementById('npc-post-max-interval').value),
+                npcPostProbability: parseInt(document.getElementById('npc-post-probability').value),
+                momentsMinInterval: parseInt(document.getElementById('moments-min-interval').value)
+            };
+
+            saveData('heartbeatSettings', settings);
+            showHeartbeatStatus('设置已保存！', 'success');
+            
+            // 重新启动心跳定时器以应用新设置
+            restartHeartbeatTimers();
+        }
+
+        // 重置心跳设置为默认值
+        function resetHeartbeatSettings() {
+            saveData('heartbeatSettings', defaultHeartbeatSettings);
+            loadHeartbeatSettings();
+            showHeartbeatStatus('已重置为默认设置！', 'success');
+            
+            // 重新启动心跳定时器以应用默认设置
+            restartHeartbeatTimers();
+        }
+
+        // 显示心跳设置状态信息
+        function showHeartbeatStatus(message, type = 'info') {
+            const statusElement = document.getElementById('heartbeat-status');
+            statusElement.textContent = message;
+            statusElement.className = `mt-4 p-4 rounded-lg text-center font-semibold text-sm ${
+                type === 'success' ? 'bg-green-600 text-white' : 
+                type === 'error' ? 'bg-red-600 text-white' : 
+                'bg-blue-600 text-white'
+            }`;
+            statusElement.classList.remove('hidden');
+            
+            setTimeout(() => {
+                statusElement.classList.add('hidden');
+            }, 3000);
+        }
+
+        // 存储定时器ID以便重启
+        let heartbeatTimers = {
+            systemHeartbeat: null,
+            perchHeartbeat: null,
+            npcWriting: null,
+            anonymous: null,
+            npcPost: null
+        };
+
+        // 重启所有心跳定时器
+        function restartHeartbeatTimers() {
+            // 清除现有定时器
+            Object.values(heartbeatTimers).forEach(timer => {
+                if (timer) clearInterval(timer);
+            });
+
+            const settings = loadData('heartbeatSettings', defaultHeartbeatSettings);
+            
+            // 重启系统心跳
+            heartbeatTimers.systemHeartbeat = setInterval(systemHeartbeat, settings.systemHeartbeatInterval * 60 * 60 * 1000);
+            
+            // 重启栖木心跳
+            heartbeatTimers.perchHeartbeat = setInterval(perchHeartbeat, settings.perchHeartbeatInterval * 60 * 1000);
+            
+            // 重启NPC文学创作心跳
+            heartbeatTimers.npcWriting = setInterval(() => {
+                const apiSettings = loadData('api_settings');
+                if (apiSettings && apiSettings.url && apiSettings.key && Math.random() < (settings.npcWritingProbability / 100)) {
+                    triggerNpcPost();
+                }
+            }, (Math.random() * (settings.npcWritingMaxInterval - settings.npcWritingMinInterval) + settings.npcWritingMinInterval) * 60 * 1000);
+            
+            // 重启匿名树洞心跳
+            heartbeatTimers.anonymous = setInterval(() => {
+                const apiSettings = loadData('api_settings');
+                if (apiSettings && apiSettings.url && apiSettings.key && Math.random() < (settings.anonymousProbability / 100)) {
+                    triggerAnonymousConfessionPost();
+                }
+            }, (Math.random() * (settings.anonymousMaxInterval - settings.anonymousMinInterval) + settings.anonymousMinInterval) * 60 * 1000);
+            
+            // 重启NPC定时发帖心跳
+            heartbeatTimers.npcPost = setInterval(() => {
+                const apiSettings = loadData('api_settings');
+                if (apiSettings && apiSettings.url && apiSettings.key && Math.random() < (settings.npcPostProbability / 100)) {
+                    triggerNpcPost();
+                }
+            }, (Math.random() * (settings.npcPostMaxInterval - settings.npcPostMinInterval) + settings.npcPostMinInterval) * 60 * 1000);
+            
+            console.log('心跳定时器已重启，使用新的设置参数');
         }
 
         async function loadAllSavedData() {
@@ -17176,8 +17467,9 @@ let npcProfiles = [
             
             console.log("System Heartbeat triggered at", new Date().toLocaleTimeString());
             const now = Date.now();
-            // For testing, use 1 minute. For production, use a longer interval like 4 hours.
-            const TRIGGER_INTERVAL = 1 * 60 * 1000; 
+            // 使用用户设置的触发阈值
+            const settings = loadData('heartbeatSettings', defaultHeartbeatSettings);
+            const TRIGGER_INTERVAL = settings.systemTriggerThreshold * 60 * 1000; 
 
             Object.keys(characterState).forEach(charId => {
                 const state = characterState[charId];
@@ -17688,10 +17980,11 @@ ${triggerDescription}
                 this.chatHistory = {}; // 修正：应为对象，以角色ID为键
                 this.lastInteractionTime = {};
                 this.lastMomentTime = {}; // 记录每个角色最后发朋友圈的时间
+                const heartbeatSettings = loadData('heartbeatSettings', defaultHeartbeatSettings);
                 this.triggerThresholds = {
                     emotionHigh: 0.85,  // 情感强度达到0.85可能触发
                     timeGap: 6 * 60 * 60 * 1000, // 6小时无互动可能触发
-                    minInterval: 30 * 60 * 1000 // 【重要】最少30分钟才能发下一条朋友圈
+                    minInterval: heartbeatSettings.momentsMinInterval * 60 * 1000 // 使用用户设置的朋友圈最小间隔
                 };
                 this.characterPersonalityModifiers = {
                     '温柔': { frequency: 0.8, emotionThreshold: 0.8 },
@@ -21858,7 +22151,7 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
     // 刷新钱包数据
     function refreshWalletData() {
         const claimedPayments = JSON.parse(localStorage.getItem('claimedPayments') || '{}');
-        const characters = getCharacters();
+        const characters = loadData('characters', []);
         const currentBalance = getWalletBalance();
         
         let totalIncome = 0;
@@ -23006,8 +23299,9 @@ async function generateAndPublishAIPerchPost(character) {
 }
 function perchHeartbeat() {
     console.log("[栖木心跳] 检查AI自主活动...");
+    const settings = loadData('heartbeatSettings', defaultHeartbeatSettings);
     characters.forEach(char => {
-        const postProbability = 0.3; 
+        const postProbability = settings.perchPostProbability / 100; 
         if (Math.random() < postProbability) {
             generateAndPublishAIPerchPost(char);
         }
@@ -24114,6 +24408,13 @@ function addNewEventListeners() {
             $('#app-icon-settings-back-button').addEventListener('click', () => showScreen('beautify-settings-screen'));
             $('#font-settings-link').addEventListener('click', () => showScreen('font-settings-screen'));
             $('#font-settings-back-button').addEventListener('click', () => showScreen('main-settings-screen'));
+            $('#heartbeat-settings-link').addEventListener('click', () => {
+                loadHeartbeatSettings();
+                showScreen('heartbeat-settings-screen');
+            });
+            $('#heartbeat-settings-back-button').addEventListener('click', () => showScreen('main-settings-screen'));
+            $('#save-heartbeat-settings').addEventListener('click', saveHeartbeatSettings);
+            $('#reset-heartbeat-settings').addEventListener('click', resetHeartbeatSettings);
 
             $('#music-block').addEventListener('click', (e) => { if (e.target === e.currentTarget) $('#background-input').click(); });
             $('#background-input').addEventListener('change', async (e) => {
@@ -26137,25 +26438,26 @@ function addNewEventListeners() {
             }, 100);
             
             // 启动栖木AI心跳，让角色可以自主发帖
-            setInterval(perchHeartbeat, 5 * 60 * 1000); // 每5分钟检查一次
+            const initialHeartbeatSettings = loadData('heartbeatSettings', defaultHeartbeatSettings);
+            heartbeatTimers.perchHeartbeat = setInterval(perchHeartbeat, initialHeartbeatSettings.perchHeartbeatInterval * 60 * 1000);
             
             // ================== 【社区心跳 - 全新模块】 ==================
 
-            // NPC文学创作心跳（优化版）：每5到15分钟，随机检查一次，并以35%的几率触发一位NPC进行创作
-            setInterval(() => {
+            // NPC文学创作心跳（优化版）：使用用户设置的间隔和概率
+            heartbeatTimers.npcWriting = setInterval(() => {
                 const apiSettings = loadData('api_settings');
-                if (apiSettings && apiSettings.url && apiSettings.key && Math.random() < 0.35) {
+                if (apiSettings && apiSettings.url && apiSettings.key && Math.random() < (initialHeartbeatSettings.npcWritingProbability / 100)) {
                     triggerNpcPost();
                 }
-            }, (Math.random() * 10 + 5) * 60 * 1000);
+            }, (Math.random() * (initialHeartbeatSettings.npcWritingMaxInterval - initialHeartbeatSettings.npcWritingMinInterval) + initialHeartbeatSettings.npcWritingMinInterval) * 60 * 1000);
 
-            // 匿名"树洞"心跳（优化版）：每20到40分钟，随机检查一次，并以50%的几率生成一篇匿名的秘密分享
-            setInterval(() => {
+            // 匿名"树洞"心跳（优化版）：使用用户设置的间隔和概率
+            heartbeatTimers.anonymous = setInterval(() => {
                 const apiSettings = loadData('api_settings');
-                if (apiSettings && apiSettings.url && apiSettings.key && Math.random() < 0.5) {
+                if (apiSettings && apiSettings.url && apiSettings.key && Math.random() < (initialHeartbeatSettings.anonymousProbability / 100)) {
                     triggerAnonymousConfessionPost();
                 }
-            }, (Math.random() * 20 + 20) * 60 * 1000);
+            }, (Math.random() * (initialHeartbeatSettings.anonymousMaxInterval - initialHeartbeatSettings.anonymousMinInterval) + initialHeartbeatSettings.anonymousMinInterval) * 60 * 1000);
         });
 
         // ====== 新增：AI对收到红包/转账的反应机制 ======
@@ -27030,16 +27332,17 @@ ${eventTypeSpecificInput}
             setupPlanModalEffects();
 
             // 启动AI心跳，让角色可以自主行动
-            setInterval(systemHeartbeat, 60 * 60 * 1000); // 每1小时检查一次
+            const systemHeartbeatSettings = loadData('heartbeatSettings', defaultHeartbeatSettings);
+            heartbeatTimers.systemHeartbeat = setInterval(systemHeartbeat, systemHeartbeatSettings.systemHeartbeatInterval * 60 * 60 * 1000);
 
-            // NPC定时发帖的心跳，每2-5分钟随机触发一次
-            setInterval(() => {
+            // NPC定时发帖的心跳，使用用户设置的间隔和概率
+            heartbeatTimers.npcPost = setInterval(() => {
                 // 只有当API开启时才执行
                 const apiSettings = loadData('api_settings');
-                if (apiSettings && apiSettings.url && apiSettings.key && Math.random() < 0.25) { // 25%的几率触发
+                if (apiSettings && apiSettings.url && apiSettings.key && Math.random() < (systemHeartbeatSettings.npcPostProbability / 100)) {
                     triggerNpcPost();
                 }
-            }, (Math.random() * 3 + 2) * 60 * 1000);
+            }, (Math.random() * (systemHeartbeatSettings.npcPostMaxInterval - systemHeartbeatSettings.npcPostMinInterval) + systemHeartbeatSettings.npcPostMinInterval) * 60 * 1000);
 
         });
 

@@ -26056,7 +26056,11 @@ function addNewEventListeners() {
                         // 检查当前是否在聊天界面
                         const isChatScreenActive = !document.getElementById('wechat-chat-screen').classList.contains('hidden');
                         if (isChatScreenActive) {
-                            // 在聊天界面，只需要确保聊天内容滚动到底部，不需要重置页面位置
+                            // 在聊天界面，既要重置页面位置也要滚动聊天内容到底部
+                            window.scrollTo({
+                                top: 0,
+                                behavior: 'auto'
+                            });
                             const chatContentArea = document.getElementById('chat-content-area');
                             if (chatContentArea) {
                                 chatContentArea.scrollTop = chatContentArea.scrollHeight;
@@ -26088,14 +26092,17 @@ function addNewEventListeners() {
                         // 检查当前是否在聊天界面
                         const isChatScreenActive = !document.getElementById('wechat-chat-screen').classList.contains('hidden');
                         if (isChatScreenActive) {
-                            // 在聊天界面，只处理聊天内容滚动，避免页面位置重置造成的卡顿
-                            const chatContentArea = document.getElementById('chat-content-area');
-                            if (chatContentArea) {
-                                // 使用requestAnimationFrame确保流畅滚动
-                                requestAnimationFrame(() => {
-                                    chatContentArea.scrollTop = chatContentArea.scrollHeight;
+                            // 在聊天界面，既要重置页面位置也要滚动聊天内容到底部
+                            requestAnimationFrame(() => {
+                                window.scrollTo({
+                                    top: 0,
+                                    behavior: 'auto' // 使用auto避免smooth动画卡顿
                                 });
-                            }
+                                const chatContentArea = document.getElementById('chat-content-area');
+                                if (chatContentArea) {
+                                    chatContentArea.scrollTop = chatContentArea.scrollHeight;
+                                }
+                            });
                         } else {
                             // 不在聊天界面，快速重置页面位置
                             requestAnimationFrame(() => {

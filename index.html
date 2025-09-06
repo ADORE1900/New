@@ -13212,7 +13212,21 @@ function getChatBackgroundElement() {
                 const msg = messagesToLoad[i];
                 if (msg.type === 'system-internal') continue; // 不渲染内部消息
                 
-                const isNewSender = i === 0 || (i > 0 && messagesToLoad[i - 1].sender !== msg.sender);
+                // 修复：需要考虑与完整历史记录的上下文关系
+                let isNewSender = false;
+                const currentIndex = startIndex + i;
+                
+                if (currentIndex === 0) {
+                    // 第一条消息，总是新发送者
+                    isNewSender = true;
+                } else {
+                    // 检查与前一条消息的发送者是否不同
+                    const prevMsg = history[currentIndex - 1];
+                    if (prevMsg && prevMsg.sender !== msg.sender) {
+                        isNewSender = true;
+                    }
+                }
+                
                 const messageElement = createMessageElement(msg.content, msg.sender, msg.type, msg.timestamp, isNewSender);
                 chatContentArea.prepend(messageElement);
             }
@@ -13269,7 +13283,8 @@ function getChatBackgroundElement() {
                             }
                         });
                     } else {
-                        avatar.innerHTML = '<i class="fas fa-user"></i>';
+                        // 使用可爱的匿名头像图标
+                        avatar.innerHTML = `<i class="ri-user-line"></i>`;
                     }
                 }
                 // --- 新的正确代码 END ---
@@ -13427,6 +13442,67 @@ if (type === 'image') {
                         }
                     }
                 });
+            } else if (type === 'perch-forward') {
+                messageBubble.className = `chat-message ${senderClass} perch-forward-bubble`;
+                
+                const uniqueAvatarId = `forward-avatar-${Date.now()}`;
+                const avatarHtml = `<div id="${uniqueAvatarId}" class="w-6 h-6 rounded-full bg-zinc-600 flex-shrink-0 bg-cover bg-center"></div>`;
+
+                const forwardContent = `
+                    <div class="perch-forward-header">转发自「栖木」</div>
+                    <div class="perch-forward-author">
+                        ${content.originalAuthorAvatar ? avatarHtml : ''}
+                        <span>${content.originalAuthorName}</span>
+                    </div>
+                    <div class="perch-forward-content">${content.originalContent}</div>
+                `;
+                messageBubble.innerHTML = forwardContent;
+
+                if (content.originalAuthorAvatar) {
+                    if (content.originalAuthorAvatar.startsWith('http://') || content.originalAuthorAvatar.startsWith('https://')) {
+                        const avatarElement = document.getElementById(uniqueAvatarId);
+                        if (avatarElement) {
+                            avatarElement.style.backgroundImage = `url(${content.originalAuthorAvatar})`;
+                        }
+                    } else {
+                        getImageFromDB(content.originalAuthorAvatar).then(blob => {
+                            const avatarElement = document.getElementById(uniqueAvatarId);
+                            if (avatarElement && blob) {
+                                avatarElement.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                            }
+                        });
+                    }
+                }
+                
+                messageBubble.addEventListener('click', () => {
+                    showMessageBox('这是一个从栖木转发来的帖子');
+                });
+            } else if (type === 'call-log') {
+                messageBubble.className = 'chat-system-message clickable-log';
+                
+                let summaryText = '';
+                if (typeof content === 'object' && content !== null && content.summary) {
+                    summaryText = content.summary;
+                } else if (typeof content === 'string') {
+                    summaryText = content;
+                } else {
+                    summaryText = '通话已结束';
+                }
+                
+                messageBubble.innerHTML = `<i class="ri-headphone-line" style="margin-right: 8px;"></i> ${summaryText}`;
+                
+                const currentMsg = chatHistories[currentChatCharacterId].history.find(msg => 
+                    msg.type === 'call-log' && 
+                    ((typeof msg.content === 'object' && msg.content.summary === summaryText) || 
+                     (typeof msg.content === 'string' && msg.content === summaryText)) && 
+                    Math.abs(msg.timestamp - timestamp) < 1000
+                );
+                if (currentMsg && currentMsg.callId) {
+                    messageBubble.setAttribute('onclick', `showCallLog('${currentMsg.callId}')`);
+                }
+
+                messageWrapper.className = 'chat-message-wrapper justify-center';
+                avatar.style.display = 'none';
             } else {
                 // 文本消息
                 messageBubble.className = `chat-message ${senderClass}`;
@@ -13434,8 +13510,17 @@ if (type === 'image') {
             }
 
             contentWrapper.appendChild(messageBubble);
-            messageWrapper.appendChild(avatar);
-            messageWrapper.appendChild(contentWrapper);
+            
+            // 根据发送者类型决定元素添加顺序，保持与appendMessage一致
+            if (type === 'system') {
+                messageWrapper.appendChild(contentWrapper);
+            } else if (senderClass === 'received') {
+                messageWrapper.appendChild(avatar);
+                messageWrapper.appendChild(contentWrapper);
+            } else {
+                messageWrapper.appendChild(contentWrapper);
+                messageWrapper.appendChild(avatar);
+            }
             
             return messageWrapper;
         }
@@ -14958,15 +15043,29 @@ ${context.recentDiaries.map(diary => diary.content).join('\n')}
                 $('#chat-input').value = '';
                 adjustTextareaHeight();
                 
+                // 确保聊天内容区域滚动到底部显示最新消息
+                setTimeout(() => {
+                    const chatContentArea = document.getElementById('chat-content-area');
+                    if (chatContentArea) {
+                        chatContentArea.scrollTop = chatContentArea.scrollHeight;
+                    }
+                }, 50);
+                
                 // 移动端发送消息后重置页面位置
                 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                 if (isMobile) {
-                    setTimeout(() => {
-                        window.scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
-                        });
-                    }, 100); // 较短延迟，因为没有键盘动画
+                    // 检查输入框是否还有焦点（键盘是否还在）
+                    const chatInput = document.getElementById('chat-input');
+                    if (chatInput && document.activeElement !== chatInput) {
+                        // 只有在输入框失去焦点（键盘收起）时才重置页面位置
+                        setTimeout(() => {
+                            window.scrollTo({
+                                top: 0,
+                                behavior: 'smooth'
+                            });
+                        }, 100);
+                    }
+                    // 如果输入框还有焦点，不做任何页面滚动，让用户继续输入
                 }
                 
                 // 4. 发送后，取消回复模式
@@ -25921,7 +26020,20 @@ function addNewEventListeners() {
             chatInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
+                    
+                    // 检测是否为移动设备
+                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                    
+                    // 发送消息
                     handleSendMessage();
+                    
+                    // 在移动端，发送消息后不要立即失焦，保持键盘打开状态
+                    // 让用户可以继续输入或主动点击其他地方来关闭键盘
+                    if (!isMobile) {
+                        // 桌面端可以正常失焦
+                        chatInput.blur();
+                    }
+                    // 移动端保持焦点，让用户决定何时关闭键盘
                 }
             });
             

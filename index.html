@@ -421,6 +421,9 @@
         /* 默认手机框模式下，背景图是绝对定位，跟随phone-screen */
         #home-wallpaper {
             position: absolute;
+            inset: 0;    /* 【核心修复】让其四边紧贴父容器 */
+            width: 100%; /* 【核心修复】确保宽度为100% */
+            height: 100%;/* 【核心修复】确保高度为100% */
             z-index: 0;
         }
         
@@ -1017,7 +1020,7 @@
         .light-mode .phone-frame { background-color: #1a1a1a; }
         .light-mode .phone-screen { background-color: transparent; }
         .light-mode #home-wallpaper { 
-            background: white; 
+            background-color: white; /* 【修复】改为background-color，不影响背景图片 */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -1050,12 +1053,7 @@
         .light-mode .chat-input-btn { color: #4b5563; }
         .light-mode .chat-system-message { background-color: rgba(0, 0, 0, 0.1); }
 
-        /* 主界面背景样式 - 确保背景图片正确显示 */
-        #home-wallpaper {
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
-        }
+
 
 
 
@@ -1109,7 +1107,7 @@
             display: flex;
             flex-direction: column;
             min-width: 0;
-            margin: 0 0.5rem;
+            margin: 0 0.25rem;
             max-width: 75%;
         }
         .chat-message-wrapper.sent .chat-message-content { align-items: flex-end; }
@@ -2452,14 +2450,14 @@
         .light-mode .chat-input-bar { border-color: rgba(0, 0, 0, 0.1); }
         #chat-input {
             border: 1px solid transparent;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: none;
             transition: background-color 0.3s, box-shadow 0.3s, height 0.2s ease-in-out;
             resize: none;
             overflow-y: auto;
             line-height: 1.5;
         }
-        .dark-mode #chat-input { background-color: rgba(31, 41, 55, 0.8); color: #ffffff; }
-        .light-mode #chat-input { background-color: rgba(243, 244, 246, 0.8); color: #1f2937; }
+        .dark-mode #chat-input { background-color: transparent; color: #ffffff; }
+        .light-mode #chat-input { background-color: transparent; color: #1f2937; }
         .status-bar.transparent-override {
             background-color: transparent !important;
         }
@@ -8448,9 +8446,9 @@
             max-width: 600px;
         }
         
-        /* 新增：确保在手机模式下标题栏始终可见 */
-        @media (max-width: 768px) {
-            .app-header {
+        /* 新增：确保在真正的移动设备上标题栏始终可见 */
+        @media (max-width: 768px) and (pointer: coarse) {
+            body:not(.fullscreen-active) .app-header {
                 display: flex !important;
                 visibility: visible !important;
                 opacity: 1 !important;
@@ -8460,7 +8458,7 @@
                 overflow: visible !important;
             }
             
-            .app-header-title {
+            body:not(.fullscreen-active) .app-header-title {
                 display: block !important;
                 visibility: visible !important;
                 opacity: 1 !important;
@@ -8469,11 +8467,25 @@
         
         /* 新增：精确调整所有App顶栏在全屏下的位置 */
         .fullscreen-active .app-header {
-            /* 确保标题栏在全屏模式下仍然可见 */
+            /* 在全屏模式下保持标题栏显示 */
             display: flex !important;
             visibility: visible !important;
             opacity: 1 !important;
-            z-index: 20 !important;
+        }
+        
+        /* 高优先级：确保全屏模式下标题栏正常显示，不受任何媒体查询影响 */
+        @media all {
+            .fullscreen-active .app-header {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            .fullscreen-active .app-header-title {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
         }
 
         /* ====== 栖木 App 样式 (文字卡片) ====== */
@@ -9411,6 +9423,123 @@
             display: none !important;
         }
 
+        /* ====== 【新增】栖木通知系统样式 ====== */
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .dark-mode .notification-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .light-mode .notification-item:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .notification-item.unread {
+            position: relative;
+        }
+        .dark-mode .notification-item.unread {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        .light-mode .notification-item.unread {
+            background-color: rgba(59, 130, 246, 0.08);
+        }
+
+        .notification-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+        .notification-content {
+            flex-grow: 1;
+            font-size: 0.875rem;
+        }
+        .notification-text strong {
+            font-weight: 600;
+        }
+        .dark-mode .notification-text strong {
+            color: #93c5fd; /* 蓝色高亮 */
+        }
+        .light-mode .notification-text strong {
+            color: #2563eb;
+        }
+        .notification-quote {
+            margin-top: 0.25rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid;
+            font-style: italic;
+            opacity: 0.7;
+        }
+        .dark-mode .notification-quote {
+            border-color: #4b5563;
+        }
+        .light-mode .notification-quote {
+            border-color: #d1d5db;
+        }
+        .notification-timestamp {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            opacity: 0.6;
+        }
+
+        /* ====== 【新增】引用回复功能样式 ====== */
+        #reply-preview-bar {
+            transition: all 0.2s ease-in-out;
+        }
+        .dark-mode #reply-preview-bar {
+            background-color: rgba(55, 65, 81, 0.5);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #d1d5db;
+        }
+        .light-mode #reply-preview-bar {
+            background-color: rgba(243, 244, 246, 0.8);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #4b5563;
+        }
+        #reply-preview-bar.visible {
+            display: flex;
+        }
+
+        .quoted-message {
+            margin-bottom: 0.375rem; /* 6px */
+            padding: 0.5rem 0.75rem; /* 8px 12px */
+            border-left-width: 2px;
+            border-radius: 0.375rem; /* 6px */
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+        .dark-mode .quoted-message {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .light-mode .quoted-message {
+            background-color: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        .quoted-author {
+            font-weight: 600;
+            margin-bottom: 0.125rem; /* 2px */
+        }
+        .dark-mode .quoted-author {
+            color: #93c5fd; /* 浅蓝色 */
+        }
+        .light-mode .quoted-author {
+            color: #3b82f6; /* 蓝色 */
+        }
+        .quoted-content {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
     </style>
 </head>
 <body class="dark-mode">
@@ -10038,6 +10167,7 @@
                 </div>
                 <template id="bubble-menu-template">
                     <div class="bubble-context-menu">
+                        <button data-action="reply" class="bubble-menu-button"><i class="ri-reply-line"></i><span>回复</span></button>
                         <button data-action="delete" class="bubble-menu-button"><i class="fas fa-trash"></i><span>删除</span></button>
                         <button data-action="copy" class="bubble-menu-button"><i class="fas fa-copy"></i><span>复制</span></button>
                         <button data-action="multiselect" class="bubble-menu-button"><i class="fas fa-check-square"></i><span>多选</span></button>
@@ -10047,8 +10177,16 @@
                 </template>
 
 
-                <div id="wechat-content-chat" class="flex-1 overflow-y-auto p-4 space-y-1">
+                <div id="wechat-content-chat" class="flex-1 overflow-y-auto p-2 space-y-1">
                     </div>
+
+                <div id="reply-preview-bar" class="hidden items-center justify-between px-3 py-1.5 text-xs border-t">
+                    <div class="flex-1 overflow-hidden">
+                        <div class="font-semibold" id="reply-preview-author"></div>
+                        <div class="truncate" id="reply-preview-content"></div>
+                    </div>
+                    <button id="cancel-reply-btn" class="ml-2 text-lg p-1">&times;</button>
+                </div>
                 
                 <div id="chat-quick-actions-bar">
                     <button id="quick-voice-message-btn" class="quick-action-btn"><i class="ri-mic-line"></i></button>
@@ -10426,9 +10564,37 @@
                     <h3 class="app-header-title flex-grow text-center">API 设定</h3>
                 </div>
                 <div class="settings-content flex-1 p-2 overflow-y-auto space-y-6">
-                     <div class="p-4 rounded-lg bg-card">
+                    <!-- API配置管理 -->
+                    <div class="p-4 rounded-lg bg-card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold">API 配置管理</h3>
+                            <button id="add-api-config-btn" class="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">
+                                <i class="fas fa-plus mr-1"></i>新增配置
+                            </button>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="api-config-select" class="block text-sm font-medium mb-2">选择API配置:</label>
+                                <div class="flex items-center gap-2">
+                                    <select id="api-config-select" class="form-select flex-grow">
+                                        <option value="">请选择配置...</option>
+                                    </select>
+                                    <button id="delete-api-config-btn" class="px-3 py-2 bg-red-600 text-white rounded-md text-sm hover:bg-red-700" title="删除当前配置">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 配置详情 -->
+                    <div class="p-4 rounded-lg bg-card">
                         <h3 class="font-bold mb-4">连接设定</h3>
                         <div class="space-y-4">
+                            <div>
+                                <label for="config-name" class="block text-sm font-medium mb-1">配置名称:</label>
+                                <input type="text" id="config-name" placeholder="例如: OpenAI配置" class="api-input form-input">
+                            </div>
                             <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-700/50">
                                 <label for="api-enabled-toggle" class="block text-sm font-medium">启用 API 连接</label>
                                 <label class="relative inline-flex items-center cursor-pointer">
@@ -10462,7 +10628,16 @@
                         </div>
                     </div>
                     
-                    <button id="save_settings_btn" class="w-full flex justify-center items-center mt-2 px-4 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gray-700 hover:bg-gray-600">保存设定</button>
+                    <div class="flex gap-2 mt-2">
+                        <button id="save_settings_btn" class="flex-1 flex justify-center items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">保存当前配置</button>
+                        <button id="apply_config_btn" class="flex-1 flex justify-center items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">应用配置</button>
+                    </div>
+                    <div id="current-config-info" class="mt-3 p-3 bg-gray-800 rounded-lg text-sm hidden">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-300">当前应用配置:</span>
+                            <span id="current-config-name" class="text-green-400 font-medium"></span>
+                        </div>
+                    </div>
                     <div id="api-status" class="mt-4 p-4 rounded-lg text-center font-semibold text-sm hidden"></div>
                     <div id="security-warning" class="bg-yellow-100 text-yellow-700 mt-4 p-4 rounded-lg hidden" role="alert">
                         <p class="font-bold">安全提醒</p>
@@ -10536,6 +10711,10 @@
                     <div class="perch-action-buttons">
                         <button id="perch-refresh-btn" class="perch-action-btn" title="刷新">
                             <i class="ri-refresh-line"></i>
+                        </button>
+                        <button id="perch-notifications-btn" class="perch-action-btn relative" title="通知">
+                            <i class="ri-notification-3-line"></i>
+                            <div id="perch-notification-dot" class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full hidden"></div>
                         </button>
                         <button id="new-perch-post-btn" class="perch-action-btn" title="发布新帖子">
                             <i class="ri-quill-pen-line"></i>
@@ -10859,37 +11038,49 @@
                     body.classList.remove('fullscreen-active');
                     iconElement.className = 'fas fa-expand w-6 text-center mr-3';
                     fullscreenBtn.title = '进入全屏';
-                    // 新增：保存状态到 localStorage
+                    // 保存状态到 localStorage
                     localStorage.setItem('fullscreen_mode', 'false');
+                    console.log('🔴 退出全屏模式，状态已保存');
                 } else {
                     // 进入全屏模式
                     body.classList.add('fullscreen-active');
                     iconElement.className = 'fas fa-compress w-6 text-center mr-3';
                     fullscreenBtn.title = '退出全屏';
-                    // 新增：保存状态到 localStorage
+                    // 保存状态到 localStorage
                     localStorage.setItem('fullscreen_mode', 'true');
+                    console.log('🟢 进入全屏模式，状态已保存');
                 }
             }
 
             // 新增：页面加载时检查并应用已保存的状态
             const savedMode = localStorage.getItem('fullscreen_mode');
             
-            // 检测是否为手机设备
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            // 检测是否为真正的移动设备（仅基于User Agent，不考虑窗口大小）
+            const isTrueMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
-            if (savedMode === 'true' && !isMobile) {
-                // 如果保存的状态是全屏且不是手机设备，则应用全屏模式
+            if (savedMode === 'true') {
+                // 如果保存的状态是全屏，则应用全屏模式（不再限制设备类型）
                 body.classList.add('fullscreen-active');
                 iconElement.className = 'fas fa-compress w-6 text-center mr-3';
                 fullscreenBtn.title = '退出全屏';
+                console.log('🟢 全屏模式已从localStorage恢复');
+                
+                // 延迟确保全屏状态不被其他代码覆盖
+                setTimeout(() => {
+                    if (!body.classList.contains('fullscreen-active')) {
+                        body.classList.add('fullscreen-active');
+                        console.log('🟢 全屏状态被重新应用（防止被覆盖）');
+                    }
+                }, 16);
             } else {
                 // 否则，确保是手机模式，不启用全屏
                 body.classList.remove('fullscreen-active');
                 iconElement.className = 'fas fa-expand w-6 text-center mr-3';
                 fullscreenBtn.title = '进入全屏';
+                console.log('🔴 手机模式已设置，savedMode:', savedMode);
                 
-                // 在手机模式下，确保标题栏始终可见
-                if (isMobile) {
+                // 在真正的移动设备上，确保标题栏始终可见
+                if (isTrueMobile) {
                     const appHeaders = document.querySelectorAll('.app-header');
                     appHeaders.forEach(header => {
                         header.style.display = 'flex';
@@ -10957,6 +11148,7 @@
         let callHistory = []; // NEW: To store the conversation during a call
         let callLogs = {}; // 新增：用于存储通话记录
         let typewriterTimeout = null;
+        let currentReplyToTimestamp = null; // 【【新增这行】】
 
 // [新增] 这个函数会创建或获取一个专门用于显示背景的图层
 function getChatBackgroundElement() {
@@ -10985,6 +11177,80 @@ function getChatBackgroundElement() {
     }
     return bgElement;
 } // 新增：用于追踪打字机动画
+
+        // 【【新增函数1：开始回复模式】】
+        function startReplyMode(timestamp) {
+            console.log('开始回复模式，时间戳:', timestamp); // 调试信息
+            const msg = chatHistories[currentChatCharacterId]?.history.find(m => String(m.timestamp) === timestamp);
+            if (!msg) {
+                console.log('未找到消息'); // 调试信息
+                return;
+            }
+
+            const character = characters.find(c => c.id === currentChatCharacterId);
+            const authorName = msg.sender === 'user' ? '我' : character?.name || '角色';
+            
+            let previewContent = (msg.type === 'text') ? msg.content : `[${msg.type}]`;
+
+            document.getElementById('reply-preview-author').textContent = `回复 ${authorName}`;
+            document.getElementById('reply-preview-content').textContent = previewContent;
+            
+            const previewBar = document.getElementById('reply-preview-bar');
+
+            // 【【核心修正】】
+            // 强制显示回复预览条，移除所有可能的隐藏类
+            console.log('显示回复预览条'); // 调试信息
+            
+            // 检查元素是否存在
+            if (!previewBar) {
+                console.error('回复预览条元素不存在!');
+                return;
+            }
+            
+            // 完全重置所有可能的隐藏样式
+            previewBar.className = previewBar.className.replace(/hidden/g, '');
+            previewBar.style.cssText = '';  // 清除所有内联样式
+            
+            // 强制设置显示样式
+            previewBar.style.setProperty('display', 'flex', 'important');
+            previewBar.style.setProperty('visibility', 'visible', 'important');
+            previewBar.style.setProperty('opacity', '1', 'important');
+            previewBar.style.setProperty('height', 'auto', 'important');
+            previewBar.style.setProperty('max-height', 'none', 'important');
+            previewBar.style.setProperty('overflow', 'visible', 'important');
+            previewBar.style.setProperty('background', 'transparent', 'important');
+            previewBar.style.setProperty('z-index', '9999', 'important');
+            previewBar.style.setProperty('position', 'relative', 'important');
+            
+            // 重新设置基本的flex样式类
+            previewBar.className = 'flex items-center justify-between px-3 py-1.5 text-xs border-t';
+            
+
+            
+            // 强制触发重绘
+            previewBar.offsetHeight;
+
+            currentReplyToTimestamp = timestamp;
+            document.getElementById('chat-input').focus();
+        }
+
+        // 【【新增函数2：取消回复模式】】
+        function cancelReplyMode() {
+            const previewBar = document.getElementById('reply-preview-bar');
+            
+            if (!previewBar) {
+                console.error('回复预览条元素不存在!');
+                return;
+            }
+            
+            // 【【核心修正】】
+            // 强制隐藏回复预览条
+            console.log('隐藏回复预览条'); // 调试信息
+            previewBar.style.setProperty('display', 'none', 'important');
+            previewBar.className = 'hidden items-center justify-between px-3 py-1.5 text-xs border-t';
+
+            currentReplyToTimestamp = null;
+        }
 
 
         // DOM 元素獲取
@@ -11240,8 +11506,13 @@ function getChatBackgroundElement() {
                             iconEl.style.backgroundImage = `url(${objectURL})`;
                             const i = iconEl.querySelector('i');
                             if(i) i.style.display = 'none';
+
+                            // --- 【在这里添加了三行修复代码】 ---
+                            // 在刷新时也明确地设置尺寸和位置
                             iconEl.style.backgroundSize = 'cover';
+                            iconEl.style.backgroundPosition = 'center';
                             iconEl.style.backgroundRepeat = 'no-repeat';
+                            // --- 【修复结束】 ---
                         }
                     });
                 }
@@ -11502,24 +11773,51 @@ function getChatBackgroundElement() {
             const savedFontSize = loadData('fontSize', 'medium');
             setFontSize(savedFontSize);
 
-            const savedApiSettings = loadData('api_settings');
-            if (savedApiSettings && savedApiSettings.url && savedApiSettings.key) {
-                $('#api_url').value = savedApiSettings.url;
-                $('#api_key').value = savedApiSettings.key;
-                
-                const modelSelect = $('#model_select');
-                if (savedApiSettings.model && !Array.from(modelSelect.options).some(opt => opt.value === savedApiSettings.model)) {
-                    const option = document.createElement('option');
-                    option.value = savedApiSettings.model;
-                    option.textContent = savedApiSettings.model.startsWith('models/') ? savedApiSettings.model.substring(7) : savedApiSettings.model;
-                    modelSelect.appendChild(option);
+            // 首先检查是否有多配置系统的数据
+            const savedApiConfigs = loadData('api_configs', []);
+            const savedCurrentConfigId = loadData('current_config_id', '');
+            
+            // 如果有多配置数据，优先使用多配置
+            if (savedApiConfigs.length > 0 && savedCurrentConfigId) {
+                const currentConfig = savedApiConfigs.find(c => c.id === savedCurrentConfigId);
+                if (currentConfig) {
+                    $('#config-name').value = currentConfig.name;
+                    $('#api_url').value = currentConfig.url;
+                    $('#api_key').value = currentConfig.key;
+                    
+                    const modelSelect = $('#model_select');
+                    if (currentConfig.model && !Array.from(modelSelect.options).some(opt => opt.value === currentConfig.model)) {
+                        const option = document.createElement('option');
+                        option.value = currentConfig.model;
+                        option.textContent = currentConfig.model.startsWith('models/') ? currentConfig.model.substring(7) : currentConfig.model;
+                        modelSelect.appendChild(option);
+                    }
+                    modelSelect.value = currentConfig.model || '';
+                    
+                    const isValid = await fetchModels(true);
+                    updateApiStatusUI(isValid);
                 }
-                modelSelect.value = savedApiSettings.model;
-                
-                const isValid = await fetchModels(true);
-                updateApiStatusUI(isValid);
             } else {
-                updateApiStatusUI(false);
+                // 兼容旧的单配置系统
+                const savedApiSettings = loadData('api_settings');
+                if (savedApiSettings && savedApiSettings.url && savedApiSettings.key) {
+                    $('#api_url').value = savedApiSettings.url;
+                    $('#api_key').value = savedApiSettings.key;
+                    
+                    const modelSelect = $('#model_select');
+                    if (savedApiSettings.model && !Array.from(modelSelect.options).some(opt => opt.value === savedApiSettings.model)) {
+                        const option = document.createElement('option');
+                        option.value = savedApiSettings.model;
+                        option.textContent = savedApiSettings.model.startsWith('models/') ? savedApiSettings.model.substring(7) : savedApiSettings.model;
+                        modelSelect.appendChild(option);
+                    }
+                    modelSelect.value = savedApiSettings.model;
+                    
+                    const isValid = await fetchModels(true);
+                    updateApiStatusUI(isValid);
+                } else {
+                    updateApiStatusUI(false);
+                }
             }
 
             // 【新增】加载API开关状态
@@ -11529,6 +11827,10 @@ function getChatBackgroundElement() {
             // 【新增】加载通知状态
             notificationStatus = loadData('notificationStatus', { chat: false, moments: false, diary: false, plan: false });
             updateAllNotificationDots();
+            
+            // 【新增】加载栖木通知数据
+            perchNotifications = loadData('perchNotifications', []);
+            updateNotificationBell(); // 页面加载时更新铃铛状态
         }
 
         // 通用功能
@@ -12546,7 +12848,7 @@ function getChatBackgroundElement() {
             messagesToRender.forEach((msg, index) => {
                 if (msg.type === 'system-internal') return; // 不渲染内部消息
                 const isNewSender = index === 0 || (index > 0 && messagesToRender[index - 1].sender !== msg.sender);
-                appendMessage(msg.content, msg.sender, msg.type, false, msg.timestamp, isNewSender);
+                appendMessage(msg, isNewSender);
             });
             
             // 确保滚动到最新消息
@@ -12751,7 +13053,9 @@ if (type === 'image') {
             return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
         }
 
-        function appendMessage(content, sender, type = 'text', shouldSave = true, timestamp = Date.now(), isNewSender = false) {
+        function appendMessage(msg, isNewSender) { // 【【修改点1：函数参数变了】】
+            const { content, sender, type, timestamp, replyTo } = msg; // 【【修改点2：从对象中解构数据】】
+            
             if (type === 'system-internal') return; // 不渲染内部消息
             const senderClass = sender === 'user' ? 'sent' : 'received';
 
@@ -12806,6 +13110,23 @@ if (type === 'image') {
 
             const contentWrapper = document.createElement('div');
             contentWrapper.className = 'chat-message-content';
+
+            // 【【修改点3：在这里添加渲染引用块的逻辑】】
+            if (replyTo) {
+                const originalMsg = chatHistories[currentChatCharacterId]?.history.find(m => String(m.timestamp) === String(replyTo));
+                if (originalMsg) {
+                    const originalAuthorName = originalMsg.sender === 'user' ? '我' : characters.find(c => c.id === currentChatCharacterId)?.name;
+                    let originalContentPreview = (originalMsg.type === 'text') ? originalMsg.content : `[${originalMsg.type}]`;
+
+                    const quoteElement = document.createElement('div');
+                    quoteElement.className = 'quoted-message';
+                    quoteElement.innerHTML = `
+                        <div class="quoted-author">${originalAuthorName}</div>
+                        <div class="quoted-content">${originalContentPreview}</div>
+                    `;
+                    contentWrapper.appendChild(quoteElement);
+                }
+            }
 
             const messageBubble = document.createElement('div');
             
@@ -13040,15 +13361,12 @@ if (type === 'image') {
             if (placeholder) placeholder.remove();
 
             chatContentArea.appendChild(messageWrapper);
-            if(shouldSave) chatContentArea.scrollTop = chatContentArea.scrollHeight;
+            chatContentArea.scrollTop = chatContentArea.scrollHeight;
 
-            if (shouldSave && currentChatCharacterId) {
-                if (!chatHistories[currentChatCharacterId]) {
-                    chatHistories[currentChatCharacterId] = { history: [], pinned: false };
-                }
-                chatHistories[currentChatCharacterId].history.push({ content, sender, type, timestamp });
-                saveData('chatHistories', chatHistories);
-                // V7.0: Update last interaction timestamp
+            // 【【修改点4：移除数据保存逻辑，现在由调用方负责】】
+            // 数据保存现在在 handleSendMessage 等调用方中处理
+            // V7.0: Update last interaction timestamp
+            if (currentChatCharacterId) {
                 updateCharacterState(currentChatCharacterId);
             }
         }
@@ -13081,7 +13399,8 @@ if (type === 'image') {
                 const lastReadStatus = Array.from(chatContentArea.querySelectorAll('.message-read-status')).pop();
                 if (lastReadStatus) lastReadStatus.classList.add('visible');
 
-                appendMessage("...", 'ai', 'text', false, Date.now(), true);
+                const thinkingMsg = { content: "...", sender: 'ai', type: 'text', timestamp: Date.now() };
+                appendMessage(thinkingMsg, true);
                 thinkingMessageWrapper = chatContentArea.lastElementChild;
             } else if (retryWrapper) {
                 const bubble = retryWrapper.querySelector('.chat-message p');
@@ -13176,6 +13495,9 @@ if (type === 'image') {
 - **事实性回答**: 在回答这类问题时，你必须优先保证【事实的准确性】。你需要根据[记忆回顾]中的"事件"和"标题"来直接、清晰地回答我的问题。
 - **避免再创作**: 在回答关于过去事实的问题时，【绝对禁止】将我的提问本身视为一个新的创作灵感。你的任务是"回忆"，而不是"想象"。
 
+# 【【新增模块：回复/引用规则】】
+当用户的消息格式为 [回复你的"原文"] 新消息内容 时，这代表用户正在引用你之前说的某一句话。你的回应必须紧密围绕被引用的"原文"和用户的新问题/评论展开，展现出连贯的对话能力和对上下文的理解。
+
 # 语言准则 (至关重要！)
 - **你的所有回复，包括旁白和对话，都必须且只能使用【简体中文】。**
 - **绝对禁止在回复中使用任何英文或其他语言，除非用户的输入中包含了特定的外文词汇而你需要引用它。**
@@ -13261,6 +13583,16 @@ ${moduleStyleContext || "无"}
                     // **V12.1 核心修复：异步处理聊天记录，正确打包图片**
                     const processedHistory = await Promise.all(historyForApi.map(async (msg) => {
                         let role = msg.sender === 'user' ? 'user' : 'assistant';
+                        let currentContent = msg.content; // 先获取当前内容
+
+                        // 【【新增逻辑：处理引用消息】】
+                        if (msg.sender === 'user' && msg.replyTo) {
+                            const originalMsg = chatHistory.find(m => String(m.timestamp) === String(msg.replyTo));
+                            if (originalMsg && originalMsg.type === 'text') {
+                                // 构造成AI能理解的格式
+                                currentContent = `[回复你的"${originalMsg.content}"] ${msg.content}`;
+                            }
+                        }
                         
                         // 如果是用户发送的图片或表情包消息
                         if (msg.sender === 'user' && (msg.type === 'image' || msg.type === 'sticker')) {
@@ -13296,10 +13628,10 @@ ${moduleStyleContext || "无"}
                         }
                         
                         // 处理其他所有类型的文本消息
-                        let content = msg.content;
+                        let content = currentContent; // 使用处理过的内容
                         if (msg.sender === 'system') {
                             role = 'user';
-                            content = `[系统提示: ${msg.content}]`;
+                            content = `[系统提示: ${currentContent}]`;
                         }
                         
                         return { role, content };
@@ -13702,7 +14034,7 @@ ${moduleStyleContext || "无"}
                 processedMessages.forEach((msg, index) => {
                     setTimeout(() => {
                         const isNew = index === 0;
-                        appendMessage(msg.content, 'ai', msg.type, false, msg.timestamp, isNew);
+                        appendMessage(msg, isNew);
                     }, index * 500); // 使用固定的延迟
                 });
             }
@@ -13862,9 +14194,10 @@ ${moduleStyleContext || "无"}
                     throw new Error('API设置未配置');
                 }
 
-                // 【核心修正】在这里定义清晰、无歧义的对话者名称
+                // 【第1步：添加此代码】
+                // 定义清晰、无歧义的对话者名称
                 const characterName = context.character.name;
-                const userNameForLog = "用户"; // 在日志中使用"用户"这一明确标签
+                const userNameForLog = "用户";
 
                 // 构建系统提示词 (这是给AI的底层指令)
                 const systemPrompt = `# 指令：你现在是一个有着极强文学性、极高文学造诣的作家。你现在应该作为角色撰写一篇日记。
@@ -13892,8 +14225,8 @@ ${moduleStyleContext || "无"}
 
 # 关键规则：正确区分对话者 (至关重要！)
 在下方提供的[今日互动摘要]中：
-- **标记为 [我] 的发言**：这是你 (${characterName}) 自己说的话。
-- **标记为 [对方] 的发言**：这是用户说的话。
+- **标记为 [${characterName}] 的发言**：这是你 (${characterName}) 自己说的话。
+- **标记为 [用户] 的发言**：这是用户说的话。
 写日记时，你必须从"我"的第一人称视角出发，正确地回忆和描述这场对话。绝对不能把对方的话当成是自己说的。
 
 # 指代用户的人称 (关键规则)：
@@ -13988,8 +14321,8 @@ ${moduleStyleContext || "无"}
 
 2. 关键规则：正确区分对话者 (至关重要！)
 在下方提供的[今日互动摘要]中：
-- **标记为 [我] 的发言**：这是你 (${characterName}) 自己说的话。
-- **标记为 [对方] 的发言**：这是用户说的话。
+- **标记为 [${characterName}] 的发言**：这是你 (${characterName}) 自己说的话。
+- **标记为 [用户] 的发言**：这是用户说的话。
 写日记时，你必须从"我"的第一人称视角出发，正确地回忆和描述这场对话。绝对不能把对方的话当成是自己说的。
 
 3. 指代用户的人称 (关键规则)：
@@ -13999,8 +14332,8 @@ ${moduleStyleContext || "无"}
 
 参考信息 (Context)
 ---
-[今日互动摘要 (你的视角是"我")]
-${context.recentChat.map(msg => `${msg.sender === 'user' ? '[对方]' : '[我]'}: ${msg.content}`).join('\n')}
+[今日互动摘要 (你的视角是 ${characterName})]
+${context.recentChat.map(msg => `${msg.sender === 'user' ? `[${userNameForLog}]` : `[${characterName}]`}: ${msg.content}`).join('\n')}
 
 [你最近的朋友圈动态]
 ${context.recentMoments.map(moment => moment.content).join('\n')}
@@ -14120,36 +14453,57 @@ ${context.recentDiaries.map(diary => diary.content).join('\n')}
             
             const userMessage = $('#chat-input').value.trim();
             
-            // [新代码开始] 指令拦截与处理
+            // 指令拦截部分保持不变
             if (userMessage.startsWith('发布动态：')) {
                 const momentContent = userMessage.substring(5).trim();
                 if (momentContent) {
                     publishMomentFromCommand(currentChatCharacterId, momentContent);
                     $('#chat-input').value = '';
                     adjustTextareaHeight();
-                    return; // 结束函数，不再作为普通消息处理
+                    return; 
                 } else {
                     showMessageBox('指令错误：动态内容不能为空！');
                     return;
                 }
             }
-            // [新代码结束]
             
             if (userMessage) {
                 const history = chatHistories[currentChatCharacterId]?.history || [];
                 const isNewSender = history.length === 0 || history[history.length - 1].sender !== 'user';
                 const timestamp = Date.now();
-                appendMessage(userMessage, 'user', 'text', true, timestamp, isNewSender);
+                
+                // 【【核心修改部分】】
+                // 1. 创建一个消息对象, 如果正在回复, 则附加上 replyTo 属性
+                const messageObject = {
+                    content: userMessage,
+                    sender: 'user',
+                    type: 'text',
+                    timestamp: timestamp,
+                    // 如果 currentReplyToTimestamp 有值, 就把它加到对象里
+                    ...(currentReplyToTimestamp && { replyTo: currentReplyToTimestamp })
+                };
+
+                // 2. 保存完整的消息对象
+                if (!chatHistories[currentChatCharacterId]) {
+                    chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+                }
+                chatHistories[currentChatCharacterId].history.push(messageObject);
+                saveData('chatHistories', chatHistories);
+                
+                // 3. 将完整的消息对象传递给渲染函数
+                //    注意：这里 appendMessage 的参数变了，所以第3步修改 appendMessage 很重要
+                appendMessage(messageObject, isNewSender);
+                
                 $('#chat-input').value = '';
                 adjustTextareaHeight();
                 
-                // 记录用户消息到触发系统
+                // 4. 发送后，取消回复模式
+                if (currentReplyToTimestamp) {
+                    cancelReplyMode();
+                }
+                
+                // 后续逻辑保持不变
                 momentsTriggerSystem.recordChat(currentChatCharacterId, userMessage, true);
-                
-                // 【修改】移除自动调用AI回复，用户需要手动点击接收键
-                // await getAIResponse({ content: userMessage, type: 'text' });
-                
-                // 检测情感触动，可能触发动态
                 setTimeout(() => {
                     detectEmotionalTrigger(currentChatCharacterId, userMessage);
                 }, 1000);
@@ -14191,7 +14545,15 @@ ${context.recentDiaries.map(diary => diary.content).join('\n')}
 
             // 在聊天界面给出系统提示，作为操作反馈
             const confirmationMessage = `[系统提示：${character.name} 已遵从您的指令，发布了一条新动态。]`;
-            appendMessage(confirmationMessage, 'system', 'system', true, Date.now(), false);
+            const systemMsg = { content: confirmationMessage, sender: 'system', type: 'system', timestamp: Date.now() };
+            appendMessage(systemMsg, false);
+            
+            // 手动保存系统消息到历史记录
+            if (!chatHistories[currentChatCharacterId]) {
+                chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+            }
+            chatHistories[currentChatCharacterId].history.push(systemMsg);
+            saveData('chatHistories', chatHistories);
 
             // 弹出全局提示
             showMessageBox(`${character.name} 已发布新动态！`);
@@ -14764,7 +15126,7 @@ ${transcriptText}
                     item.style.backgroundColor = body.classList.contains('dark-mode') ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
                 }
                 // --- 新的正确代码 START ---
-                const avatarContent = character.avatar ? '' : `<i class="${getRandomAnonymousAvatar()} text-xl"></i>`;
+                const avatarContent = character.avatar ? '' : `<i class="ri-user-line text-xl"></i>`;
                 const uniqueAvatarId = `avatar-list-${character.id}`; // 创建一个唯一的ID
 
                 item.innerHTML = `
@@ -14880,18 +15242,22 @@ ${transcriptText}
 
             if (character) {
                 currentEditingCharacterId = character.id;
+
+                // 【核心修复】无论如何，先立刻重置头像显示区域，清除上一个角色的头像残影
+                avatarPlaceholder.style.backgroundImage = '';
+                if (avatarIcon) avatarIcon.style.display = 'flex';
+
+                // 然后，如果当前角色有头像，再进行异步加载
                 if (character.avatar) {
                     // 异步加载头像
                     getImageFromDB(character.avatar).then(blob => {
-                        if (blob) {
+                        // 再次检查，确保在图片加载完成时，我们仍然在编辑同一个角色
+                        if (blob && currentEditingCharacterId === character.id) {
                             const objectURL = URL.createObjectURL(blob);
                             avatarPlaceholder.style.backgroundImage = `url(${objectURL})`;
                             if (avatarIcon) avatarIcon.style.display = 'none';
                         }
                     });
-                } else {
-                    avatarPlaceholder.style.backgroundImage = '';
-                    if (avatarIcon) avatarIcon.style.display = 'flex';
                 }
                 $('#cb-name-input').value = character.name;
                 $('#cb-persona-input').value = character.persona;
@@ -15318,12 +15684,27 @@ ${transcriptText}
                         renderChatHistory();
                     }
                 } else if (type === 'multi-message') {
+                    // 步骤 1: 更新数据
                     let history = chatHistories[currentChatCharacterId].history;
                     history = history.filter(m => !selectedMessages.has(String(m.timestamp)));
                     chatHistories[currentChatCharacterId].history = history;
                     saveData('chatHistories', chatHistories);
-                    renderChatHistory();
-                    exitMultiSelectMode();
+
+                    // 步骤 2: 直接从屏幕上移除选中的气泡
+                    $$('.chat-message-wrapper.selected').forEach(el => el.remove());
+
+                    // 步骤 3: 【核心修复】将所有收尾工作直接在这里执行
+                    // a. 隐藏多选标题栏，显示正常标题栏
+                    $('#chat-header-multiselect').classList.add('hidden');
+                    $('#chat-header-multiselect').classList.remove('flex');
+                    $('#chat-header-normal').classList.remove('hidden');
+
+                    // b. 重置多选状态的变量
+                    isMultiSelectMode = false;
+                    selectedMessages.clear();
+
+                    // c. 手动关闭确认弹窗 (modal变量在此函数作用域内可用)
+                    modal.classList.remove('visible');
                 } 
                 // --- 在这里添加新代码 ---
                 else if (type === 'clear-chat') {
@@ -15797,6 +16178,7 @@ ${transcriptText}
         // FIX 4: ADDED NOTIFICATION FUNCTION
         let notificationTimeout;
 let perchPosts = []; // 用于存储栖木的帖子
+let perchNotifications = []; // 用于存储栖木的通知
 
 // ================== 【文学升级版：NPC角色库】 ==================
 let npcProfiles = [
@@ -20104,7 +20486,29 @@ ${moment.image ? `配图描述: ${moment.image_desc}` : ''}
             const dataURL = canvas.toDataURL('image/png');
             
             // 将画作作为图片消息发送
-            appendMessage(dataURL, 'user', 'image', true, Date.now(), true);
+            const timestamp = Date.now();
+            const imageMsg = { 
+                content: dataURL, 
+                sender: 'user', 
+                type: 'image', 
+                timestamp: timestamp,
+                ...(currentReplyToTimestamp && { replyTo: currentReplyToTimestamp })
+            };
+            
+            // 保存到历史记录
+            if (!chatHistories[currentChatCharacterId]) {
+                chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+            }
+            chatHistories[currentChatCharacterId].history.push(imageMsg);
+            saveData('chatHistories', chatHistories);
+            
+            // 渲染消息
+            appendMessage(imageMsg, true);
+            
+            // 取消回复模式
+            if (currentReplyToTimestamp) {
+                cancelReplyMode();
+            }
             
             // 关闭画板
             closeDrawingBoard();
@@ -20799,7 +21203,29 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
 ✨ 愿这张牌为你带来指引和启示！`;
             
             // 发送消息
-            appendMessage(cardMessage, 'user', 'text', true, Date.now(), true);
+            const timestamp = Date.now();
+            const tarotMsg = { 
+                content: cardMessage, 
+                sender: 'user', 
+                type: 'text', 
+                timestamp: timestamp,
+                ...(currentReplyToTimestamp && { replyTo: currentReplyToTimestamp })
+            };
+            
+            // 保存到历史记录
+            if (!chatHistories[currentChatCharacterId]) {
+                chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+            }
+            chatHistories[currentChatCharacterId].history.push(tarotMsg);
+            saveData('chatHistories', chatHistories);
+            
+            // 渲染消息
+            appendMessage(tarotMsg, true);
+            
+            // 取消回复模式
+            if (currentReplyToTimestamp) {
+                cancelReplyMode();
+            }
             
             // 关闭弹窗
             closeTarotModal();
@@ -21778,6 +22204,106 @@ function perchHeartbeat() {
     });
 }
 
+// ================== 【栖木通知系统核心功能】 ==================
+
+/**
+ * 创建一条新的通知并保存
+ * @param {string} postId - 关联的帖子ID
+ * @param {string} commentId - (可选) 关联的评论ID
+ * @param {string} actorName - 触发通知的作者名
+ * @param {string} postContent - 帖子原文内容（用于预览）
+ * @param {string} commentContent - 评论内容
+ */
+function createNotification(postId, commentId, actorName, postContent, commentContent) {
+    const newNotification = {
+        id: `notif_${Date.now()}`,
+        postId,
+        commentId,
+        actorName,
+        postContent,
+        commentContent,
+        timestamp: Date.now(),
+        read: false
+    };
+
+    // 将新通知添加到列表开头
+    perchNotifications.unshift(newNotification);
+
+    // 最多只保留50条通知
+    if (perchNotifications.length > 50) {
+        perchNotifications.pop();
+    }
+
+    saveData('perchNotifications', perchNotifications);
+    updateNotificationBell(); // 更新铃铛红点
+}
+
+/**
+ * 更新铃铛图标的红点状态
+ */
+function updateNotificationBell() {
+    const hasUnread = perchNotifications.some(n => !n.read);
+    const dot = document.getElementById('perch-notification-dot');
+    if (dot) {
+        dot.classList.toggle('hidden', !hasUnread);
+    }
+}
+
+/**
+ * 渲染通知列表模态框
+ */
+function renderNotifications() {
+    const listContainer = document.getElementById('perch-notification-list');
+    listContainer.innerHTML = '';
+
+    if (perchNotifications.length === 0) {
+        listContainer.innerHTML = '<p class="text-center text-gray-500 p-8">这里空空如也</p>';
+        return;
+    }
+
+    perchNotifications.forEach(notif => {
+        const item = document.createElement('div');
+        item.className = 'notification-item';
+        if (!notif.read) {
+            item.classList.add('unread');
+        }
+        item.dataset.notificationId = notif.id;
+
+        // 查找评论者的头像
+        const actor = characters.find(c => c.name === notif.actorName) || npcProfiles.find(npc => npc.name === notif.actorName);
+        const avatarId = `notif-avatar-${notif.id}`;
+
+        item.innerHTML = `
+            <div class="notification-avatar bg-gray-600" id="${avatarId}"></div>
+            <div class="notification-content">
+                <p class="notification-text"><strong>${notif.actorName}</strong> 评论了你的帖子</p>
+                <p class="notification-quote">"${notif.commentContent.substring(0, 50)}${notif.commentContent.length > 50 ? '...' : ''}"</p>
+                <p class="notification-timestamp">${new Date(notif.timestamp).toLocaleString()}</p>
+            </div>
+        `;
+
+        listContainer.appendChild(item);
+
+        // 异步加载头像
+        if (actor && actor.avatar) {
+            loadAvatar(actor.avatar, document.getElementById(avatarId), actor.name.charAt(0), false);
+        }
+    });
+}
+
+/**
+ * 打开通知模态框
+ */
+function openNotificationModal() {
+    renderNotifications();
+    document.getElementById('perch-notification-modal').classList.add('visible');
+
+    // 打开后，将所有通知标记为已读
+    perchNotifications.forEach(n => n.read = true);
+    saveData('perchNotifications', perchNotifications);
+    updateNotificationBell(); // 隐藏红点
+}
+
 function addNewEventListeners() {
             if (window.eventListenersAdded) return;
             window.eventListenersAdded = true;
@@ -22185,31 +22711,59 @@ function addNewEventListeners() {
             $('#diary-book-modal').addEventListener('click', (e) => {
                 const editableText = e.target.closest('.diary-page-text');
                 if (editableText && editableText.contentEditable === 'true') {
-                    // 保存原始内容
-                    const originalContent = editableText.textContent;
+                    // 保存原始内容 - 转换HTML为纯文本格式以便后续比较
+                    const originalHtml = editableText.innerHTML;
+                    const originalContent = originalHtml
+                        .replace(/<br\s*\/?>/gi, '\n')  // 将<br>转换为换行符
+                        .replace(/<div>/gi, '\n')       // 将<div>转换为换行符
+                        .replace(/<\/div>/gi, '')       // 移除</div>
+                        .replace(/<[^>]*>/g, '')        // 移除其他HTML标签
+                        .trim();
                     const entryId = editableText.dataset.entryId;
                     
 
+                    
+                    // 保存函数
+                    const saveContent = () => {
+                        // 将HTML内容转换为纯文本，保留换行符
+                        const htmlContent = editableText.innerHTML;
+                        const newContent = htmlContent
+                            .replace(/<br\s*\/?>/gi, '\n')  // 将<br>转换为换行符
+                            .replace(/<div>/gi, '\n')       // 将<div>转换为换行符
+                            .replace(/<\/div>/gi, '')       // 移除</div>
+                            .replace(/<[^>]*>/g, '')        // 移除其他HTML标签
+                            .trim();
+                        
+                        if (newContent && newContent !== originalContent) {
+                            updateDiaryEntry(entryId, newContent);
+                            showMessageBox('日记已保存');
+                        }
+                        editableText.contentEditable = false;
+                        editableText.removeEventListener('keydown', handleKeyDown);
+                        editableText.removeEventListener('blur', handleBlur);
+                    };
                     
                     // 处理键盘事件
                     const handleKeyDown = (e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault();
-                            const newContent = editableText.textContent.trim();
-                            if (newContent && newContent !== originalContent) {
-                                updateDiaryEntry(entryId, newContent);
-                                showMessageBox('日记已保存');
-                            }
-                            editableText.contentEditable = false;
-                            editableText.removeEventListener('keydown', handleKeyDown);
+                            saveContent();
                         } else if (e.key === 'Escape') {
-                            editableText.textContent = originalContent;
+                            // 恢复原始内容，保持格式
+                            editableText.innerHTML = originalContent.replace(/\n/g, '<br>');
                             editableText.contentEditable = false;
                             editableText.removeEventListener('keydown', handleKeyDown);
+                            editableText.removeEventListener('blur', handleBlur);
                         }
                     };
                     
+                    // 处理失焦事件
+                    const handleBlur = () => {
+                        saveContent();
+                    };
+                    
                     editableText.addEventListener('keydown', handleKeyDown);
+                    editableText.addEventListener('blur', handleBlur, { once: true });
                     editableText.focus();
                 }
             });
@@ -22315,6 +22869,12 @@ function addNewEventListeners() {
 
             // ====== 栖木 App 事件绑定 (文字论坛) ======
             document.getElementById('perch-back-button').addEventListener('click', () => showScreen('home-screen'));
+
+            // 栖木通知按钮
+            document.getElementById('perch-notifications-btn').addEventListener('click', openNotificationModal);
+            document.getElementById('close-perch-notification-modal').addEventListener('click', () => {
+                document.getElementById('perch-notification-modal').classList.remove('visible');
+            });
 
             document.getElementById('new-perch-post-btn').addEventListener('click', () => {
                 document.getElementById('perch-content-input').value = '';
@@ -22956,7 +23516,7 @@ function addNewEventListeners() {
                     // 为头像div创建一个唯一的ID，便于后续异步更新
                     const uniqueAvatarId = `new-chat-avatar-${char.id}`;
                     // 如果角色没有头像，则显示一个默认图标
-                    const avatarContent = char.avatar ? '' : `<i class="${getRandomAnonymousAvatar()} text-xl"></i>`;
+                    const avatarContent = char.avatar ? '' : `<i class="ri-user-line text-xl"></i>`;
 
                     // 1. 先构建HTML结构，此时先不设置背景图片
                     item.innerHTML = `
@@ -23203,6 +23763,7 @@ function addNewEventListeners() {
                                 const objectURL = URL.createObjectURL(blob);
                                 previewIcon.style.backgroundImage = `url(${objectURL})`;
                                 previewIcon.style.backgroundSize = 'cover';
+                                previewIcon.style.backgroundPosition = 'center';
                                 previewIcon.style.backgroundRepeat = 'no-repeat';
                             }
                         });
@@ -23257,10 +23818,17 @@ function addNewEventListeners() {
                                 if (originalIcon) originalIcon.style.display = 'none';
                                 previewIcon.style.backgroundImage = `url(${objectURL})`;
 
+                                // 确保图片完全覆盖、居中且不重复
                                 iconEl.style.backgroundSize = 'cover';
+                                iconEl.style.backgroundPosition = 'center';
                                 iconEl.style.backgroundRepeat = 'no-repeat';
+                                iconEl.style.border = 'none'; /* 【核心修复】移除毛玻璃效果残留的边框 */
+
+                                // 同时为设置界面中的预览图标应用相同的修复
                                 previewIcon.style.backgroundSize = 'cover';
+                                previewIcon.style.backgroundPosition = 'center';
                                 previewIcon.style.backgroundRepeat = 'no-repeat';
+                                previewIcon.style.border = 'none'; /* 【核心修复】移除预览图标的边框 */
                                 
                                 const previewIconI = previewIcon.querySelector('i');
                                 if (previewIconI) previewIconI.style.display = 'none';
@@ -23301,29 +23869,81 @@ function addNewEventListeners() {
             $('#fetch_models_btn').addEventListener('click', () => fetchModels(false));
 
             $('#save_settings_btn').addEventListener('click', async () => {
+                const configName = $('#config-name').value.trim();
                 const apiUrl = $('#api_url').value.trim();
                 const apiKey = $('#api_key').value.trim();
-                let model = $('#model_select').value;
+                const model = $('#model_select').value;
+                const enabled = $('#api-enabled-toggle').checked;
+
+                if (!configName) {
+                    showMessageBox("请输入配置名称");
+                    return;
+                }
 
                 if (!apiUrl || !apiKey) {
-                    showMessageBox("請填寫 API 地址和密鑰");
-                return;
-            }
-            
-                const settings = { url: apiUrl, key: apiKey, model: model };
-                saveData('api_settings', settings);
-                showMessageBox("設定已保存，正在驗證連接...");
+                    showMessageBox("请填写 API 地址和密钥");
+                    return;
+                }
 
+                // 检查是否是编辑现有配置
+                const selectedConfigId = $('#api-config-select').value;
+                let configId;
+
+                if (selectedConfigId) {
+                    // 编辑现有配置
+                    configId = selectedConfigId;
+                    const configIndex = apiConfigs.findIndex(c => c.id === configId);
+                    if (configIndex !== -1) {
+                        apiConfigs[configIndex] = {
+                            id: configId,
+                            name: configName,
+                            url: apiUrl,
+                            key: apiKey,
+                            model: model,
+                            enabled: enabled,
+                            updatedAt: new Date().toISOString()
+                        };
+                    }
+                } else {
+                    // 新增配置
+                    configId = generateConfigId();
+                    apiConfigs.push({
+                        id: configId,
+                        name: configName,
+                        url: apiUrl,
+                        key: apiKey,
+                        model: model,
+                        enabled: enabled,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    });
+                }
+
+                // 保存配置列表
+                saveData('api_configs', apiConfigs);
+                
+                showMessageBox("配置已保存，正在验证连接...");
+
+                // 验证API连接
+                const settings = { url: apiUrl, key: apiKey, model: model };
                 const isValid = await fetchModels(true);
-                updateApiStatusUI(isValid);
 
                 if (isValid) {
-                    showMessageBox("API 驗證成功");
-                    settings.model = $('#model_select').value;
-                    saveData('api_settings', settings);
+                    showMessageBox("配置保存成功，API验证通过");
+                    // 更新模型信息
+                    const finalModel = $('#model_select').value;
+                    const configIndex = apiConfigs.findIndex(c => c.id === configId);
+                    if (configIndex !== -1) {
+                        apiConfigs[configIndex].model = finalModel;
+                        saveData('api_configs', apiConfigs);
+                    }
                 } else {
-                    showMessageBox("API 驗證失敗，請檢查地址和密鑰");
+                    showMessageBox("配置已保存，但API验证失败");
                 }
+
+                // 刷新配置列表并选中当前配置
+                loadApiConfigList();
+                $('#api-config-select').value = configId;
             });
 
             // 新增：API总开关的事件监听
@@ -23340,6 +23960,157 @@ function addNewEventListeners() {
                     showMessageBox(isEnabled ? 'API 已启用' : 'API 已关闭');
                 });
             }
+
+            // API多配置管理功能
+            const apiConfigs = loadData('api_configs', []);
+            const currentConfigId = loadData('current_config_id', '');
+
+            // 加载配置列表
+            function loadApiConfigList() {
+                const configSelect = $('#api-config-select');
+                configSelect.innerHTML = '<option value="">请选择配置...</option>';
+                
+                apiConfigs.forEach(config => {
+                    const option = document.createElement('option');
+                    option.value = config.id;
+                    option.textContent = config.name;
+                    if (config.id === currentConfigId) {
+                        option.selected = true;
+                    }
+                    configSelect.appendChild(option);
+                });
+            }
+
+            // 加载指定配置到表单
+            function loadConfigToForm(configId) {
+                const config = apiConfigs.find(c => c.id === configId);
+                if (config) {
+                    $('#config-name').value = config.name;
+                    $('#api_url').value = config.url;
+                    $('#api_key').value = config.key;
+                    $('#model_select').value = config.model || '';
+                    $('#api-enabled-toggle').checked = config.enabled || false;
+                }
+            }
+
+            // 清空表单
+            function clearConfigForm() {
+                $('#config-name').value = '';
+                $('#api_url').value = '';
+                $('#api_key').value = '';
+                $('#model_select').value = '';
+                $('#api-enabled-toggle').checked = false;
+            }
+
+            // 生成唯一ID
+            function generateConfigId() {
+                return 'config_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            }
+
+            // 新增配置按钮
+            $('#add-api-config-btn').addEventListener('click', () => {
+                clearConfigForm();
+                $('#api-config-select').value = '';
+                $('#config-name').focus();
+                showMessageBox('请输入新配置信息');
+            });
+
+            // 配置选择变化
+            $('#api-config-select').addEventListener('change', (e) => {
+                const configId = e.target.value;
+                if (configId) {
+                    loadConfigToForm(configId);
+                } else {
+                    clearConfigForm();
+                }
+            });
+
+            // 删除配置按钮
+            $('#delete-api-config-btn').addEventListener('click', () => {
+                const configId = $('#api-config-select').value;
+                if (!configId) {
+                    showMessageBox('请先选择要删除的配置');
+                    return;
+                }
+
+                const config = apiConfigs.find(c => c.id === configId);
+                if (!config) return;
+
+                if (confirm(`确定要删除配置"${config.name}"吗？`)) {
+                    const index = apiConfigs.findIndex(c => c.id === configId);
+                    if (index !== -1) {
+                        apiConfigs.splice(index, 1);
+                        saveData('api_configs', apiConfigs);
+                        
+                        // 如果删除的是当前配置，清除当前配置ID
+                        if (configId === currentConfigId) {
+                            saveData('current_config_id', '');
+                        }
+                        
+                        loadApiConfigList();
+                        clearConfigForm();
+                        showMessageBox('配置已删除');
+                    }
+                }
+            });
+
+            // 应用配置按钮
+            $('#apply_config_btn').addEventListener('click', async () => {
+                const configId = $('#api-config-select').value;
+                if (!configId) {
+                    showMessageBox('请先选择要应用的配置');
+                    return;
+                }
+
+                const config = apiConfigs.find(c => c.id === configId);
+                if (!config) return;
+
+                // 应用配置到系统
+                const settings = { url: config.url, key: config.key, model: config.model };
+                saveData('api_settings', settings);
+                saveData('api_enabled', config.enabled);
+                saveData('current_config_id', configId);
+                
+                showMessageBox('配置已应用，正在验证连接...');
+                
+                // 验证连接
+                const isValid = await fetchModels(true);
+                updateApiStatusUI(isValid && config.enabled);
+                
+                if (isValid) {
+                    showMessageBox('配置应用成功，API连接正常');
+                } else {
+                    showMessageBox('配置已应用，但API连接验证失败');
+                }
+                
+                // 更新当前配置显示
+                updateCurrentConfigDisplay();
+            });
+
+            // 显示当前配置信息
+            function updateCurrentConfigDisplay() {
+                const currentConfigInfo = $('#current-config-info');
+                const currentConfigNameSpan = $('#current-config-name');
+                
+                if (currentConfigId) {
+                    const currentConfig = apiConfigs.find(c => c.id === currentConfigId);
+                    if (currentConfig) {
+                        currentConfigNameSpan.textContent = currentConfig.name;
+                        currentConfigInfo.classList.remove('hidden');
+                    } else {
+                        currentConfigInfo.classList.add('hidden');
+                    }
+                } else {
+                    currentConfigInfo.classList.add('hidden');
+                }
+            }
+
+            // 初始化配置列表
+            loadApiConfigList();
+            if (currentConfigId) {
+                loadConfigToForm(currentConfigId);
+            }
+            updateCurrentConfigDisplay();
 
             $('#confirm-delete-btn').addEventListener('click', () => {
                 if (deleteCallback) deleteCallback();
@@ -23498,6 +24269,9 @@ function addNewEventListeners() {
             function handleMenuAction(action, timestamp, bubble) {
                  hideBubbleMenu();
                  switch (action) {
+                    case 'reply': // 【【新增这个 case】】
+                        startReplyMode(timestamp);
+                        break;
                     case 'delete':
                         showDeleteConfirmation('message', timestamp, '這條消息');
                         break;
@@ -23708,7 +24482,28 @@ function addNewEventListeners() {
                     if (imageId) {
                         const isNewSender = chatHistories[currentChatCharacterId]?.history.length === 0 || chatHistories[currentChatCharacterId].history.slice(-1)[0].sender !== 'user';
                         const timestamp = Date.now();
-                        appendMessage(imageId, 'user', 'image', true, timestamp, isNewSender);
+                        const imageMsg = { 
+                            content: imageId, 
+                            sender: 'user', 
+                            type: 'image', 
+                            timestamp: timestamp,
+                            ...(currentReplyToTimestamp && { replyTo: currentReplyToTimestamp })
+                        };
+                        
+                        // 保存到历史记录
+                        if (!chatHistories[currentChatCharacterId]) {
+                            chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+                        }
+                        chatHistories[currentChatCharacterId].history.push(imageMsg);
+                        saveData('chatHistories', chatHistories);
+                        
+                        // 渲染消息
+                        appendMessage(imageMsg, isNewSender);
+                        
+                        // 取消回复模式
+                        if (currentReplyToTimestamp) {
+                            cancelReplyMode();
+                        }
                     }
                     toggleFeaturesPanel();
                     e.target.value = '';
@@ -23729,7 +24524,30 @@ function addNewEventListeners() {
                 const text = voiceInput.value.trim();
                 if (text) {
                     const isNewSender = chatHistories[currentChatCharacterId]?.history.length === 0 || chatHistories[currentChatCharacterId].history.slice(-1)[0].sender !== 'user';
-                    appendMessage(text, 'user', 'voice', true, Date.now(), isNewSender);
+                    const timestamp = Date.now();
+                    const voiceMsg = { 
+                        content: text, 
+                        sender: 'user', 
+                        type: 'voice', 
+                        timestamp: timestamp,
+                        ...(currentReplyToTimestamp && { replyTo: currentReplyToTimestamp })
+                    };
+                    
+                    // 保存到历史记录
+                    if (!chatHistories[currentChatCharacterId]) {
+                        chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+                    }
+                    chatHistories[currentChatCharacterId].history.push(voiceMsg);
+                    saveData('chatHistories', chatHistories);
+                    
+                    // 渲染消息
+                    appendMessage(voiceMsg, isNewSender);
+                    
+                    // 取消回复模式
+                    if (currentReplyToTimestamp) {
+                        cancelReplyMode();
+                    }
+                    
                     voiceInput.value = '';
                     voiceModal.classList.remove('visible');
                 }
@@ -23770,7 +24588,17 @@ function addNewEventListeners() {
                 if (currentChatCharacterId) {
                     // 【核心修改】直接添加一条AI能够识别的、内容一致的系统消息
                     // 这条消息既会显示给用户，也会成为AI的记忆
-                    appendMessage('通話已結束', 'system', 'system', true); 
+                    const callEndMsg = { content: '通話已結束', sender: 'system', type: 'system', timestamp: Date.now() };
+                    
+                    // 保存到历史记录
+                    if (!chatHistories[currentChatCharacterId]) {
+                        chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+                    }
+                    chatHistories[currentChatCharacterId].history.push(callEndMsg);
+                    saveData('chatHistories', chatHistories);
+                    
+                    // 渲染消息
+                    appendMessage(callEndMsg, false);
                 }
                 
                 currentCallType = null;
@@ -23868,14 +24696,58 @@ function addNewEventListeners() {
                             // 【核心修复】确保发送时也能正确处理网络链接和本地图片
                             if (typeof stickerObject.url === 'string' && stickerObject.url.startsWith('http')) {
                                 // 如果是网络链接，直接发送URL
-                                appendMessage(stickerObject.url, 'user', 'sticker', true, Date.now(), true);
+                                const timestamp = Date.now();
+                                const stickerMsg = { 
+                                    content: stickerObject.url, 
+                                    sender: 'user', 
+                                    type: 'sticker', 
+                                    timestamp: timestamp,
+                                    ...(currentReplyToTimestamp && { replyTo: currentReplyToTimestamp })
+                                };
+                                
+                                // 保存到历史记录
+                                if (!chatHistories[currentChatCharacterId]) {
+                                    chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+                                }
+                                chatHistories[currentChatCharacterId].history.push(stickerMsg);
+                                saveData('chatHistories', chatHistories);
+                                
+                                // 渲染消息
+                                appendMessage(stickerMsg, true);
+                                
+                                // 取消回复模式
+                                if (currentReplyToTimestamp) {
+                                    cancelReplyMode();
+                                }
                             } else {
                                 // 如果是本地ID，从数据库读取并转换为dataURL再发送
                                 getImageFromDB(stickerObject.url).then(blob => {
                                     if(blob) {
                                         const reader = new FileReader();
                                         reader.onloadend = () => {
-                                            appendMessage(reader.result, 'user', 'sticker', true, Date.now(), true);
+                                            const timestamp = Date.now();
+                                            const stickerMsg = { 
+                                                content: reader.result, 
+                                                sender: 'user', 
+                                                type: 'sticker', 
+                                                timestamp: timestamp,
+                                                ...(currentReplyToTimestamp && { replyTo: currentReplyToTimestamp })
+                                            };
+                                            
+                                            // 保存到历史记录
+                                            if (!chatHistories[currentChatCharacterId]) {
+                                                chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+                                            }
+                                            chatHistories[currentChatCharacterId].history.push(stickerMsg);
+                                            saveData('chatHistories', chatHistories);
+                                            
+                                            // 渲染消息
+                                            appendMessage(stickerMsg, true);
+                                            
+                                            // 取消回复模式
+                                            if (currentReplyToTimestamp) {
+                                                cancelReplyMode();
+                                            }
                                         };
                                         reader.readAsDataURL(blob);
                                     }
@@ -24072,7 +24944,30 @@ function addNewEventListeners() {
                 const message = $('#red-packet-message').value || $('#red-packet-message').placeholder;
                 if (amount > 0) {
                     const content = { amount: amount.toFixed(2), message };
-                    appendMessage(content, 'user', 'red-packet', true, Date.now(), true);
+                    const timestamp = Date.now();
+                    const redPacketMsg = { 
+                        content: content, 
+                        sender: 'user', 
+                        type: 'red-packet', 
+                        timestamp: timestamp,
+                        ...(currentReplyToTimestamp && { replyTo: currentReplyToTimestamp })
+                    };
+                    
+                    // 保存到历史记录
+                    if (!chatHistories[currentChatCharacterId]) {
+                        chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+                    }
+                    chatHistories[currentChatCharacterId].history.push(redPacketMsg);
+                    saveData('chatHistories', chatHistories);
+                    
+                    // 渲染消息
+                    appendMessage(redPacketMsg, true);
+                    
+                    // 取消回复模式
+                    if (currentReplyToTimestamp) {
+                        cancelReplyMode();
+                    }
+                    
                     redPacketModal.classList.remove('visible');
                     amountInput.value = '';
                     $('#red-packet-message').value = '';
@@ -24087,7 +24982,30 @@ function addNewEventListeners() {
                 const message = $('#transfer-message').value || $('#transfer-message').placeholder;
                  if (amount > 0) {
                     const content = { amount: amount.toFixed(2), message };
-                    appendMessage(content, 'user', 'transfer', true, Date.now(), true);
+                    const timestamp = Date.now();
+                    const transferMsg = { 
+                        content: content, 
+                        sender: 'user', 
+                        type: 'transfer', 
+                        timestamp: timestamp,
+                        ...(currentReplyToTimestamp && { replyTo: currentReplyToTimestamp })
+                    };
+                    
+                    // 保存到历史记录
+                    if (!chatHistories[currentChatCharacterId]) {
+                        chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+                    }
+                    chatHistories[currentChatCharacterId].history.push(transferMsg);
+                    saveData('chatHistories', chatHistories);
+                    
+                    // 渲染消息
+                    appendMessage(transferMsg, true);
+                    
+                    // 取消回复模式
+                    if (currentReplyToTimestamp) {
+                        cancelReplyMode();
+                    }
+                    
                     transferModal.classList.remove('visible');
                     amountInput.value = '';
                     $('#transfer-message').value = '';
@@ -24353,7 +25271,22 @@ function addNewEventListeners() {
                     // 延迟显示AI反应，让用户有时间看到红包/转账
                     setTimeout(() => {
                         const isNew = true;
-                        appendMessage(aiReaction, 'ai', 'text', true, Date.now(), isNew);
+                        const reactionMsg = { 
+                            content: aiReaction, 
+                            sender: 'ai', 
+                            type: 'text', 
+                            timestamp: Date.now() 
+                        };
+                        
+                        // 保存到历史记录
+                        if (!chatHistories[currentChatCharacterId]) {
+                            chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+                        }
+                        chatHistories[currentChatCharacterId].history.push(reactionMsg);
+                        saveData('chatHistories', chatHistories);
+                        
+                        // 渲染消息
+                        appendMessage(reactionMsg, isNew);
                     }, 1500);
                 }
             } catch (error) {
@@ -24784,7 +25717,22 @@ ${eventTypeSpecificInput}
         console.log(`【短期记忆】：已将角色 ${characterId} 的最新状态写入记忆。`);
         
         if (eventType === 'discovered') {
-            appendMessage('[系统提示：对方似乎察觉到了你的观察，监控信号出现异常。]', 'system', 'system', true);
+            const discoveredMsg = { 
+                content: '[系统提示：对方似乎察觉到了你的观察，监控信号出现异常。]', 
+                sender: 'system', 
+                type: 'system', 
+                timestamp: Date.now() 
+            };
+            
+            // 保存到历史记录
+            if (!chatHistories[characterId]) {
+                chatHistories[characterId] = { history: [], pinned: false };
+            }
+            chatHistories[characterId].history.push(discoveredMsg);
+            saveData('chatHistories', chatHistories);
+            
+            // 渲染消息
+            appendMessage(discoveredMsg, false);
         }
 
     } catch (error) {
@@ -26273,7 +27221,9 @@ ${eventTypeSpecificInput}
             // 全屏时额外阻止页面滚动
             setTimeout(applyLooseScrollPrevention, 100);
         } else {
-            document.body.classList.remove('fullscreen-active');
+            // 注意：不要移除fullscreen-active类，因为我们使用的是CSS模拟全屏，不是浏览器API全屏
+            // 只有在用户主动退出我们的模拟全屏时才移除类
+            // document.body.classList.remove('fullscreen-active');
         }
     });
     
@@ -27048,6 +27998,9 @@ ${userPost.isAnonymous ? "因为对方是匿名的，你的评论应该更侧重
                                     renderPerchFeed();
                                 }
                                 console.log(`[NPC评论用户系统]：${commenter.name} 评论了您的帖子。`);
+                                
+                                // 【新增】创建通知
+                                createNotification(postToUpdate.id, newComment.id, commenter.name, postToUpdate.content, commentContent);
                             }
                         }
                     }, randomDelay);
@@ -27132,6 +28085,9 @@ ${coreTask}
                                 }
                                 console.log(`[核心角色评论系统]：${character.name} 评论了您的帖子。`);
                                 showMessageBox(`${character.name} 评论了你的想法`);
+                                
+                                // 【新增】创建通知
+                                createNotification(postToUpdate.id, newComment.id, character.name, postToUpdate.content, commentContent);
                             }
                         }
                     }, randomDelay);
@@ -27516,6 +28472,115 @@ ${coreTask}
             }, randomDelay);
         }
 
+        // 激活取消回复按钮
+        document.getElementById('cancel-reply-btn').addEventListener('click', cancelReplyMode);
+
+        // 【【新增：聊天消息长按事件监听器】】
+        function addChatMessageLongPressListeners() {
+            const chatContainer = document.getElementById('wechat-content-chat');
+            let longPressTimer;
+            let isLongPressed = false;
+            let startX, startY;
+
+            // 使用事件委托来处理所有聊天消息的长按
+            chatContainer.addEventListener('touchstart', (e) => {
+                const messageWrapper = e.target.closest('.chat-message-wrapper');
+                if (!messageWrapper || messageWrapper.classList.contains('sent')) return; // 只对接收的消息启用回复
+                
+                isLongPressed = false;
+                const touch = e.touches[0];
+                startX = touch.clientX;
+                startY = touch.clientY;
+                
+                longPressTimer = setTimeout(() => {
+                    isLongPressed = true;
+                    // messageWrapper本身就有data-timestamp属性
+                    const timestamp = messageWrapper.getAttribute('data-timestamp');
+                    if (timestamp) {
+                        startReplyMode(timestamp);
+                    }
+                }, 500); // 500ms长按
+            });
+
+            chatContainer.addEventListener('touchmove', (e) => {
+                if (longPressTimer) {
+                    const touch = e.touches[0];
+                    const diffX = Math.abs(touch.clientX - startX);
+                    const diffY = Math.abs(touch.clientY - startY);
+                    
+                    // 如果移动距离超过10px，取消长按
+                    if (diffX > 10 || diffY > 10) {
+                        clearTimeout(longPressTimer);
+                        longPressTimer = null;
+                    }
+                }
+            });
+
+            chatContainer.addEventListener('touchend', (e) => {
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+            });
+
+            // 桌面端鼠标事件
+            chatContainer.addEventListener('mousedown', (e) => {
+                const messageWrapper = e.target.closest('.chat-message-wrapper');
+                if (!messageWrapper || messageWrapper.classList.contains('sent')) return; // 只对接收的消息启用回复
+                
+                isLongPressed = false;
+                startX = e.clientX;
+                startY = e.clientY;
+                
+                longPressTimer = setTimeout(() => {
+                    isLongPressed = true;
+                    // messageWrapper本身就有data-timestamp属性
+                    const timestamp = messageWrapper.getAttribute('data-timestamp');
+                    if (timestamp) {
+                        startReplyMode(timestamp);
+                    }
+                }, 500); // 500ms长按
+            });
+
+            chatContainer.addEventListener('mousemove', (e) => {
+                if (longPressTimer) {
+                    const diffX = Math.abs(e.clientX - startX);
+                    const diffY = Math.abs(e.clientY - startY);
+                    
+                    // 如果移动距离超过10px，取消长按
+                    if (diffX > 10 || diffY > 10) {
+                        clearTimeout(longPressTimer);
+                        longPressTimer = null;
+                    }
+                }
+            });
+
+            chatContainer.addEventListener('mouseup', (e) => {
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+            });
+        }
+
+        // 页面加载完成后初始化长按监听器
+        addChatMessageLongPressListeners();
+
     </script>
+
+    <!-- 栖木通知模态框 -->
+    <div id="perch-notification-modal" class="modal-overlay">
+        <div class="modal-content w-[90%] max-w-[360px] flex flex-col max-h-[70vh]">
+            <div class="flex justify-between items-center mb-4 flex-shrink-0">
+                <h3 class="text-xl font-bold">通知中心</h3>
+                <button id="close-perch-notification-modal" class="text-2xl p-1 rounded-full hover:bg-white/20">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="perch-notification-list" class="flex-1 overflow-y-auto space-y-2">
+            </div>
+        </div>
+    </div>
+
         </body>
 </html>

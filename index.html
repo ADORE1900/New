@@ -1029,6 +1029,35 @@
         .light-mode .status-bar { transition: background-color 0.3s; background-color: #ffffff; }
         .light-mode .status-bar.on-home { background-color: transparent !important; }
         .light-mode .player-button i, .light-mode #music-upload-button i, .light-mode #playlist-button i, .light-mode .text-widget-input::placeholder { color: #1f2937; }
+        
+        /* 浅色模式下歌曲列表文字颜色 */
+        .light-mode .song-list-item {
+            color: #1f2937 !important; /* 深色文字 */
+        }
+        .light-mode .song-list-item.active {
+            color: #3b82f6 !important; /* 激活状态使用蓝色 */
+            font-weight: 600;
+        }
+        .light-mode .song-list-item:hover {
+            background-color: rgba(0, 0, 0, 0.05); /* 浅色悬停背景 */
+        }
+        .light-mode .song-list-item .delete-button {
+            color: #6b7280 !important; /* 删除按钮灰色 */
+        }
+        .light-mode .song-list-item .drag-handle {
+            color: #9ca3af !important; /* 拖拽图标灰色 */
+        }
+        
+        /* 浅色模式下播放列表模态框样式 */
+        .light-mode #song-list-modal .modal-content {
+            color: #1f2937; /* 深色文字 */
+        }
+        .light-mode #song-list-modal .modal-content h3 {
+            color: #1f2937 !important; /* 标题深色 */
+        }
+        .light-mode #song-list-modal .modal-content button {
+            color: #4b5563; /* 按钮深色 */
+        }
         .light-mode #mood-text { color: #1f2937; }
         .light-mode #mood-text::placeholder { color: #9ca3af; }
         .light-mode .dock, .light-mode .music-block {
@@ -2351,6 +2380,167 @@
             }
         }
         
+        /* ====== 钱包样式 ====== */
+        .wallet-container {
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .wallet-summary {
+            background: var(--primary-gradient);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+        
+        .wallet-total h4 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .total-amount {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .wallet-stats {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-label {
+            display: block;
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .wallet-records h4 {
+            margin: 0 0 15px 0;
+            color: var(--text-primary);
+            font-size: 18px;
+        }
+        
+        .records-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .record-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--background-secondary);
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .record-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .record-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+        
+        .record-icon.red-packet {
+            background: linear-gradient(135deg, #ff4757, #ff3838);
+        }
+        
+        .record-icon.transfer {
+            background: linear-gradient(135deg, #5352ed, #3742fa);
+        }
+        
+        .record-info {
+            flex: 1;
+        }
+        
+        .record-type {
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        
+        .record-character {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .record-amount {
+            font-weight: bold;
+            color: #2ed573;
+            font-size: 16px;
+        }
+        
+        .record-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        .empty-records {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-records i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        /* 钱包响应式设计 */
+        @media (max-width: 768px) {
+            .wallet-container {
+                padding: 15px;
+            }
+            
+            .wallet-summary {
+                padding: 15px;
+            }
+            
+            .total-amount {
+                font-size: 28px;
+            }
+            
+            .wallet-stats {
+                gap: 15px;
+            }
+            
+            .stat-value {
+                font-size: 16px;
+            }
+        }
+        
         @media (max-width: 480px) {
             .tarot-card-display {
                 margin-bottom: 25px;
@@ -3367,30 +3557,39 @@
             overflow: hidden;
             border: none;
             position: relative;
+            z-index: 10; /* 确保在背景层之上 */
         }
         .chat-message.red-packet-message {
-            background-image: radial-gradient(circle at 20% 20%, rgba(220, 20, 60, 0.25), transparent), linear-gradient(#1a1a1a, #1a1a1a);
+            background: linear-gradient(135deg, #8B0000, #DC143C, #B22222); /* 使用不透明背景 */
+            border: 2px solid rgba(220, 20, 60, 0.3);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
         }
         .chat-message.transfer-message {
-            background-image: radial-gradient(circle at 20% 20%, rgba(229, 231, 235, 0.15), transparent), linear-gradient(#374151, #374151);
+            background: linear-gradient(135deg, #2D3748, #4A5568, #374151); /* 使用不透明背景 */
+            border: 2px solid rgba(229, 231, 235, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         .payment-bubble-header {
             padding: 0.5rem 0.75rem;
             display: flex;
             align-items: center;
+            color: #FFFFFF; /* 确保文字在深色背景下可见 */
+            font-weight: 500;
         }
         .payment-bubble-header i {
             font-size: 1.5rem;
             margin-right: 0.5rem;
         }
-        .red-packet-message .payment-bubble-header i { color: #DC143C; }
+        .red-packet-message .payment-bubble-header i { color: #FF4444; } /* 红色图标 */
         .transfer-message .payment-bubble-header i { color: #E5E7EB; }
 
         .payment-bubble-body {
             padding: 0.125rem 0.75rem; /* 减小白色区域高度 */
-            background-color: white;
-            color: #6b7280;
+            background-color: rgba(255, 255, 255, 0.95); /* 增加不透明度 */
+            color: #374151;
             font-size: 0.65rem;
+            backdrop-filter: blur(5px); /* 添加背景模糊效果 */
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         .payment-bubble-amount {
             font-size: 1.125rem;
@@ -3578,13 +3777,35 @@
             background: rgba(0, 0, 0, 0.1);
         }
         
-        /* 浅色模式红包样式 */
+        /* 浅色模式红包/转账样式 */
         .light-mode .chat-message.red-packet-message {
-            background-image: radial-gradient(circle at 20% 20%, rgba(220, 20, 60, 0.15), transparent), linear-gradient(#ffffff, #f8f9fa);
+            background: linear-gradient(135deg, #FFE4E1, #FFC0CB, #FFB6C1); /* 浅色红包背景 */
+            border: 2px solid rgba(220, 20, 60, 0.4);
+            color: #8B0000;
+        }
+        
+        .light-mode .chat-message.transfer-message {
+            background: linear-gradient(135deg, #F7FAFC, #EDF2F7, #E2E8F0); /* 浅色转账背景 */
+            border: 2px solid rgba(113, 128, 150, 0.4);
+            color: #2D3748;
+        }
+        
+        .light-mode .red-packet-message .payment-bubble-header,
+        .light-mode .transfer-message .payment-bubble-header {
+            color: #2D3748; /* 浅色模式下使用深色文字 */
         }
         
         .light-mode .red-packet-message .payment-bubble-header i {
             color: #DC143C;
+        }
+        
+        .light-mode .transfer-message .payment-bubble-header i {
+            color: #4A5568;
+        }
+        
+        /* 夜间模式下红包图标样式 */
+        .dark-mode .red-packet-message .payment-bubble-header i {
+            color: #FF6B6B; /* 夜间模式红包图标 - 亮红色 */
         }
         
         .light-mode .red-packet-message .payment-bubble-message {
@@ -3638,6 +3859,67 @@
         
         .light-mode .send-payment-btn:hover {
             box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
+        }
+
+        /* ====== 红包/转账已收取状态样式 ====== */
+        
+        /* 已收取的红包样式 */
+        .red-packet-message.claimed {
+            opacity: 0.6;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.1), rgba(139, 0, 0, 0.1));
+            border: 1px solid rgba(220, 20, 60, 0.3);
+            cursor: not-allowed;
+        }
+        
+        .red-packet-message.claimed .payment-bubble-body {
+            background: rgba(139, 0, 0, 0.1);
+            color: rgba(220, 20, 60, 0.7);
+        }
+        
+        .red-packet-message.claimed .payment-bubble-body::after {
+            content: " (已领取)";
+            font-size: 0.75rem;
+            color: rgba(220, 20, 60, 0.6);
+        }
+        
+        /* 已收取的转账样式 */
+        .transfer-message.claimed {
+            opacity: 0.6;
+            background: linear-gradient(135deg, rgba(75, 85, 99, 0.1), rgba(55, 65, 81, 0.1));
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            cursor: not-allowed;
+        }
+        
+        .transfer-message.claimed .payment-bubble-body {
+            background: rgba(75, 85, 99, 0.1);
+            color: rgba(75, 85, 99, 0.7);
+        }
+        
+        .transfer-message.claimed .payment-bubble-body::after {
+            content: " (已接收)";
+            font-size: 0.75rem;
+            color: rgba(75, 85, 99, 0.6);
+        }
+        
+        /* 浅色模式下的已收取状态样式 */
+        .light-mode .red-packet-message.claimed {
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.05), rgba(248, 249, 250, 0.9));
+            border: 1px solid rgba(220, 20, 60, 0.2);
+        }
+        
+        .light-mode .red-packet-message.claimed .payment-bubble-body {
+            background: rgba(220, 20, 60, 0.05);
+            color: rgba(139, 0, 0, 0.7);
+        }
+        
+        .light-mode .transfer-message.claimed {
+            background: linear-gradient(135deg, rgba(55, 65, 81, 0.05), rgba(248, 249, 250, 0.9));
+            border: 1px solid rgba(55, 65, 81, 0.2);
+        }
+        
+        .light-mode .transfer-message.claimed .payment-bubble-body {
+            background: rgba(55, 65, 81, 0.05);
+            color: rgba(55, 65, 81, 0.7);
         }
         
         .sticker-item img {
@@ -10227,6 +10509,10 @@
                                 <div class="feature-icon-wrapper"><i class="ri-magic-line"></i></div>
                                 <span>塔罗牌</span>
                             </div>
+                            <div id="wallet-btn" class="feature-item">
+                                <div class="feature-icon-wrapper"><i class="ri-wallet-3-line"></i></div>
+                                <span>钱包</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -10329,6 +10615,46 @@
                                 <button id="send-tarot-btn" class="tarot-btn secondary" style="display: none;">
                                     <i class="fas fa-paper-plane"></i> 发送给TA
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 钱包弹窗 -->
+                <div id="wallet-modal" class="tarot-modal-overlay hidden">
+                    <div class="tarot-modal-content">
+                        <div class="tarot-modal-header">
+                            <h3 class="tarot-modal-title">💰 我的钱包</h3>
+                            <button id="close-wallet-modal" class="tarot-modal-close">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="wallet-container">
+                            <div class="wallet-summary">
+                                <div class="wallet-total">
+                                    <h4>当前余额</h4>
+                                    <div class="total-amount">¥<span id="current-balance">0.00</span></div>
+                                </div>
+                                <div class="wallet-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-label">总收入</span>
+                                        <span class="stat-value">¥<span id="total-income">0.00</span></span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">红包收入</span>
+                                        <span class="stat-value">¥<span id="redpacket-total">0.00</span></span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">转账收入</span>
+                                        <span class="stat-value">¥<span id="transfer-total">0.00</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wallet-records">
+                                <h4>收入记录</h4>
+                                <div id="wallet-records-list" class="records-list">
+                                    <!-- 记录将在这里动态生成 -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -13007,15 +13333,53 @@ if (type === 'image') {
                         <span>红包</span>
                     </div>
                 `;
+                
+                // 为红包生成稳定ID
+                const redPacketId = generateStablePaymentId('redpacket', currentChatCharacterId, content.amount, timestamp);
+                messageBubble.setAttribute('data-payment-id', redPacketId);
+                
+                // 检查是否已经领取
+                const claimedPayments = JSON.parse(localStorage.getItem('claimedPayments') || '{}');
+                if (claimedPayments[redPacketId]) {
+                    messageBubble.classList.add('claimed');
+                }
+                
                 messageBubble.addEventListener('click', () => {
                     if (sender === 'user') {
                         showMessageBox('您不能领取自己发送的红包');
                     } else {
-                        showMessageBox(`领取了 ${character.name} 的红包: ¥${content.amount}`);
+                        if (messageBubble.classList.contains('claimed')) {
+                            showMessageBox('您已经领取过这个红包了');
+                        } else {
+                            // 标记为已领取
+                            messageBubble.classList.add('claimed');
+                            const claimedPayments = JSON.parse(localStorage.getItem('claimedPayments') || '{}');
+                            claimedPayments[redPacketId] = {
+                                type: 'red-packet',
+                                amount: content.amount,
+                                timestamp: Date.now(),
+                                characterId: currentChatCharacterId
+                            };
+                            localStorage.setItem('claimedPayments', JSON.stringify(claimedPayments));
+                            
+                            // 增加钱包余额
+                            addToWallet(content.amount);
+                            
+                            showMessageBox(`领取了 ${character.name} 的红包: ¥${content.amount}`);
+                            // 更新钱包数据
+                            if (window.updateWalletAfterClaim) {
+                                window.updateWalletAfterClaim();
+                            }
+                        }
                     }
                 });
             } else if (type === 'transfer') {
                 messageBubble.className = `chat-message ${senderClass} transfer-message`;
+                
+                // 为转账生成稳定ID
+                const transferId = generateStablePaymentId('transfer', currentChatCharacterId, content.amount, timestamp);
+                messageBubble.setAttribute('data-payment-id', transferId);
+                
                 messageBubble.innerHTML = `
                     <div class="payment-bubble-header">
                         <i class="ri-bank-card-line"></i>
@@ -13027,11 +13391,40 @@ if (type === 'image') {
                         <span>¥${content.amount}</span>
                     </div>
                 `;
+                
+                // 检查是否已经接收
+                const claimedPayments = JSON.parse(localStorage.getItem('claimedPayments') || '{}');
+                if (claimedPayments[transferId]) {
+                    messageBubble.classList.add('claimed');
+                }
+                
                 messageBubble.addEventListener('click', () => {
                     if (sender === 'user') {
                         showMessageBox('您不能领取自己的转账');
                     } else {
-                        showMessageBox(`领取了 ${character.name} 的转账: ¥${content.amount}`);
+                        if (messageBubble.classList.contains('claimed')) {
+                            showMessageBox('您已经接收过这笔转账了');
+                        } else {
+                            // 标记为已接收
+                            messageBubble.classList.add('claimed');
+                            const claimedPayments = JSON.parse(localStorage.getItem('claimedPayments') || '{}');
+                            claimedPayments[transferId] = {
+                                type: 'transfer',
+                                amount: content.amount,
+                                timestamp: Date.now(),
+                                characterId: currentChatCharacterId
+                            };
+                            localStorage.setItem('claimedPayments', JSON.stringify(claimedPayments));
+                            
+                            // 增加钱包余额
+                            addToWallet(content.amount);
+                            
+                            showMessageBox(`领取了 ${character.name} 的转账: ¥${content.amount}`);
+                            // 更新钱包数据
+                            if (window.updateWalletAfterClaim) {
+                                window.updateWalletAfterClaim();
+                            }
+                        }
                     }
                 });
             } else {
@@ -13188,6 +13581,11 @@ if (type === 'image') {
                 avatar.style.display = 'none';
             } else if (type === 'red-packet') {
                 messageBubble.className = `chat-message ${senderClass} red-packet-message`;
+                
+                // 为红包生成稳定ID
+                const redPacketId = generateStablePaymentId('redpacket', currentChatCharacterId, content.amount, timestamp);
+                messageBubble.setAttribute('data-payment-id', redPacketId);
+                
                 messageBubble.innerHTML = `
                     <div class="payment-bubble-header">
                         <i class="ri-red-packet-fill"></i>
@@ -13199,15 +13597,49 @@ if (type === 'image') {
                         <span>红包</span>
                     </div>
                 `;
+                
+                // 检查是否已经领取
+                const claimedPayments = JSON.parse(localStorage.getItem('claimedPayments') || '{}');
+                if (claimedPayments[redPacketId]) {
+                    messageBubble.classList.add('claimed');
+                }
+                
                 messageBubble.addEventListener('click', () => {
                     if (sender === 'user') {
                         showMessageBox('您不能领取自己发送的红包');
                     } else {
-                        showMessageBox(`领取了 ${character.name} 的红包: ¥${content.amount}`);
+                        if (messageBubble.classList.contains('claimed')) {
+                            showMessageBox('您已经领取过这个红包了');
+                        } else {
+                            // 标记为已领取
+                            messageBubble.classList.add('claimed');
+                            const claimedPayments = JSON.parse(localStorage.getItem('claimedPayments') || '{}');
+                            claimedPayments[redPacketId] = {
+                                type: 'red-packet',
+                                amount: content.amount,
+                                timestamp: Date.now(),
+                                characterId: currentChatCharacterId
+                            };
+                            localStorage.setItem('claimedPayments', JSON.stringify(claimedPayments));
+                            
+                            // 增加钱包余额
+                            addToWallet(content.amount);
+                            
+                            showMessageBox(`领取了 ${character.name} 的红包: ¥${content.amount}`);
+                            // 更新钱包数据
+                            if (window.updateWalletAfterClaim) {
+                                window.updateWalletAfterClaim();
+                            }
+                        }
                     }
                 });
             } else if (type === 'transfer') {
                  messageBubble.className = `chat-message ${senderClass} transfer-message`;
+                 
+                 // 为转账生成稳定ID
+                 const transferId = generateStablePaymentId('transfer', currentChatCharacterId, content.amount, timestamp);
+                 messageBubble.setAttribute('data-payment-id', transferId);
+                 
                  messageBubble.innerHTML = `
                     <div class="payment-bubble-header">
                         <i class="ri-exchange-dollar-fill"></i>
@@ -13220,11 +13652,40 @@ if (type === 'image') {
                         <span>转账</span>
                     </div>
                 `;
+                
+                // 检查是否已经接收
+                const claimedPayments = JSON.parse(localStorage.getItem('claimedPayments') || '{}');
+                if (claimedPayments[transferId]) {
+                    messageBubble.classList.add('claimed');
+                }
+                
                 messageBubble.addEventListener('click', () => {
                      if (sender === 'user') {
                         showMessageBox('您不能接收自己发送的转账');
                     } else {
-                        showMessageBox('转账已接收');
+                        if (messageBubble.classList.contains('claimed')) {
+                            showMessageBox('您已经接收过这笔转账了');
+                        } else {
+                            // 标记为已接收
+                            messageBubble.classList.add('claimed');
+                            const claimedPayments = JSON.parse(localStorage.getItem('claimedPayments') || '{}');
+                            claimedPayments[transferId] = {
+                                type: 'transfer',
+                                amount: content.amount,
+                                timestamp: Date.now(),
+                                characterId: currentChatCharacterId
+                            };
+                            localStorage.setItem('claimedPayments', JSON.stringify(claimedPayments));
+                            
+                            // 增加钱包余额
+                            addToWallet(content.amount);
+                            
+                            showMessageBox('转账已接收');
+                            // 更新钱包数据
+                            if (window.updateWalletAfterClaim) {
+                                window.updateWalletAfterClaim();
+                            }
+                        }
                     }
                 });
             } else if (type === 'perch-forward') {
@@ -14496,6 +14957,17 @@ ${context.recentDiaries.map(diary => diary.content).join('\n')}
                 
                 $('#chat-input').value = '';
                 adjustTextareaHeight();
+                
+                // 移动端发送消息后重置页面位置
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                if (isMobile) {
+                    setTimeout(() => {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    }, 100); // 较短延迟，因为没有键盘动画
+                }
                 
                 // 4. 发送后，取消回复模式
                 if (currentReplyToTimestamp) {
@@ -21227,9 +21699,239 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
                 cancelReplyMode();
             }
             
-            // 关闭弹窗
-            closeTarotModal();
+                    // 关闭弹窗
+        closeTarotModal();
+    }
+
+    // ====== 钱包功能 ======
+    
+    // 初始化钱包功能
+    function setupWallet() {
+        // 钱包按钮点击事件
+        const walletBtn = document.getElementById('wallet-btn');
+        if (walletBtn) {
+            walletBtn.addEventListener('click', openWalletModal);
         }
+
+        // 关闭按钮事件
+        const closeBtn = document.getElementById('close-wallet-modal');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeWalletModal);
+        }
+
+        // 点击遮罩层关闭钱包
+        const modal = document.getElementById('wallet-modal');
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target.id === 'wallet-modal') {
+                    closeWalletModal();
+                }
+            });
+        }
+    }
+
+    // 打开钱包弹窗
+    function openWalletModal() {
+        const modal = document.getElementById('wallet-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('visible');
+        
+        // 刷新钱包数据
+        refreshWalletData();
+    }
+
+    // 关闭钱包弹窗
+    function closeWalletModal() {
+        const modal = document.getElementById('wallet-modal');
+        modal.classList.remove('visible');
+        modal.classList.add('hidden');
+    }
+
+    // 刷新钱包数据
+    function refreshWalletData() {
+        const claimedPayments = JSON.parse(localStorage.getItem('claimedPayments') || '{}');
+        const characters = getCharacters();
+        const currentBalance = getWalletBalance();
+        
+        let totalIncome = 0;
+        let redpacketTotal = 0;
+        let transferTotal = 0;
+        const records = [];
+
+        // 统计所有收入
+        Object.entries(claimedPayments).forEach(([id, payment]) => {
+            const amount = parseFloat(payment.amount) || 0;
+            totalIncome += amount;
+            
+            if (payment.type === 'red-packet') {
+                redpacketTotal += amount;
+            } else if (payment.type === 'transfer') {
+                transferTotal += amount;
+            }
+            
+            // 获取角色信息
+            const character = characters.find(c => c.id === payment.characterId) || { name: '未知角色' };
+            
+            records.push({
+                ...payment,
+                id: id,
+                characterName: character.name,
+                formattedTime: formatWalletTime(payment.timestamp)
+            });
+        });
+
+        // 按时间倒序排列
+        records.sort((a, b) => b.timestamp - a.timestamp);
+
+        // 更新界面
+        updateWalletDisplay(currentBalance, totalIncome, redpacketTotal, transferTotal, records);
+    }
+
+    // 更新钱包显示
+    function updateWalletDisplay(currentBalance, totalIncome, redpacketTotal, transferTotal, records) {
+        // 更新余额和收入统计
+        document.getElementById('current-balance').textContent = currentBalance.toFixed(2);
+        document.getElementById('total-income').textContent = totalIncome.toFixed(2);
+        document.getElementById('redpacket-total').textContent = redpacketTotal.toFixed(2);
+        document.getElementById('transfer-total').textContent = transferTotal.toFixed(2);
+
+        // 更新收入记录
+        const recordsList = document.getElementById('wallet-records-list');
+        if (records.length === 0) {
+            recordsList.innerHTML = `
+                <div class="empty-records">
+                    <i class="ri-wallet-3-line"></i>
+                    <p>暂无收入记录</p>
+                    <p>快去收取红包和转账吧！</p>
+                </div>
+            `;
+        } else {
+            recordsList.innerHTML = records.map(record => `
+                <div class="record-item">
+                    <div class="record-left">
+                        <div class="record-icon ${record.type === 'red-packet' ? 'red-packet' : 'transfer'}">
+                            <i class="${record.type === 'red-packet' ? 'ri-red-packet-fill' : 'ri-exchange-dollar-fill'}"></i>
+                        </div>
+                        <div class="record-info">
+                            <div class="record-type">${record.type === 'red-packet' ? '红包收入' : '转账收入'}</div>
+                            <div class="record-character">来自 ${record.characterName}</div>
+                            <div class="record-time">${record.formattedTime}</div>
+                        </div>
+                    </div>
+                    <div class="record-amount">+¥${parseFloat(record.amount).toFixed(2)}</div>
+                </div>
+            `).join('');
+        }
+    }
+
+    // 格式化钱包时间显示
+    function formatWalletTime(timestamp) {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diff = now - date;
+        
+        if (diff < 60000) { // 1分钟内
+            return '刚刚';
+        } else if (diff < 3600000) { // 1小时内
+            return `${Math.floor(diff / 60000)}分钟前`;
+        } else if (diff < 86400000) { // 24小时内
+            return `${Math.floor(diff / 3600000)}小时前`;
+        } else if (diff < 2592000000) { // 30天内
+            return `${Math.floor(diff / 86400000)}天前`;
+        } else {
+            return date.toLocaleDateString();
+        }
+    }
+
+    // 钱包余额管理系统
+    function getWalletBalance() {
+        const stored = localStorage.getItem('walletBalance');
+        if (stored === null) {
+            // 首次使用，设置初始余额
+            localStorage.setItem('walletBalance', '1000');
+            return 1000;
+        }
+        return parseFloat(stored);
+    }
+
+    function setWalletBalance(amount) {
+        localStorage.setItem('walletBalance', amount.toString());
+        if (window.updateWalletAfterClaim) {
+            window.updateWalletAfterClaim();
+        }
+    }
+
+    function addToWallet(amount) {
+        const currentBalance = getWalletBalance();
+        const numericAmount = parseFloat(amount);  // 确保金额是数字类型
+        setWalletBalance(currentBalance + numericAmount);
+    }
+
+    function deductFromWallet(amount) {
+        const currentBalance = getWalletBalance();
+        const numericAmount = parseFloat(amount);  // 确保金额是数字类型
+        const newBalance = Math.max(0, currentBalance - numericAmount);
+        setWalletBalance(newBalance);
+        return newBalance;
+    }
+
+    function hasEnoughBalance(amount) {
+        const numericAmount = parseFloat(amount);  // 确保金额是数字类型
+        return getWalletBalance() >= numericAmount;
+    }
+
+    // 重置钱包余额到正确数值（临时修复函数）
+    function resetWalletBalance() {
+        // 如果余额异常大（可能是字符串拼接错误），重置为合理数值
+        const currentBalance = getWalletBalance();
+        if (currentBalance > 100000) {  // 如果余额超过10万，可能是拼接错误
+            localStorage.setItem('walletBalance', '6200');  // 重置为1000初始+5200转账=6200
+            if (window.updateWalletAfterClaim) {
+                window.updateWalletAfterClaim();
+            }
+            console.log('钱包余额已重置为正确数值：¥6200');
+        }
+    }
+
+    // 生成稳定的支付ID（基于内容和时间戳，不使用随机数）
+    function generateStablePaymentId(type, characterId, amount, timestamp) {
+        // 使用内容的哈希值作为稳定标识符
+        const content = `${type}_${characterId}_${amount}_${timestamp}`;
+        let hash = 0;
+        for (let i = 0; i < content.length; i++) {
+            const char = content.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // 转换为32位整数
+        }
+        return `${type}_${Math.abs(hash)}`;
+    }
+
+    // 获取角色列表
+    function getCharacters() {
+        return [
+            { id: 'character1', name: '小雪' },
+            { id: 'character2', name: '小月' },
+            { id: 'character3', name: '小花' },
+            { id: 'character4', name: '小雨' },
+            { id: 'character5', name: '小梦' },
+            { id: 'character6', name: '小云' },
+            { id: 'character7', name: '小星' },
+            { id: 'character8', name: '小晴' },
+            { id: 'character9', name: '小语' },
+            { id: 'character10', name: '小诗' },
+            { id: 'character11', name: '小音' },
+            { id: 'character12', name: '小舞' }
+        ];
+    }
+
+    // 外部调用的钱包更新函数
+    window.updateWalletAfterClaim = function() {
+        // 如果钱包弹窗是打开的，立即刷新数据
+        const modal = document.getElementById('wallet-modal');
+        if (modal && modal.classList.contains('visible')) {
+            refreshWalletData();
+        }
+    };
 
 
 
@@ -24942,7 +25644,20 @@ function addNewEventListeners() {
                 const amountInput = $('#red-packet-amount');
                 const amount = parseFloat(amountInput.value);
                 const message = $('#red-packet-message').value || $('#red-packet-message').placeholder;
+                
+                if (amount <= 0) {
+                    showMessageBox('请输入有效的红包金额');
+                    return;
+                }
+                
+                if (!hasEnoughBalance(amount)) {
+                    showMessageBox(`余额不足！当前余额：¥${getWalletBalance().toFixed(2)}`);
+                    return;
+                }
+                
                 if (amount > 0) {
+                    // 扣除余额
+                    deductFromWallet(amount);
                     const content = { amount: amount.toFixed(2), message };
                     const timestamp = Date.now();
                     const redPacketMsg = { 
@@ -24980,7 +25695,20 @@ function addNewEventListeners() {
                 const amountInput = $('#transfer-amount');
                 const amount = parseFloat(amountInput.value);
                 const message = $('#transfer-message').value || $('#transfer-message').placeholder;
-                 if (amount > 0) {
+                
+                if (amount <= 0) {
+                    showMessageBox('请输入有效的转账金额');
+                    return;
+                }
+                
+                if (!hasEnoughBalance(amount)) {
+                    showMessageBox(`余额不足！当前余额：¥${getWalletBalance().toFixed(2)}`);
+                    return;
+                }
+                
+                if (amount > 0) {
+                    // 扣除余额
+                    deductFromWallet(amount);
                     const content = { amount: amount.toFixed(2), message };
                     const timestamp = Date.now();
                     const transferMsg = { 
@@ -25197,6 +25925,51 @@ function addNewEventListeners() {
                 }
             });
             
+            // 移动端键盘收起时重置页面位置
+            chatInput.addEventListener('blur', () => {
+                // 检测是否为移动设备
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                if (isMobile) {
+                    // 延迟执行，确保键盘完全收起
+                    setTimeout(() => {
+                        // 滚动到页面顶部
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                        
+                        // 也可以尝试滚动到聊天内容区域
+                        const chatContentArea = document.getElementById('chat-content-area');
+                        if (chatContentArea) {
+                            chatContentArea.scrollTop = chatContentArea.scrollHeight;
+                        }
+                    }, 300); // 300ms延迟确保键盘动画完成
+                }
+            });
+            
+            // 使用 Visual Viewport API 监听键盘状态（更现代的方法）
+            if (window.visualViewport) {
+                let initialViewportHeight = window.visualViewport.height;
+                
+                window.visualViewport.addEventListener('resize', () => {
+                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                    if (!isMobile) return;
+                    
+                    const currentHeight = window.visualViewport.height;
+                    const heightDifference = initialViewportHeight - currentHeight;
+                    
+                    // 如果视口高度恢复到初始状态（键盘收起）
+                    if (heightDifference < 100) { // 小于100px认为键盘已收起
+                        setTimeout(() => {
+                            window.scrollTo({
+                                top: 0,
+                                behavior: 'smooth'
+                            });
+                        }, 150);
+                    }
+                });
+            }
+            
             // V7.1: 激活所有新功能的事件監聽器
             // [已修复] - 删除重复调用，避免事件重复绑定
             
@@ -25214,6 +25987,7 @@ function addNewEventListeners() {
                 setupBrushControls();
                 setupDrawingBoardEvents();
                 setupTarotCard();
+                setupWallet();
             }, 100);
             
             // 启动栖木AI心跳，让角色可以自主发帖
@@ -25449,6 +26223,9 @@ function addNewEventListeners() {
 
         // ================== 页面加载完成后的总初始化 (修正版) START ==================
         document.addEventListener('DOMContentLoaded', async () => {
+            
+            // 修复钱包余额异常问题
+            resetWalletBalance();
             
             // 核心功能函数定义区 (将之前独立的函数放入此区域)
             

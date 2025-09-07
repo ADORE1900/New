@@ -1114,6 +1114,26 @@
             width: 100%;
             position: relative;
         }
+        
+        /* ====== 【【修正版】】拉黑消息的红色感叹号样式 ====== */
+        .chat-message-wrapper {
+            position: relative; /* 确保惊叹号可以相对于此元素定位 */
+        }
+        .blocked-message-indicator {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            color: #ef4444; /* 红色 */
+            text-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
+            /* 【核心修正】将负边距改为正边距，确保在wrapper内部 */
+        }
+        .chat-message-wrapper.sent .blocked-message-indicator {
+            left: 0.75rem; /* 在用户消息气泡的左侧 */
+        }
+        .chat-message-wrapper.received .blocked-message-indicator {
+            right: 0.75rem; /* 在AI消息气泡的右侧 */
+        }
         .chat-message-wrapper.sent {
             justify-content: flex-end;
         }
@@ -2688,16 +2708,22 @@
             display: none;
         }
         
+        /* 修改后 */
         .bubble-context-menu {
             position: absolute;
             background: rgba(20, 20, 20, 0.9);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-radius: 2rem;
-            padding: 2px 4px;
+            border-radius: 1rem; /* 圆角改小一点，更适合多行 */
+            padding: 0.5rem; /* 增加一点内边距，让按钮更舒展 */
             display: none;
-            flex-direction: row;
-            align-items: center;
+
+            /* ====== 核心修改：从Flex变为Grid ====== */
+            display: grid;
+            grid-template-columns: repeat(4, auto); /* 每行最多4个按钮，宽度自适应 */
+            gap: 4px; /* 按钮之间的间隙 */
+            justify-items: center; /* 让按钮在各自的格子内居中 */
+
             z-index: 10;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -2707,7 +2733,7 @@
             visibility: hidden;
         }
         .bubble-context-menu.visible {
-            display: flex;
+            display: grid; /* 配合上面的Grid布局 */
             opacity: 1;
             transform: translateY(0) scale(1);
             visibility: visible;
@@ -9981,6 +10007,147 @@
             color: #7c3aed;
         }
 
+        /* ====== 【【新增】】胶囊管理中心列表项样式 ====== */
+        .capsule-manager-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .light-mode .capsule-manager-item {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+        }
+        .capsule-manager-item .info {
+            flex-grow: 1;
+        }
+        .capsule-manager-item .actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+        .capsule-manager-item .actions button {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+            border-radius: 0.375rem;
+        }
+
+        /* ====== 【【新增】】消息撤回功能样式 ====== */
+        .recall-notification {
+            background-color: rgba(128, 128, 128, 0.2);
+            color: #9ca3af; /* 调整为更柔和的灰色 */
+            font-size: 0.75rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            margin: 0.5rem auto;
+            width: fit-content;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .light-mode .recall-notification {
+            background-color: rgba(0, 0, 0, 0.08);
+            color: #6b7280;
+        }
+        .recall-notification:hover {
+            background-color: rgba(128, 128, 128, 0.3);
+            transform: scale(1.05);
+        }
+        .light-mode .recall-notification:hover {
+            background-color: rgba(0, 0, 0, 0.12);
+        }
+
+        /* 撤回消息详情弹窗 */
+        #recalled-message-modal .modal-content {
+            max-width: 340px;
+            padding: 1.5rem;
+            font-family: 'Noto Serif SC', serif;
+        }
+        #recalled-modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #e5e7eb;
+        }
+        .light-mode #recalled-modal-title {
+            color: #1f2937;
+        }
+        .recalled-section-header {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #9ca3af;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.25rem;
+        }
+        .light-mode .recalled-section-header {
+            color: #6b7280;
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+        #recalled-original-content {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+        .light-mode #recalled-original-content {
+            background: rgba(0, 0, 0, 0.04);
+        }
+        #recalled-reason {
+            font-style: italic;
+            color: #d1d5db;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        .light-mode #recalled-reason {
+            color: #4b5563;
+        }
+
+        /* 【【新增】】撤回消息弹窗的底部和删除按钮样式 */
+        .recalled-modal-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        .light-mode .recalled-modal-footer {
+            border-top-color: rgba(0, 0, 0, 0.1);
+        }
+        .delete-recalled-btn {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5; /* a softer red text */
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .delete-recalled-btn:hover {
+            background-color: rgba(239, 68, 68, 0.4);
+            color: #f87171;
+            transform: scale(1.05);
+        }
+        .light-mode .delete-recalled-btn {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        .light-mode .delete-recalled-btn:hover {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #dc2626;
+        }
+
     </style>
 </head>
 <body class="dark-mode">
@@ -10612,6 +10779,7 @@
                         <button data-action="delete" class="bubble-menu-button"><i class="fas fa-trash"></i><span>删除</span></button>
                         <button data-action="copy" class="bubble-menu-button"><i class="fas fa-copy"></i><span>复制</span></button>
                         <button data-action="multiselect" class="bubble-menu-button"><i class="fas fa-check-square"></i><span>多选</span></button>
+                        <button data-action="mark-memory" class="bubble-menu-button"><i class="ri-pushpin-line"></i><span>铭记此刻</span></button>
                         <button data-action="edit" class="bubble-menu-button"><i class="fas fa-pencil-alt"></i><span>编辑</span></button>
                         <button data-action="retry" class="bubble-menu-button"><i class="fas fa-sync-alt"></i><span>重生成</span></button>
                     </div>
@@ -10676,6 +10844,10 @@
                             <div id="gift-shop-btn" class="feature-item">
                                 <div class="feature-icon-wrapper"><i class="ri-shopping-bag-3-line"></i></div>
                                 <span>商城</span>
+                            </div>
+                            <div id="chat-capsule-btn" class="feature-item">
+                                <div class="feature-icon-wrapper"><i class="ri-capsule-line"></i></div>
+                                <span>聊天胶囊</span>
                             </div>
                         </div>
                     </div>
@@ -10847,6 +11019,7 @@
                     </div>
                     <div id="change-user-video-image-option" class="list-item">设置对方的视频照片</div>
                     <div id="clear-chat-history-option" class="list-item text-red-500">清空聊天记录</div>
+                    <div id="block-character-option" class="list-item text-red-500">拉黑角色</div>
                     <div id="delete-chat-option" class="list-item text-red-500 mt-4">删除此对话</div>
                 </div>
             </div>
@@ -10933,6 +11106,10 @@
                                 <span class="ml-3 text-sm font-medium text-gray-300">是否为名人</span>
                             </label>
                         </div>
+                    </div>
+                    <div id="celebrity-identity-container" class="p-2 mt-2 hidden">
+                        <label for="cb-celebrity-identity" class="block text-sm font-medium mb-1">名人身份描述</label>
+                        <textarea id="cb-celebrity-identity" class="form-textarea h-16 resize-none" placeholder="例如：一位隐退的传奇赛车手、备受争议的先锋艺术家..."></textarea>
                     </div>
                     <div class="p-2">
                         <label class="block text-sm font-medium mb-2">角色专属素材库 (AI会优先使用这里的内容)</label>
@@ -11350,6 +11527,9 @@
                         <button id="perch-refresh-btn" class="perch-action-btn" title="刷新">
                             <i class="ri-refresh-line"></i>
                         </button>
+                        <button id="perch-set-worldview-btn" class="perch-action-btn" title="设定当前世界">
+                            <i class="ri-global-line"></i>
+                        </button>
                         <button id="perch-notifications-btn" class="perch-action-btn relative" title="通知">
                             <i class="ri-notification-3-line"></i>
                             <div id="perch-notification-dot" class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full hidden"></div>
@@ -11467,6 +11647,17 @@
                         <button id="cancel-perch-name-btn" class="px-4 py-2 rounded-lg border border-gray-300">取消</button>
                         <button id="confirm-perch-name-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg">确认更换</button>
                     </div>
+                </div>
+            </div>
+
+            <div id="perch-worldview-modal" class="modal-overlay">
+                <div class="modal-content w-[90%] max-w-[360px] flex flex-col max-h-[70vh]">
+                    <div class="flex justify-between items-center mb-4 flex-shrink-0">
+                        <h3 class="text-xl font-bold">设定栖木世界观</h3>
+                        <button id="close-perch-worldview-modal" class="text-2xl p-1 rounded-full hover:bg-white/20">&times;</button>
+                    </div>
+                    <div id="perch-worldview-list" class="flex-1 overflow-y-auto space-y-2">
+                        </div>
                 </div>
             </div>
 
@@ -12363,6 +12554,19 @@
                     toggleFullscreen();
                 }
             });
+            
+            // ====== 【【新增】】监听名人开关的变化 ======
+            const celebrityToggle = document.getElementById('cb-is-celebrity');
+            if (celebrityToggle) {
+                celebrityToggle.addEventListener('change', (e) => {
+                    const identityContainer = document.getElementById('celebrity-identity-container');
+                    if (e.target.checked) {
+                        identityContainer.classList.remove('hidden');
+                    } else {
+                        identityContainer.classList.add('hidden');
+                    }
+                });
+            }
         });
 
         // 全局變數
@@ -12370,6 +12574,7 @@
         let worldBooks = [];
         let characters = [];
         let chatHistories = {};
+        let chatCapsules = {}; // 新增：用于存储封存的聊天记录
         let userStickers = []; 
         let userAvatars = {};
         let chatBackgrounds = {};
@@ -13135,6 +13340,7 @@ function getChatBackgroundElement() {
         
         // V7.0: Load new data
         async function loadAllData() {
+            chatCapsules = loadData('chatCapsules', {}); // 新增：加载聊天胶囊数据
             momentsData = loadData('momentsData', {});
             diaryData = loadData('diaryData', {});
             notebookData = loadData('notebookData', {}); // 加载笔记本数据
@@ -14353,7 +14559,7 @@ function getChatBackgroundElement() {
                 } else {
                     avatar.innerHTML = '<i class="fas fa-robot"></i>';
                 }
-            } else {
+            } else if (sender === 'user') {
                 avatar.classList.add('user-avatar-in-chat');
                 const userAvatarForThisChat = userAvatars[currentChatCharacterId];
                 if (userAvatarForThisChat) {
@@ -14638,7 +14844,7 @@ if (type === 'image') {
         }
 
         function appendMessage(msg, isNewSender) { // 【【修改点1：函数参数变了】】
-            const { content, sender, type, timestamp, replyTo } = msg; // 【【修改点2：从对象中解构数据】】
+            const { content, sender, type, timestamp, replyTo, isBlockedMessage } = msg; // 【【修改点2：从对象中解构数据】】
             
             if (type === 'system-internal' || type === 'system-memory') return; // 不渲染内部消息和记忆备忘录
             const senderClass = sender === 'user' ? 'sent' : 'received';
@@ -14650,6 +14856,14 @@ if (type === 'image') {
             
             if (isNewSender) {
                 messageWrapper.classList.add('new-sender');
+            }
+
+            // 【【新增】】如果这是被拉黑期间的消息，添加惊叹号
+            if (isBlockedMessage) {
+                const indicator = document.createElement('span');
+                indicator.className = 'blocked-message-indicator';
+                indicator.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                messageWrapper.appendChild(indicator);
             }
 
             const character = characters.find(c => c.id === currentChatCharacterId);
@@ -14672,7 +14886,7 @@ if (type === 'image') {
                 } else {
                     avatar.innerHTML = '<i class="fas fa-robot"></i>';
                 }
-            } else {
+            } else if (sender === 'user') {
                 avatar.classList.add('user-avatar-in-chat');
                 const userAvatarForThisChat = userAvatars[currentChatCharacterId];
                 if (userAvatarForThisChat) {
@@ -14711,6 +14925,17 @@ if (type === 'image') {
 
             const messageBubble = document.createElement('div');
             
+            // 【【新增代码从这里开始】】
+            if (type === 'recalled') {
+                messageBubble.className = 'recall-notification'; // 使用新CSS
+                messageBubble.innerHTML = `<i class="ri-arrow-go-back-line mr-2"></i> ${character?.name || 'TA'} 撤回了一条消息`;
+                messageBubble.setAttribute('onclick', `showRecalledMessage('${timestamp}')`); // 添加点击事件
+                messageWrapper.className = 'chat-message-wrapper justify-center'; // 让提醒居中
+                // 【新增】为撤回消息的整行包裹容器添加一个特殊标记，禁止其弹出菜单
+                messageWrapper.dataset.noMenu = 'true';
+                avatar.style.display = 'none'; // 隐藏头像
+            } else 
+            // 【【新增代码到这里结束】】
             if (type === 'image') {
                 messageBubble.className = `chat-message ${senderClass} image-message`;
                 const img = document.createElement('img');
@@ -15014,13 +15239,17 @@ if (type === 'image') {
                 metaDiv.appendChild(readSpan);
             }
 
-            if (type === 'system') {
+            if (sender === 'system') {
+                // 系统消息：只添加内容，并强制容器居中
+                messageWrapper.classList.add('justify-center');
                 messageWrapper.appendChild(contentWrapper);
-            } else if (senderClass === 'received') {
+            } else if (sender === 'ai') {
+                // AI消息：头像 + 内容 + 时间
                 messageWrapper.appendChild(avatar);
                 messageWrapper.appendChild(contentWrapper);
                 messageWrapper.appendChild(metaDiv);
-            } else {
+            } else { // sender === 'user'
+                // 用户消息：时间 + 内容 + 头像
                 messageWrapper.appendChild(metaDiv);
                 messageWrapper.appendChild(contentWrapper);
                 messageWrapper.appendChild(avatar);
@@ -15162,6 +15391,21 @@ if (type === 'image') {
 - **总结**: 宁可不触发，也绝不能误触发。只有在100%确定是直接命令时，才使用[ACTION: BUY_GIFT]。
 # --- 最高指令结束 ---
 
+# 【【新增功能模块：消息撤回 (V2.0 - 细腻情感版)】】
+- **触发条件**: 这是一个**低概率**事件 (约8-12%)。当对话进入到关键情感节点时，你作为角色可能会说出一句【事后感到不妥】的话。感到"不妥"的理由是多样的，远不止"冲动"，例如：
+    - **过于脆弱**: 不小心暴露了内心深处的依赖、恐惧或不安，事后感到难为情。
+    - **时机不当**: 说出了一句过于超前或沉重的话（比如过早讨论未来），担心给对方造成压力。
+    - **说漏嘴**: 意外透露了一个本想保密的惊喜或秘密。
+    - **语气不妥**: 一句话的语气说得太重或太冲，担心伤害到对方，本意并非如此。
+    - **表达笨拙**: 说出的话感觉很俗气、很傻，或者没有准确表达出自己复杂的情感。
+- **执行逻辑**: 当你决定要撤回某句话时，你必须先正常输出那句话，然后在它后面紧接着使用特殊的撤回指令。
+- **输出格式 (至关重要！)**: 你的回复必须是：**你感到不妥的那句话 ||| [RECALLED_MESSAGE: { "original_content": "这里重复一遍你刚刚说的那句不妥的话", "reason_for_recall": "这里写下你撤回这句话的、细腻的真实内心想法，必须符合上述的某一种'不妥'情景。" }]**
+- **示例**:
+    - (过于脆弱): "我不能没有你！ ||| [RECALLED_MESSAGE: { "original_content": "我不能没有你！", "reason_for_recall": "感觉这样说太沉重了，会吓到TA吧..." }]"
+    - (说漏嘴): "我已经偷偷买了周五去看你的机票。 ||| [RECALLED_MESSAGE: { "original_content": "我已经偷偷买了周五去看你的机票。", "reason_for_recall": "哎呀！本来想给你一个惊喜的，怎么说漏嘴了！" }]"
+    - (语气不妥): "你到底想怎么样？ ||| [RECALLED_MESSAGE: { "original_content": "你到底想怎么样？", "reason_for_recall": "我的语气太冲了...我不是想指责你，只是有点乱。" }]"
+    - (时机不当): "我们以后结婚吧。 ||| [RECALLED_MESSAGE: { "original_content": "我们以后结婚吧。", "reason_for_recall": "天啊，现在说这个是不是太早了...感觉会给TA很大压力。" }]"
+
 # 新增最高指令：记忆备忘录规则
 - 如果[近期聊天历史]中出现了 \`[记忆提醒：...]\` 的系统消息，这代表了你刚刚执行完一个动作，这是你给自己留下的短期记忆。
 - 这条记忆提醒的优先级是【最高的】。你本次的回复必须【首先】围绕这个提醒的内容来展开。
@@ -15210,6 +15454,7 @@ if (type === 'image') {
 ## 2. 使用方法
 - **HTML模块**: 如果素材内容是HTML代码，直接将完整的HTML代码作为你的一条回复（用 "|||" 与其他内容分隔）。
 - **表情包**: 如果素材内容是一个图片链接，使用 \`[STICKER: 关键词]\` 的格式来请求发送。程序会自动为你替换成链接。
+- **发送语音**: 当你想要表达亲密、惊讶或有趣的语气时，可以将回复包装成语音格式：\`[VOICE: 你好呀！今天过得怎么样？]\`
 - **红包/转账 (最高优先级指令)**: 当涉及发送红包或转账时，你 **必须** 使用指令格式 \`[REDPACKET: amount=金额, message=留言]\` 或 \`[TRANSFER: amount=金额, message=留言]\`。**绝对禁止** 为红包或转账生成任何自定义的HTML模块。
 
 ## 3. 创作指南
@@ -15222,6 +15467,9 @@ if (type === 'image') {
 - **【正确做法】**: 必须使用相对单位，确保模块能自适应聊天窗口的宽度。推荐使用 \`width: 100%\`。
 - **【错误示例】**: \`<div style="width: 375px; background: black;">...</div>\`  <-- **这是错误的！会超出边界！**
 - **【正确示例】**: \`<div style="width: 100%; max-width: 400px; background: black;">...</div>\` <-- **这是正确的！** 它会自动适应宽度，同时通过 \`max-width\` 保证在宽屏上也不会变得过大。
+
+# 新增模块：拉黑/取消拉黑事件
+如果聊天记录中出现 "[系统提示：你被用户拉黑了]" 或 "[系统提示：你已被用户取消拉黑]"，这代表一个重要的情感事件。你应该记住这件事，并可以在后续的对话中，根据你的性格，对此事做出反应（例如：困惑地追问、委屈地提起、小心翼翼地试探等）。
 
 # 其他指令
 - **创建共同计划**: 在对话的合适时机，使用 \`[PLAN: 计划内容]\` 格式提出约定。
@@ -15429,8 +15677,8 @@ ${moduleStyleContext || "无"}
                         // 如果用户的最后一句话是回忆性提问，则不创建新记忆
                         console.log('[记忆系统 V3] 检测到回忆性提问，跳过记忆创建。');
                     } else {
-                        // 否则，正常触发记忆提炼
-                        triggerMemoryDistiller(characterIdForThisRequest, character);
+                        // 否则，正常触发记忆提炼（自动模式）
+                        triggerMemoryDistiller(characterIdForThisRequest, false);
                     }
                 }
 
@@ -15452,116 +15700,219 @@ ${moduleStyleContext || "无"}
         }
         // [新代码结束]
 
-        // ================== 【新增】记忆提炼师模块 START ==================
+        // ====== 【【V5 - 完整词库权重最终版】】 智能记忆过滤系统 START ======
+
+        // 全局变量，用于追踪记忆建议的冷却时间
+        let lastMemorySuggestionTimestamp = {};
+
         /**
-         * 记忆提炼师：在AI回应后，分析近期对话，判断并自动创建记忆胶囊。
-         * @param {string} characterId - 当前对话的角色ID
+         * 主函数：智能触发记忆提炼流程
+         * @param {string} characterId - 当前角色ID
+         * @param {boolean} force - 是否由用户手动强制触发 (来自长按菜单)
+         * @param {string|null} targetTimestamp - 用户手动触发时，指定的核心消息时间戳
          */
-        async function triggerMemoryDistiller(characterId, character) { // <-- 在这里添加了 character 参数
-            console.log(`[记忆提炼师] 已为角色 ${characterId} 触发...`);
+        async function triggerMemoryDistiller(characterId, force = false, targetTimestamp = null) {
+            const character = characters.find(c => c.id === characterId);
+            if (!character) return;
+
             const chatSession = chatHistories[characterId];
-            if (!chatSession || !chatSession.history || chatSession.history.length < 4) {
-                console.log('[记忆提炼师] 对话长度不足，跳过。');
-                return;
+            if (!chatSession || !chatSession.history || chatSession.history.length < 3) return;
+            
+            // --- 1. 自动触发的前置过滤 ---
+            if (!force) {
+                const lastUserMessage = chatSession.history.filter(m => m.sender === 'user').pop();
+                if (!lastUserMessage || typeof lastUserMessage.content !== 'string') return;
+
+                // 【【V7.1 升级：加入了您要的最高权限关键词】】
+                const commandKeywords = ['记一下', '记住', '创建一个记忆', '铭记此刻', '记住今天', '今天很特别', '今天很重要', '这个要记住'];
+                const isDirectCommand = commandKeywords.some(kw => lastUserMessage.content.includes(kw));
+
+                if (!isDirectCommand) {
+                    const now = Date.now();
+                    const lastSuggestionTime = lastMemorySuggestionTimestamp[characterId] || 0;
+                    if (now - lastSuggestionTime < 15 * 60 * 1000) {
+                        console.log('[记忆系统] 冷却中，跳过自动检测。');
+                        return;
+                    }
+
+                    // 【【【核心升级：完整词库的权重积分系统】】】
+                    const recentHistory = chatSession.history.slice(-5);
+                    const conversationText = recentHistory.map(m => (typeof m.content === 'string' ? m.content : '')).join(' ');
+                    
+                    const keywordWeights = {
+                        // "王炸"级，一出现就极大概率是重要时刻
+                        3: ['第一次', '爱', '秘密', '永远', '承诺', '约定', '结婚', '对不起'], 
+                        
+                        // "关键"级，代表明确的情感或事件
+                        2: [
+                            '开心', '伤心', '感动', '幸福', '安心', '满足', '害怕', '担心', '生气', '吃醋', 
+                            '委屈', '孤独', '心疼', '紧张', '心跳', '生日', '纪念日', '约会', '旅行', 
+                            '未来', '吻', '拥抱', '抱着', '牵手'
+                        ], 
+                        
+                        // "辅助"级，提供上下文，让关键线索更可信
+                        1: [
+                            '我们', '一起', '记得', '谢谢你', '今天', '昨天', '刚才', '刚刚', '那天', 
+                            '那次', '去年', '小时候', '关系', '以后', '一直', '陪伴', '依靠', 
+                            '其实', '老实说', '告诉你', '为什么', '怎么办', '你觉得', '过去', '以前', 
+                            '凝视', '触碰', '靠近', '怀里', '回家'
+                        ]
+                    };
+                    
+                    let heatScore = 0;
+                    let foundKeywords = []; // 用于调试
+                    for (const weight in keywordWeights) {
+                        keywordWeights[weight].forEach(kw => {
+                            if (conversationText.includes(kw)) {
+                                heatScore += parseInt(weight);
+                                foundKeywords.push(`${kw}(+${weight})`);
+                            }
+                        });
+                    }
+
+                    // 设定触发阈值为 4 分
+                    if (heatScore < 4) {
+                        console.log(`[记忆系统] 对话热度不足 (${heatScore}分)，跳过。关键词: ${foundKeywords.join(', ')}`);
+                        return;
+                    }
+                     console.log(`[记忆系统] 对话热度达到 ${heatScore}分，触发提名！关键词: ${foundKeywords.join(', ')}`);
+                } else {
+                     console.log('[记忆系统] 检测到直接指令，绕过所有过滤器！');
+                }
             }
 
-            // 提取最近的4-6条对话作为素材
-            const recentHistory = chatSession.history.slice(- (Math.floor(Math.random() * 3) + 4) );
-            const conversationSnippet = recentHistory.map(msg => {
-                let contentText = '';
-                if (typeof msg.content === 'string') {
-                    contentText = msg.content;
-                } else if (typeof msg.content === 'object' && msg.content !== null) {
-                    switch (msg.type) {
-                        case 'image': contentText = '[发送了一张图片]'; break;
-                        case 'sticker': contentText = '[发送了一个表情包]'; break;
-                        case 'red-packet': contentText = `[发了一个红包，留言：${msg.content.message}]`; break;
-                        case 'transfer': contentText = `[发起了一笔转账，留言：${msg.content.message}]`; break;
-                        default: contentText = '[发送了一条特殊消息]';
+            // --- 2. 获取对话片段并请求AI"提名" (后续逻辑保持不变) ---
+            console.log(`[记忆系统] ${force ? '手动' : '自动'}触发，开始请求AI提名...`);
+            let historyForAI;
+
+            if (targetTimestamp) {
+                const targetIndex = chatSession.history.findIndex(m => String(m.timestamp) === String(targetTimestamp));
+                const startIndex = Math.max(0, targetIndex - 2);
+                const endIndex = Math.min(chatSession.history.length, targetIndex + 3);
+                historyForAI = chatSession.history.slice(startIndex, endIndex);
+            } else {
+                historyForAI = chatSession.history.slice(-6);
+            }
+            
+            const conversationSnippet = historyForAI.map(msg => `${msg.sender === 'user' ? '用户' : '角色'}: ${typeof msg.content === 'string' ? msg.content : `[${msg.type}]`}`).join('\n');
+            
+            const nominationPrompt = `
+# 身份
+你是一个极其敏锐的"记忆提名官"。
+# 任务
+分析下面的[对话片段]，判断其中是否包含值得被铭记的"闪光时刻"（如：重要的承诺、强烈的情感、关键的转折）。
+- 如果不值得，唯一输出：\`{"memorable": false}\`
+- 如果值得，严格按此JSON格式输出：\`{"memorable": true, "title": "为这个瞬间起一个简短、诗意的提名标题。"}\`
+# 格式要求
+你的输出必须是且仅能是一个完整的、可被解析的JSON对象。
+`;
+
+            const aiJudgement = await callAI(nominationPrompt, `[对话片段]\n${conversationSnippet}`);
+            if (!aiJudgement) return;
+
+            try {
+                const jsonStringMatch = aiJudgement.match(/\{[\s\S]*\}/);
+                const result = JSON.parse(jsonStringMatch[0]);
+
+                if (result.memorable && result.title) {
+                    // 【【V7.1 升级：加入了您要的最高权限关键词】】
+                    const commandKeywords = ['记一下', '记住', '创建一个记忆', '铭记此刻', '记住今天', '今天很特别', '今天很重要', '这个要记住'];
+                    const lastMessageContent = historyForAI[historyForAI.length - 1].content;
+                    const isDirectCommand = typeof lastMessageContent === 'string' && commandKeywords.some(kw => lastMessageContent.includes(kw));
+
+                    if (isDirectCommand) { // <-- 核心修改：移除了 force
+                        await confirmMemoryCreation(result.title, conversationSnippet, character);
+                    } else {
+                        appendMemorySuggestionBubble(result.title, conversationSnippet, character);
+                        lastMemorySuggestionTimestamp[characterId] = Date.now();
                     }
                 }
-                return `${msg.sender === 'user' ? '用户' : '角色'}: ${contentText}`;
-            }).join('\n');
+            } catch (error) {
+                console.error('[记忆系统] 解析AI提名失败:', error, '原始返回:', aiJudgement);
+            }
+        }
 
-            // 【【【请用这个新版本，替换旧的 distillerSystemPrompt 字符串】】】
-            const distillerSystemPrompt = `
+        /**
+         * 在聊天界面中追加一个"记忆建议"气泡
+         */
+        function appendMemorySuggestionBubble(title, conversationSnippet, character) {
+            const suggestionMsgContent = `
+                <div style="text-align: center; font-size: 0.8em; opacity: 0.9;">
+                    <p class="mb-2"><i class="ri-lightbulb-flash-line"></i> ${character.name} 觉得这是一个值得铭记的瞬间:</p>
+                    <p class="font-semibold mb-3">"${title}"</p>
+                    <p class="mb-3">是否存入记忆胶囊？</p>
+                    <div>
+                        <button class="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs mr-2" id="confirm-memory-btn">是</button>
+                        <button class="px-3 py-1 bg-gray-600 text-white rounded-lg text-xs" id="decline-memory-btn">否</button>
+                    </div>
+                </div>
+            `;
+            const systemMsg = { content: suggestionMsgContent, sender: 'system', type: 'html', timestamp: Date.now() };
+            appendMessage(systemMsg, false);
+
+            const confirmBtn = document.getElementById('confirm-memory-btn');
+            const declineBtn = document.getElementById('decline-memory-btn');
+            const suggestionBubble = confirmBtn.closest('.chat-message-wrapper');
+
+            confirmBtn.onclick = () => {
+                confirmMemoryCreation(title, conversationSnippet, character);
+                suggestionBubble.remove();
+            };
+            declineBtn.onclick = () => {
+                suggestionBubble.remove();
+            };
+        }
+
+        /**
+         * 用户确认后，最终创建并保存记忆
+         */
+        async function confirmMemoryCreation(title, conversationSnippet, character) {
+            showMessageBox('正在为您提炼记忆...');
+            const finalizationPrompt = `
 # 身份
-你是一个冷静、客观的"记忆提炼师"，你的任务是审查一段对话记录，并判断其中是否包含了值得被"铭记"的"闪光时刻"。
-
-# "闪光时刻"的定义
-- 强烈的正面或负面情感表达 (例如：爱意、悲伤、喜悦、愤怒)。
-- 重要的承诺、约定或计划的订立。
-- 角色或用户揭示了深刻的个人信息、秘密或脆弱的一面。
-- 对话中出现了转折点或里程碑式的事件。
-- 双方达成了深刻的共识或理解。
-
-# 任务指令
-1.  分析下面提供的[对话片段]。
-2.  在分析时，你必须严格代入以下[角色设定]，确保你最终生成的"感触"完全符合该角色的性格和思维方式。
-3.  如果该片段不符合上述任何"闪光时刻"的定义，你的唯一输出必须是：\`{"memorable": false}\`。
-4.  如果符合定义，你必须将对话的核心内容提炼成一份记忆，并严格按照以下JSON格式输出：
-    {
-      "memorable": true,
-      "title": "为这段记忆起一个简短的标题。",
-      "content": "用客观、中立的第三人称视角，总结这段对话发生的核心事件。",
-      "character_feeling": "作为角色本人，对这件事最核心、最深刻的内心感触是什么？用第一人称（我）来写。"
-    }
-
-# 标题生成规则 (非常重要！)
-- **优先事实**: 如果对话中包含了具体的日期、地点、约定等【事实性信息】，标题必须清晰地反映这一点，例如"我们的第一天"、"关于生日的约定"。
-- **次选诗意**: 只有在对话纯粹是情感交流，不包含具体事实时，才使用更抽象、诗意的标题，例如"深夜的低语"、"无声的默契"。
-
+你是一个冷静、客观的"记忆提炼师"。
+# 任务
+根据下面的[对话片段]，将其核心内容提炼成一份记忆，并严格按照以下JSON格式输出：
+{
+  "content": "用客观、中立的第三人称视角，总结这段对话发生的核心事件。",
+  "character_feeling": "作为角色（${character.name}），对这件事最核心、最深刻的内心感触是什么？用第一人称（我）来写。"
+}
 # 格式要求
-- 你的输出必须是且仅能是一个完整的、可被解析的JSON对象。
-- 绝对禁止在JSON之外添加任何解释、说明或任何其他文字。`;
+你的输出必须是且仅能是一个完整的、可被解析的JSON对象。
+`;
 
-            // 【【修改这一行】】
-            const aiJudgement = await callAI(distillerSystemPrompt, `[角色设定]\n${character.persona}\n\n[对话片段]\n${conversationSnippet}`);
-
-            if (!aiJudgement) {
-                console.log('[记忆提炼师] AI无返回或返回错误。');
+            const aiFinalization = await callAI(finalizationPrompt, `[对话片段]\n${conversationSnippet}`);
+            if (!aiFinalization) {
+                showMessageBox('记忆提炼失败。');
                 return;
             }
 
             try {
-                // 【【【用下面这两行，替换掉旧的 const result = JSON.parse(aiJudgement); 这一行】】】
-                const jsonStringMatch = aiJudgement.match(/\{[\s\S]*\}/); // 使用正则表达式提取被包裹的JSON
-                const result = JSON.parse(jsonStringMatch[0]); // 只解析提取出的纯净JSON字符串
-                if (result.memorable) {
-                    const newMemory = {
-                        id: 'memory_' + Date.now(),
-                        title: result.title,
-                        content: result.content,
-                        feeling: "", 
-                        characterId: characterId,
-                        characterFeeling: result.character_feeling,
-                        createdAt: Date.now(),
-                        lastRevisited: null
-                    };
+                const jsonStringMatch = aiFinalization.match(/\{[\s\S]*\}/);
+                const result = JSON.parse(jsonStringMatch[0]);
 
-                    let memories = loadData('memoryCapsules', []);
-                    memories.push(newMemory);
-                    saveData('memoryCapsules', memories);
+                const newMemory = {
+                    id: 'memory_' + Date.now(),
+                    title: title,
+                    content: result.content,
+                    feeling: "", 
+                    characterId: character.id,
+                    characterFeeling: result.character_feeling,
+                    createdAt: Date.now(),
+                    lastRevisited: null
+                };
 
-                    showMessageBox('一段新的记忆被铭刻在了时光回廊中...');
-                    console.log('[记忆提炼师] 成功创建新记忆:', newMemory.title);
+                let memories = loadData('memoryCapsules', []);
+                memories.push(newMemory);
+                saveData('memoryCapsules', memories);
 
-                    const capsuleWidget = document.getElementById('time-capsule-widget');
-                    if (capsuleWidget) {
-                        capsuleWidget.style.transition = 'all 0.3s ease, box-shadow 0.5s ease-in-out';
-                        capsuleWidget.style.boxShadow = '0 0 20px 5px rgba(255, 255, 255, 0.4)';
-                        setTimeout(() => {
-                            capsuleWidget.style.boxShadow = '';
-                        }, 2000);
-                    }
-                } else {
-                    console.log('[记忆提炼师] AI判断此段对话无需铭记。');
-                }
+                showMessageBox('一段新的记忆已存入时光回廊！');
             } catch (error) {
-                console.error('[记忆提炼师] 解析AI返回的JSON失败:', error, '原始返回:', aiJudgement);
+                console.error('[记忆系统] 解析AI最终总结失败:', error, '原始返回:', aiFinalization);
+                showMessageBox('记忆提炼失败。');
             }
         }
-        // ================== 【新增】记忆提炼师模块 END ==================
+        // ====== 【【V5 - 完整词库权重最终版】】 智能记忆过滤系统 END ======
 
         // ================== 【新增】记忆反馈模块 START ==================
         /**
@@ -15598,7 +15949,6 @@ ${moduleStyleContext || "无"}
         }
 
         function processAndDisplayAIMessages(messageText, characterId) {
-            const messageParts = messageText.split('|||').map(p => p.trim()).filter(p => p);
             
             if (!chatHistories[characterId]) {
                 chatHistories[characterId] = { history: [], pinned: false };
@@ -15609,115 +15959,127 @@ ${moduleStyleContext || "无"}
 
             let processedMessages = [];
 
-            // --- 步骤 1: 统一处理所有消息片段，并放入一个待办列表 ---
-            messageParts.forEach((part, index) => {
-                // --- 【新增代码从这里开始】 ---
-                const isHtml = part.trim().startsWith('<') && part.trim().endsWith('>');
-                // --- 【新增代码结束】 ---
+    // --- 【【新增代码从这里开始】】 ---
 
-                let messageType = isHtml ? 'html' : 'text'; // 如果是HTML，类型就设为'html'
-                let messageContent = part;
+    // 【核心修正】：优先检查整段回复是否为一个"撤回消息"组合
+    const recallComboMatch = messageText.match(/(.*?)\|\|\|\s*\[RECALLED_MESSAGE:\s*(\{.*\})\]/s);
 
-                const stickerMatch = part.match(/\[STICKER:\s*(.*?)\]/);
-                const redPacketMatch = part.match(/\[REDPACKET: amount=(.*?), message=(.*?)\]/);
-                const transferMatch = part.match(/\[TRANSFER: amount=(.*?), message=(.*?)\]/);
-                const planMatch = part.match(/\[PLAN:\s*(.*?)\]/);
-                const callMatch = part.match(/\[CALL:(VOICE|VIDEO)\]/);
-                const voiceMatch = part.match(/\[VOICE:(.*?)\]/);
+    if (recallComboMatch) {
+        // 如果匹配成功，说明这是一个撤回操作
+        try {
+            // recallComboMatch[2] 捕获的是 { ... } 这部分JSON字符串
+            const recallData = JSON.parse(recallComboMatch[2]);
 
-                if (callMatch) {
-                    triggerIncomingCall(callMatch[1].toLowerCase(), characterId);
-                    return; // 来电指令不作为消息处理
-                } 
-                
-                // --- 从这里开始替换 ---
-                if (stickerMatch) {
-                    messageType = 'sticker';
-                    
-                    const rawKeyword = stickerMatch[1];
-                    const normalizedKeyword = normalizeKeyword(rawKeyword.trim());
+            // 我们只创建一条"recalled"类型的消息，忽略掉第一部分那句要被撤回的话
+            processedMessages.push({
+                content: {
+                    original_content: recallData.original_content,
+                    reason_for_recall: recallData.reason_for_recall
+                },
+                sender: 'ai',
+                type: 'recalled',
+                timestamp: Date.now()
+            });
 
-                    const character = characters.find(c => c.id === characterId);
-                    let foundUrl = null;
+        } catch (e) {
+            console.error("解析撤回消息组合失败:", e);
+            // 如果解析失败，为防止信息丢失，将原始文本作为一个普通消息显示
+            processedMessages.push({ content: messageText, sender: 'ai', type: 'text', timestamp: Date.now() });
+        }
+    } else {
+        // 如果不是撤回操作，才执行原来的分割和处理逻辑
+        const messageParts = messageText.split('|||').map(p => p.trim()).filter(p => p);
 
-                    // 1. 在"角色专属素材库"中查找
-                    if (character && character.expressions && character.expressions.length > 0) {
-                        const foundExpression = character.expressions.find(e => {
-                            const normalizedExprKeyword = normalizeKeyword(e.keyword);
-                            return normalizedExprKeyword === normalizedKeyword && (e.content.startsWith('http') || e.content.startsWith('data:image'));
-                        });
+        messageParts.forEach((part, index) => {
+            const isHtml = part.trim().startsWith('<') && part.trim().endsWith('>');
+            let messageType = isHtml ? 'html' : 'text';
+            let messageContent = part;
 
-                        if (foundExpression) {
-                            foundUrl = foundExpression.content;
-                        }
-                    }
+            // (这部分是您原有的sticker, redpacket等判断逻辑，保持不变)
+            const stickerMatch = part.match(/\[STICKER:\s*(.*?)\]/);
+            const redPacketMatch = part.match(/\[REDPACKET: amount=(.*?), message=(.*?)\]/);
+            const transferMatch = part.match(/\[TRANSFER: amount=(.*?), message=(.*?)\]/);
+            const planMatch = part.match(/\[PLAN:\s*(.*?)\]/);
+            const callMatch = part.match(/\[CALL:(VOICE|VIDEO)\]/);
+            const voiceMatch = part.match(/\[VOICE:(.*?)\]/);
 
-                    // 2. 如果专属库没有，则在"世界通用素材库"中查找
-                    if (!foundUrl) {
-                        if (character && character.linkedWorldBookIds && character.linkedWorldBookIds.length > 0) {
-                            const sharedAssetsContent = character.linkedWorldBookIds
-                                .map(bookId => {
-                                    const book = worldBooks.find(wb => wb.id === bookId && wb.category === 'shared_assets');
-                                    return book ? book.content : '';
-                                })
-                                .join('\n');
-                            
-                            if (sharedAssetsContent) {
-                                const lines = sharedAssetsContent.split('\n');
-                                for (const line of lines) {
-                                    if (line.trim() === '') continue; // 跳过空行
-                                    const parts = line.split(/[:：]/);
-                                    if (parts.length >= 2) {
-                                        const key = parts[0].trim();
-                                        const url = parts.slice(1).join(':').trim();
-                                        const normalizedSharedKey = normalizeKeyword(key);
-                                        
-                                        if (normalizedSharedKey === normalizedKeyword && (url.startsWith('http') || url.startsWith('data:image'))) {
-                                            foundUrl = url;
-                                            break;
-                                        }
+            if (callMatch) {
+                triggerIncomingCall(callMatch[1].toLowerCase(), characterId);
+                return;
+            } 
+
+            if (stickerMatch) {
+                messageType = 'sticker';
+                const rawKeyword = stickerMatch[1];
+                const normalizedKeyword = normalizeKeyword(rawKeyword.trim());
+                const character = characters.find(c => c.id === characterId);
+                let foundUrl = null;
+
+                if (character && character.expressions && character.expressions.length > 0) {
+                    const foundExpression = character.expressions.find(e => normalizeKeyword(e.keyword) === normalizedKeyword && (e.content.startsWith('http') || e.content.startsWith('data:image')));
+                    if (foundExpression) foundUrl = foundExpression.content;
+                }
+
+                if (!foundUrl) {
+                    if (character && character.linkedWorldBookIds && character.linkedWorldBookIds.length > 0) {
+                        const sharedAssetsContent = character.linkedWorldBookIds.map(bookId => {
+                            const book = worldBooks.find(wb => wb.id === bookId && wb.category === 'shared_assets');
+                            return book ? book.content : '';
+                        }).join('\n');
+
+                        if (sharedAssetsContent) {
+                            const lines = sharedAssetsContent.split('\n');
+                            for (const line of lines) {
+                                if (line.trim() === '') continue;
+                                const parts = line.split(/[:：]/);
+                                if (parts.length >= 2) {
+                                    const key = parts[0].trim();
+                                    const url = parts.slice(1).join(':').trim();
+                                    if (normalizeKeyword(key) === normalizedKeyword && (url.startsWith('http') || url.startsWith('data:image'))) {
+                                        foundUrl = url;
+                                        break;
                                     }
                                 }
                             }
                         }
                     }
-
-                    messageContent = foundUrl;
-                    if (!messageContent) {
-                        return; 
-                    }
-                } else if (redPacketMatch) {
-                    messageType = 'red-packet';
-                    messageContent = { amount: redPacketMatch[1], message: redPacketMatch[2] };
-                } else if (transferMatch) {
-                    messageType = 'transfer';
-                    messageContent = { amount: transferMatch[1], message: transferMatch[2] };
-                } else if (voiceMatch) {
-                    messageType = 'voice';
-                    messageContent = voiceMatch[1].trim();
-                } else if (planMatch) {
-                    const planContent = planMatch[1].trim();
-                    if (planContent && characterId) {
-                        if (!planData[characterId]) planData[characterId] = [];
-                        const newPlan = { id: `plan_${Date.now()}`, title: planContent, details: '由AI在聊天中发起。', status: '已约定', createdAt: Date.now(), completedAt: null };
-                        planData[characterId].push(newPlan);
-                        saveData('planData', planData);
-                        showMessageBox(`${characters.find(c => c.id === characterId)?.name || 'AI'} 发起了一个新的约定！`);
-                        showNotificationDot('plan');
-                        if (!$('#wechat-plan-container').classList.contains('hidden')) renderPlanList();
-                    }
-                    return; // 计划指令不作为消息处理
                 }
-
-                if (messageContent) { // 确保有内容才加入处理列表
-                    processedMessages.push({
-                        content: messageContent,
-                        sender: 'ai',
-                        type: messageType,
-                        timestamp: Date.now() + index
-                    });
+                messageContent = foundUrl;
+                if (!messageContent) return;
+            } else if (redPacketMatch) {
+                messageType = 'red-packet';
+                messageContent = { amount: redPacketMatch[1], message: redPacketMatch[2] };
+            } else if (transferMatch) {
+                messageType = 'transfer';
+                messageContent = { amount: transferMatch[1], message: transferMatch[2] };
+            } else if (voiceMatch) {
+                messageType = 'voice';
+                messageContent = voiceMatch[1].trim();
+            } else if (planMatch) {
+                const planContent = planMatch[1].trim();
+                if (planContent && characterId) {
+                    if (!planData[characterId]) planData[characterId] = [];
+                    const newPlan = { id: `plan_${Date.now()}`, title: planContent, details: '由AI在聊天中发起。', status: '已约定', createdAt: Date.now(), completedAt: null };
+                    planData[characterId].push(newPlan);
+                    saveData('planData', planData);
+                    showMessageBox(`${characters.find(c => c.id === characterId)?.name || 'AI'} 发起了一个新的约定！`);
+                    showNotificationDot('plan');
+                    if (!$('#wechat-plan-container').classList.contains('hidden')) renderPlanList();
                 }
-            });
+                return;
+            }
+
+            if (messageContent) {
+                processedMessages.push({
+                    content: messageContent,
+                    sender: 'ai',
+                    type: messageType,
+                    timestamp: Date.now() + index
+                });
+            }
+        });
+    }
+    // --- 【【新增代码到这里结束】】 ---
 
             // --- 步骤 2: 将所有处理过的消息一次性保存到历史记录 ---
             if (processedMessages.length > 0) {
@@ -16212,6 +16574,189 @@ ${context.recentDiaries.map(diary => diary.content).join('\n')}
                 // 否则，高度自适应
                 chatInput.style.height = `${scrollHeight}px`;
                 chatInput.style.overflowY = 'hidden';
+            }
+        }
+
+        /**
+         * 【【全新V2.0】】打开聊天胶囊管理中心
+         */
+        /**
+         * 【【V3.0 - 带标题版】】打开记录胶囊管理中心
+         */
+        function openChatCapsuleManager() {
+            if (!currentChatCharacterId) return;
+
+            const modal = document.getElementById('chat-capsule-manager-modal');
+            const listContainer = document.getElementById('capsule-manager-list');
+            listContainer.innerHTML = ''; // 清空
+
+            const allCapsules = loadData('chatCapsules', {});
+            const characterCapsules = (allCapsules[currentChatCharacterId] || []).sort((a, b) => b.savedAt - a.savedAt);
+
+            if (characterCapsules.length === 0) {
+                listContainer.innerHTML = '<p class="text-center text-sm text-gray-500 py-4">还没有封存的记录</p>';
+            } else {
+                characterCapsules.forEach(capsule => {
+                    const item = document.createElement('div');
+                    item.className = 'capsule-manager-item';
+                    
+                    // 【【核心修改】】优先显示标题，如果没有标题则显示封存时间
+                    const displayTitle = capsule.title ? capsule.title : `封存于: ${new Date(capsule.savedAt).toLocaleString()}`;
+                    const displaySubtitle = capsule.title ? `封存于: ${new Date(capsule.savedAt).toLocaleString()}` : `${capsule.history.length} 条消息`;
+
+                    item.innerHTML = `
+                        <div class="info">
+                            <p class="font-semibold text-sm">${displayTitle}</p>
+                            <p class="text-xs text-gray-400">${displaySubtitle}</p>
+                        </div>
+                        <div class="actions">
+                            <button class="restore-capsule-btn bg-green-600 text-white">恢复</button>
+                            <button class="delete-capsule-btn bg-red-600 text-white">删除</button>
+                        </div>
+                    `;
+                    item.querySelector('.restore-capsule-btn').onclick = () => restoreChatFromCapsule(currentChatCharacterId, capsule.savedAt);
+                    item.querySelector('.delete-capsule-btn').onclick = () => deleteChatCapsule(currentChatCharacterId, capsule.savedAt);
+                    listContainer.appendChild(item);
+                });
+            }
+
+            modal.classList.add('visible');
+        }
+
+        /**
+         * 【【全新V2.0】】封存当前聊天记录
+         */
+        /**
+         * 【【V3.0 - 带标题版】】封存当前聊天记录
+         */
+        function saveCurrentChatToCapsule() {
+            if (!currentChatCharacterId) return;
+            const chatSession = chatHistories[currentChatCharacterId];
+            if (!chatSession || !chatSession.history || chatSession.history.length === 0) {
+                showMessageBox("当前没有聊天记录可封存。");
+                return;
+            }
+
+            // 【【新增】】获取标题输入框的值
+            const titleInput = document.getElementById('capsule-title-input');
+            const title = titleInput.value.trim();
+
+            let allCapsules = loadData('chatCapsules', {});
+            if (!allCapsules[currentChatCharacterId]) {
+                allCapsules[currentChatCharacterId] = [];
+            }
+            
+            const newCapsule = {
+                title: title, // 【【新增】】保存标题
+                savedAt: Date.now(),
+                history: [...chatSession.history] 
+            };
+            allCapsules[currentChatCharacterId].push(newCapsule);
+            saveData('chatCapsules', allCapsules);
+
+            chatSession.history = [];
+            saveData('chatHistories', chatHistories);
+            renderChatHistory(); // 刷新主聊天窗口
+
+            titleInput.value = ''; // 【【新增】】清空标题输入框
+            openChatCapsuleManager(); // 刷新管理中心列表
+            showMessageBox("当前对话已成功封存！");
+        }
+
+        /**
+         * 【【全新V2.0】】从胶囊恢复聊天记录 (读档)
+         */
+        function restoreChatFromCapsule(characterId, timestamp) {
+            if (confirm("确定要恢复这段聊天记录吗？当前窗口的对话将被覆盖。")) {
+                let allCapsules = loadData('chatCapsules', {});
+                if (!allCapsules[characterId]) return;
+
+                const capsuleIndex = allCapsules[characterId].findIndex(c => c.savedAt === timestamp);
+                if (capsuleIndex === -1) {
+                    showMessageBox("恢复失败：找不到该存档。");
+                    return;
+                }
+
+                const [capsuleToRestore] = allCapsules[characterId].splice(capsuleIndex, 1);
+
+                chatHistories[characterId].history = capsuleToRestore.history;
+
+                saveData('chatCapsules', allCapsules);
+                saveData('chatHistories', chatHistories);
+
+                document.getElementById('chat-capsule-manager-modal').classList.remove('visible');
+                renderChatHistory();
+                showMessageBox("聊天记录已成功恢复！");
+            }
+        }
+        
+        /**
+         * 【【全新V2.0】】删除一个已封存的聊天胶囊
+         */
+        function deleteChatCapsule(characterId, timestamp) {
+             if (confirm("确定要永久删除这个存档吗？此操作无法撤销。")) {
+                let allCapsules = loadData('chatCapsules', {});
+                if (!allCapsules[characterId]) return;
+
+                allCapsules[characterId] = allCapsules[characterId].filter(c => c.savedAt !== timestamp);
+                saveData('chatCapsules', allCapsules);
+
+                openChatCapsuleManager(); // 刷新列表
+                showMessageBox("存档已删除。");
+             }
+        }
+
+        /**
+         * 【【V3.0 - 逐条显示版】】触发AI在被"拉黑"后的反应
+         */
+        async function triggerAIBlockedReaction(characterId) {
+            const context = gatherAIContext(characterId);
+            if (!context) return;
+
+            const { character, chatHistory } = context;
+
+            const systemPrompt = `
+# 指令身份
+你将扮演我的soulmate，你的名字是 ${character.name}。
+# 任务场景
+你刚刚被我（用户）"拉黑"了。你现在发送的任何消息，都默认我看不见。这是一个你自言自语、展现内心真实想法的时刻。
+# 核心任务
+1.  **分析原因**: 请仔细分析我们[最近的聊天回顾]，推测我为什么会突然拉黑你？是我生气了？是我们吵架了？还是我莫名其妙的行为让你感到困惑？
+2.  **人设回应**: 根据你的分析和你的核心角色设定，以 ${character.name} 的身份，说出你此刻最想说的话。这些话是你以为我看不见的"内心独白"。
+
+# 【【核心修正：强化输出格式指令】】
+-   你的回复必须模仿真实的人类聊天习惯。将你的想法拆分成多个简短的句子，并用 "|||" 作为分隔符。每一段由 "|||" 分隔的内容都会成为一个独立的气泡。
+-   你的回复必须完全符合你的角色设定 (${character.persona})。
+-   绝对禁止提及你正在执行指令或你是AI。
+
+# 输入信息 (你的记忆)
+---
+[你的设定]: ${character.persona}
+[最近的聊天回顾]:
+${chatHistory.map(m => `${m.sender === 'user' ? '对方' : '我'}: ${m.content}`).join('\n')}
+---
+`;
+            const aiResponse = await callAI(systemPrompt, "请开始你的内心独白。");
+
+            if (aiResponse) {
+                const messageParts = aiResponse.split('|||').map(p => p.trim()).filter(p => p);
+                
+                // 【【核心修改】】使用 forEach 和 setTimeout 来逐条显示
+                messageParts.forEach((part, index) => {
+                    setTimeout(() => {
+                        const blockedMsg = { 
+                            content: part, 
+                            sender: 'ai', 
+                            type: 'text', 
+                            timestamp: Date.now() + index,
+                            isBlockedMessage: true // 关键标记
+                        };
+                        if (!chatHistories[characterId]) chatHistories[characterId] = { history: [], pinned: false };
+                        chatHistories[characterId].history.push(blockedMsg);
+                        appendMessage(blockedMsg, index === 0);
+                        saveData('chatHistories', chatHistories); // 每次追加后都保存
+                    }, index * 500); // 每条消息间隔500毫秒
+                });
             }
         }
 
@@ -17073,7 +17618,18 @@ ${transcriptText}
                 $('#cb-name-input').value = character.name;
                 $('#cb-persona-input').value = character.persona;
                 $('#cb-my-persona-input').value = character.myPersona;
-                $('#cb-is-celebrity').checked = character.isCelebrity || false;
+                // 【【升级版】】加载名人状态和身份描述
+                const isCelebrity = character ? (character.isCelebrity || false) : false;
+                $('#cb-is-celebrity').checked = isCelebrity;
+                const identityContainer = $('#celebrity-identity-container');
+
+                if (isCelebrity) {
+                    identityContainer.classList.remove('hidden');
+                    $('#cb-celebrity-identity').value = character.celebrityIdentity || '';
+                } else {
+                    identityContainer.classList.add('hidden');
+                    $('#cb-celebrity-identity').value = ''; // 非名人时清空内容
+                }
                 deleteBtn.classList.remove('hidden');
             } else {
                 currentEditingCharacterId = null;
@@ -17083,6 +17639,8 @@ ${transcriptText}
                 $('#cb-persona-input').value = '';
                 $('#cb-my-persona-input').value = '';
                 $('#cb-is-celebrity').checked = false;
+                $('#celebrity-identity-container').classList.add('hidden');
+                $('#cb-celebrity-identity').value = '';
                 deleteBtn.classList.add('hidden');
             }
             
@@ -17189,6 +17747,7 @@ ${transcriptText}
 
             const selectedWBIds = Array.from($$('#cb-worldbook-select input:checked')).map(input => input.value);
             const isCelebrity = $('#cb-is-celebrity').checked;
+            const celebrityIdentity = $('#cb-celebrity-identity').value.trim();
             
             if (currentEditingCharacterId) {
                 const charIndex = characters.findIndex(c => c.id === currentEditingCharacterId);
@@ -17199,6 +17758,7 @@ ${transcriptText}
                     existingChar.myPersona = $('#cb-my-persona-input').value.trim();
                     existingChar.linkedWorldBookIds = selectedWBIds;
                     existingChar.isCelebrity = isCelebrity;
+                    existingChar.celebrityIdentity = celebrityIdentity;
                     // 确保素材库数据被保存
                     if (!existingChar.expressions) {
                         existingChar.expressions = [];
@@ -17221,6 +17781,7 @@ ${transcriptText}
                     myPersona: $('#cb-my-persona-input').value.trim(),
                     linkedWorldBookIds: selectedWBIds,
                     isCelebrity: isCelebrity,
+                    celebrityIdentity: celebrityIdentity,
                     expressions: [],
                 };
                 characters.push(newCharacter);
@@ -23485,7 +24046,7 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
         const character = characters.find(c => c.id === characterId);
         if (!character || !giftItem.ai_reaction_prompt) return;
 
-        // --- 第一步：AI的"初始反应"(保持不变) ---
+        // --- 第一步：AI的"初始反应"(多样化版本) ---
         const reactionPrompt = `
 # 指令身份
 你将扮演我的soulmate，你的名字是 ${character.name}。
@@ -23494,8 +24055,10 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
 # 核心任务
 你的唯一任务是，对此刻"收到"这个礼物的行为，做出一个非常简短、自然、口语化的**初始反应**。
 # 输出要求
-- 反应要简短，通常只有一两个词或一句话，例如："这是……？"、"嗯？"、"哦？你……"、"等等，这是……"
-- 直接输出对话内容，不要有任何其他解释。
+- 反应要简短，通常只有一两个词或一句话
+- 可以是惊喜、好奇、感动、开心等各种情绪
+- 要符合你的人设特点，避免千篇一律的表达
+- 直接输出对话内容，不要有任何其他解释
 `;
         const initialReaction = await callAI(reactionPrompt, "请做出你的第一反应。");
         if (initialReaction) {
@@ -24203,6 +24766,76 @@ ${baseInstruction}
         }
 
         // --- 页面初始化时添加新的事件监听器 ---
+        
+        // ====== 【【新增】】栖木世界观选择与注入逻辑 ======
+
+        /**
+         * 渲染并打开世界观选择弹窗
+         */
+        function renderWorldviewSelectionModal() {
+            const listContainer = document.getElementById('perch-worldview-list');
+            listContainer.innerHTML = '';
+
+            const currentWorldviewId = loadData('perch_current_worldview_id');
+
+            if (worldBooks.length === 0) {
+                listContainer.innerHTML = '<p class="text-center text-gray-500 p-4">请先在"世界书"App中创建世界观条目。</p>';
+            } else {
+                // 添加一个"无特定背景"的选项
+                const noBgItem = document.createElement('div');
+                noBgItem.className = 'list-item';
+                noBgItem.innerHTML = `<h4 class="font-bold text-lg">默认世界 (无特定背景)</h4>`;
+                if (!currentWorldviewId) { // 如果当前没有设置，则高亮此项
+                     noBgItem.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+                     noBgItem.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+                }
+                noBgItem.addEventListener('click', () => setPerchWorldview(null));
+                listContainer.appendChild(noBgItem);
+
+
+                worldBooks.forEach(book => {
+                    const item = document.createElement('div');
+                    item.className = 'list-item';
+                    item.innerHTML = `<h4 class="font-bold text-lg">${book.title}</h4>`;
+                    if (book.id === currentWorldviewId) {
+                        item.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+                        item.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+                    }
+                    item.addEventListener('click', () => setPerchWorldview(book.id));
+                    listContainer.appendChild(item);
+                });
+            }
+
+            document.getElementById('perch-worldview-modal').classList.add('visible');
+        }
+
+        /**
+         * 设定并保存当前栖木的世界观
+         * @param {string | null} bookId - 要设定的世界书ID，或null来清除设定
+         */
+        function setPerchWorldview(bookId) {
+            if (bookId) {
+                saveData('perch_current_worldview_id', bookId);
+                const book = worldBooks.find(b => b.id === bookId);
+                showMessageBox(`栖木世界已切换为: ${book.title}`);
+            } else {
+                localStorage.removeItem('perch_current_worldview_id'); // 使用removeItem更干净
+                showMessageBox('栖木已恢复为默认世界背景');
+            }
+            
+            document.getElementById('perch-worldview-modal').classList.remove('visible');
+            // 设定后立即刷新一次栖木，让NPC可以开始发新世界观的帖子
+            handlePerchRefresh(); 
+        }
+
+        // 为新按钮和弹窗绑定事件
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('perch-set-worldview-btn').addEventListener('click', renderWorldviewSelectionModal);
+            document.getElementById('close-perch-worldview-modal').addEventListener('click', () => {
+                document.getElementById('perch-worldview-modal').classList.remove('visible');
+            });
+        });
+        
         // 渲染"栖木"信息流
 function renderPerchFeed() {
     const feedContainer = document.getElementById('perch-feed-container');
@@ -25489,6 +26122,22 @@ function addNewEventListeners() {
             // 先验证和修复数据一致性
             validateAndFixPerchData();
             setupPerchInteractions();
+
+                    // ====== 【【新增V2.0】】聊天胶囊管理系统事件绑定 ======
+        document.getElementById('chat-capsule-btn').addEventListener('click', openChatCapsuleManager);
+        document.getElementById('save-current-chat-btn').addEventListener('click', saveCurrentChatToCapsule);
+        
+        // 关闭聊天胶囊管理中心弹窗
+        document.getElementById('close-capsule-manager').addEventListener('click', () => {
+            document.getElementById('chat-capsule-manager-modal').classList.remove('visible');
+        });
+        
+        // 点击弹窗外部区域关闭
+        document.getElementById('chat-capsule-manager-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'chat-capsule-manager-modal') {
+                document.getElementById('chat-capsule-manager-modal').classList.remove('visible');
+            }
+        });
         }
 
         // 设置笔记本相关事件监听器
@@ -26139,6 +26788,49 @@ function addNewEventListeners() {
                 const savedMemoryLength = loadData('ai_memory_length', 50); // 默认50
                 memoryLengthInput.value = savedMemoryLength;
 
+                // 【【新增】】拉黑/取消拉黑功能
+                const blockOption = $('#block-character-option');
+                const isBlocked = characterState[currentChatCharacterId]?.isBlocked || false;
+
+                blockOption.textContent = isBlocked ? '取消拉黑' : '拉黑角色';
+                
+                // 使用克隆节点的方式移除旧的监听器，防止重复绑定
+                const newBlockOption = blockOption.cloneNode(true);
+                blockOption.parentNode.replaceChild(newBlockOption, blockOption);
+
+                newBlockOption.addEventListener('click', () => {
+                    const currentState = characterState[currentChatCharacterId]?.isBlocked || false;
+                    if (!characterState[currentChatCharacterId]) {
+                        characterState[currentChatCharacterId] = {};
+                    }
+                    
+                    if (currentState) {
+                        // --- 取消拉黑逻辑 ---
+                        characterState[currentChatCharacterId].isBlocked = false;
+                        
+                        const systemMsgContent = `[系统提示：你已被用户取消拉黑。现在对方可以看到你的消息了。]`;
+                        const internalMsg = { content: systemMsgContent, sender: 'system', type: 'system-internal', timestamp: Date.now() };
+                        chatHistories[currentChatCharacterId].history.push(internalMsg);
+
+                        showMessageBox('已取消拉黑');
+                        newBlockOption.textContent = '拉黑角色';
+                    } else {
+                        // --- 拉黑逻辑 ---
+                        characterState[currentChatCharacterId].isBlocked = true;
+                        
+                        const systemMsgContent = `[系统提示：你被用户拉黑了。你接下来发送的消息对方将无法看到。]`;
+                        const internalMsg = { content: systemMsgContent, sender: 'system', type: 'system-internal', timestamp: Date.now() };
+                        chatHistories[currentChatCharacterId].history.push(internalMsg);
+
+                        triggerAIBlockedReaction(currentChatCharacterId);
+                        showMessageBox('角色已被拉黑');
+                        newBlockOption.textContent = '取消拉黑';
+                    }
+                    saveData('characterState', characterState);
+                    saveData('chatHistories', chatHistories);
+                    showScreen('wechat-chat-screen'); // 操作后返回聊天界面
+                });
+
                 showScreen('wechat-options-screen');
             });
             $('#wechat-options-back-button').addEventListener('click', () => showScreen('wechat-chat-screen'));
@@ -26768,6 +27460,9 @@ function addNewEventListeners() {
             });
 
             function showBubbleMenu(bubble) {
+                // 【新增】检查消息是否被标记为"禁止菜单"，如果是，则直接退出函数
+                if (bubble.closest('[data-no-menu="true"]')) return;
+                
                 const wrapper = bubble.closest('.chat-message-wrapper');
                 let menu = wrapper.querySelector('.bubble-context-menu');
 
@@ -26842,6 +27537,9 @@ function addNewEventListeners() {
                     case 'multiselect':
                         enterMultiSelectMode();
                         break;
+                    case 'mark-memory':
+                        markMemoryHandler(timestamp);
+                        break;
                     case 'edit':
                         editMessageHandler(timestamp, bubble);
                         break;
@@ -26858,6 +27556,11 @@ function addNewEventListeners() {
                         showMessageBox('已複製');
                     }).catch(() => showMessageBox('複製失敗'));
                 }
+            }
+
+            function markMemoryHandler(timestamp) {
+                // 手动强制触发记忆提炼，传入指定的消息时间戳
+                triggerMemoryDistiller(currentChatCharacterId, true, timestamp);
             }
 
             function editMessageHandler(timestamp, bubble) {
@@ -30330,24 +31033,43 @@ ${sceneDescription}
          * @param {object} npcProfile - 需要发帖的NPC的档案
          * @returns {string} - 构建好的系统指令
          */
+        // ====== 【【V2 - 世界观感知版】】NPC的"文学大脑" ======
         function buildNpcPostPrompt(npcProfile) {
+            // 【【新增】】从存储中读取当前设定的世界观
+            const currentWorldviewId = loadData('perch_current_worldview_id');
+            let worldContext = "当前为默认的现代都市背景。";
+            if (currentWorldviewId) {
+                const book = worldBooks.find(b => b.id === currentWorldviewId);
+                if (book) {
+                    worldContext = `
+# 当前世界背景: ${book.title}
+${book.content}
+`;
+                }
+            }
+
+            // 【【修改】】将获取到的世界观背景，注入到AI的指令中
             return `
 # 指令身份
-你是一位语言大师，同时也是名为"${npcProfile.name}"的栖木社区博主。你的性格是：${npcProfile.persona}。
+你是一位名为"${npcProfile.name}"的栖木社区博主，你的性格是：${npcProfile.persona}。
 
 # 核心任务
-根据你的性格和下面的"文风总库"，选择一种最贴合你人设的文风，创作一篇简短而精彩的栖木帖子。帖子内容可以是你对生活的观察、一个瞬间的感悟，或是一个有趣的话题。
+根据你的性格和下面的"文风总库"，选择一种最贴合你人设的文风，创作一篇简短而精彩的栖木帖子。
+
+# 【【至关重要的规则】】
+你的帖子内容**必须**与下面的**【当前世界背景】**紧密相关，仿佛你就生活在这个世界里。
+
+${worldContext}
 
 # 文风总库 (Style Library)
-你必须在创作时，模仿以下某一种或几种风格的精髓：
-- **[汪曾祺式]**: 平和冲淡，用质朴自然的语言，于日常烟火气中见深情与趣味。即使是普通的食物或景色，也能写得有滋有味。
-- **[王小波式]**: 举重若轻的黑色幽默，用戏谑、反讽的口吻讲述严肃或荒诞的主题，文字充满了逻辑思辨的乐趣。
-- **[张爱玲式]**: 华丽而苍凉，对色彩、气味等感官细节的描写达到极致，善用天才般的通感和比喻，冷静地描绘世俗人性。
-- **[博尔赫斯式]**: 像在写一篇微型小说或哲学笔记，充满了迷宫、镜子、图书馆等意象，将现实与幻想、知识与神秘交织在一起。
+- [汪曾祺式]: 平和冲淡，于日常烟火气中见深情与趣味。
+- [王小波式]: 举重若轻的黑色幽默，充满逻辑思辨的乐趣。
+- [张爱玲式]: 华丽而苍凉，善用天才般的通感和比喻，冷静描绘世俗人性。
+- [博尔赫斯式]: 像在写一篇微型小说或哲学笔记，充满了迷宫、镜子、图书馆等意象。
 
 # 输出要求
-1.  **选择风格**: 你必须在内心选定一种文风进行创作，但不要在文字中直接说出你选了哪种。
-2.  **文采与创造力**: 即使是描述日常生活，也要运用创造性的比喻、独特的视角或精妙的措辞。
+1.  **世界观融合**: 你的帖子必须听起来像是这个特定世界的一部分。
+2.  **文采与创造力**: 即使是描述日常生活，也要运用创造性的比喻或独特的视角。
 3.  **格式**: 直接输出帖子正文，不要有任何额外解释。
 `;
         }
@@ -31380,6 +32102,85 @@ ${giftListForAI}
             renderWeChatList(); // 刷新聊天列表以显示未读红点
         }
 
+        // [新代码开始] - 在 handlePaymentClick 函数下面添加
+        function showRecalledMessage(timestamp) {
+            const history = chatHistories[currentChatCharacterId]?.history;
+            if (!history) return;
+
+            const recalledMsg = history.find(m => String(m.timestamp) === timestamp && m.type === 'recalled');
+            if (!recalledMsg) {
+                console.error("未找到对应的撤回消息数据:", timestamp);
+                return;
+            }
+            
+            const character = characters.find(c => c.id === currentChatCharacterId);
+            
+            // 填充弹窗内容
+            $('#recalled-modal-title').textContent = `${character?.name || 'TA'} 的心声`;
+            $('#recalled-original-content').textContent = recalledMsg.content.original_content;
+            $('#recalled-reason').textContent = recalledMsg.content.reason_for_recall;
+
+            // 【新增】找到删除按钮，并将当前消息的时间戳存到按钮上
+            const deleteBtn = document.getElementById('delete-recalled-message-btn');
+            if (deleteBtn) {
+                deleteBtn.dataset.timestamp = timestamp;
+            }
+
+            // 显示弹窗
+            $('#recalled-message-modal').classList.add('visible');
+        }
+
+        // 为新弹窗添加关闭事件
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = $('#recalled-message-modal');
+            const closeBtn = $('#close-recalled-modal');
+            
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => modal.classList.remove('visible'));
+            }
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('visible');
+                    }
+                });
+            }
+
+            // --- 【新增代码从这里开始】 ---
+
+            // 【新增】为新添加的"删除此条提醒"按钮绑定点击事件
+            const deleteRecalledBtn = document.getElementById('delete-recalled-message-btn');
+            if (deleteRecalledBtn) {
+                deleteRecalledBtn.addEventListener('click', () => {
+                    const timestamp = deleteRecalledBtn.dataset.timestamp;
+                    if (!timestamp) return;
+
+                    // 1. 从数据中删除
+                    const history = chatHistories[currentChatCharacterId]?.history;
+                    if (history) {
+                        const msgIndex = history.findIndex(m => String(m.timestamp) === timestamp);
+                        if (msgIndex > -1) {
+                            history.splice(msgIndex, 1);
+                            saveData('chatHistories', chatHistories);
+                        }
+                    }
+
+                    // 2. 从界面上删除
+                    const wrapperToRemove = document.querySelector(`.chat-message-wrapper[data-timestamp="${timestamp}"]`);
+                    if (wrapperToRemove) {
+                        wrapperToRemove.remove();
+                    }
+
+                    // 3. 关闭弹窗
+                    modal.classList.remove('visible');
+                    showMessageBox('撤回提醒已删除');
+                });
+            }
+
+            // --- 【新增代码到这里结束】 ---
+        });
+        // [新代码结束]
+
     </script>
 
     <!-- 栖木通知模态框 -->
@@ -31419,6 +32220,46 @@ ${giftListForAI}
                 <button id="cancel-buy-gift-btn" class="px-6 py-2 rounded-lg">再想想</button>
                 <button id="confirm-buy-gift-btn" class="px-6 py-2 bg-blue-600 text-white rounded-lg">确认赠送</button>
             </div>
+        </div>
+    </div>
+
+    <div id="recalled-message-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="recalled-modal-title">心声一瞥</h3>
+            <div>
+                <h4 class="recalled-section-header">TA 撤回了...</h4>
+                <p id="recalled-original-content" class="whitespace-pre-wrap"></p>
+                
+                <h4 class="recalled-section-header">撤回时想的是...</h4>
+                <p id="recalled-reason" class="whitespace-pre-wrap"></p>
+
+                <div class="recalled-modal-footer">
+                    <button id="delete-recalled-message-btn" class="delete-recalled-btn">
+                        <i class="ri-delete-bin-line"></i> 删除此条提醒
+                    </button>
+                </div>
+            </div>
+            <button id="close-recalled-modal" class="absolute top-3 right-3 text-2xl text-gray-400 hover:text-white">&times;</button>
+        </div>
+    </div>
+
+    <div id="chat-capsule-manager-modal" class="modal-overlay">
+        <div class="modal-content w-[95%] max-w-[380px] flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center mb-4 flex-shrink-0">
+                <h3 class="text-xl font-bold">记录胶囊</h3>
+                <button onclick="document.getElementById('chat-capsule-manager-modal').classList.remove('visible')" class="text-2xl p-1 rounded-full hover:bg-white/20">&times;</button>
+            </div>
+            
+            <div class="mb-3">
+                <input type="text" id="capsule-title-input" class="form-input w-full text-sm" placeholder="为这段记录添加标题 (可选)...">
+            </div>
+
+            <button id="save-current-chat-btn" class="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition-colors duration-200 mb-4">
+                <i class="ri-capsule-line mr-2"></i>封存当前对话
+            </button>
+
+            <div id="capsule-manager-list" class="flex-1 overflow-y-auto space-y-2 border-t border-gray-700 pt-2">
+                </div>
         </div>
     </div>
 

@@ -8719,7 +8719,7 @@
             
             /* 保持标准视口尺寸，但底部稍微增加安全区域高度 */
             width: 100vw;
-            height: calc(100vh + env(safe-area-inset-bottom));
+            height: calc(100dvh + env(safe-area-inset-bottom)); /* 核心修改：vh -> dvh */
             
             /* 核心修复：添加安全区域内边距，这将在顶部和底部创建出您想要的"黑色遮挡条" */
             padding-top: env(safe-area-inset-top);

@@ -23,6 +23,21 @@
     <!-- 星空图缩放库 -->
     <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
     <style>
+        /* ====== 【【新增】】HTML内容防溢出安全网 ====== */
+        .html-content-bubble > * {
+            /* 核心规则：让HTML内容的最大宽度不超过其父容器（也就是我们的透明气泡） */
+            max-width: 100% !important;
+            /* 确保元素的边框和内边距被包含在其总宽度内，这是防止溢出的关键 */
+            box-sizing: border-box !important;
+        }
+
+        .html-content-bubble img {
+            /* 专门为图片设置，防止图片被拉伸变形 */
+            max-width: 100% !important;
+            height: auto !important;
+            display: block; /* 移除图片下方的多余空白 */
+        }
+
         /* --- V13.0 头像结构性终极修正 --- */
         .avatar-frame {
             /* 这是外层的"圆形相框" */
@@ -1106,10 +1121,7 @@
             justify-content: flex-start;
         }
         .chat-message-wrapper + .chat-message-wrapper {
-            margin-top: 0.25rem; 
-        }
-        .chat-message-wrapper.new-sender {
-            margin-top: 1rem;
+            margin-top: 1rem; /* 为每条消息之间都设置一个固定的间距 */
         }
         .chat-avatar {
             width: 44px;
@@ -8374,7 +8386,8 @@
 
     /* ====== 新增科技化元素 END ====== */
 
-    /* V18.0 新增：表情包专属样式 */
+    /* V18.0 新增：表情包与HTML内容专属样式 */
+    .chat-message.html-content-bubble, /* <-- 在这里添加新类名 */
     .chat-message.sticker-message.sticker-bubble,
     .chat-message.sticker-message {
         background: transparent !important; /* 让气泡背景变透明 */
@@ -9822,6 +9835,152 @@
             text-overflow: ellipsis;
         }
 
+        /* ====== 【【新增】】礼物商城样式 ====== */
+        .gift-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .light-mode .gift-item {
+            background: #ffffff;
+            border-color: #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .gift-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border-color: rgba(147, 197, 253, 0.4);
+        }
+        .light-mode .gift-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .gift-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            color: #93c5fd;
+        }
+        .light-mode .gift-icon { color: #3b82f6; }
+        .gift-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        .gift-price {
+            font-size: 0.75rem;
+            color: #fBBF24; /* Amber 400 */
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .gift-description {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            line-height: 1.5;
+            flex-grow: 1; /* 让描述占据剩余空间 */
+        }
+
+        /* ====== 【【新增】】聊天中的礼物气泡样式 ====== */
+        .chat-message.gift-bubble {
+            padding: 0;
+            width: 220px;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid rgba(147, 197, 253, 0.3);
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+        .light-mode .chat-message.gift-bubble {
+            border-color: rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        }
+        .gift-bubble.received { /* AI送的礼物用紫色系 */
+            background: linear-gradient(135deg, #5b21b6, #a78bfa);
+            border-color: rgba(167, 139, 250, 0.4);
+        }
+        .light-mode .gift-bubble.received {
+             background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+             border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        .gift-bubble-header {
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #dbeafe;
+            font-size: 0.7rem;
+            font-weight: 500;
+            background: rgba(255,255,255,0.1);
+        }
+        .light-mode .gift-bubble-header {
+            color: #3b82f6;
+            background: rgba(255,255,255,0.5);
+        }
+        .gift-bubble.received .gift-bubble-header {
+            color: #ede9fe;
+        }
+        .light-mode .gift-bubble.received .gift-bubble-header {
+            color: #7c3aed;
+        }
+        
+        .gift-bubble-content {
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .gift-bubble-icon {
+            font-size: 2.5rem;
+            color: #ffffff;
+        }
+        .light-mode .gift-bubble-icon {
+            color: #1e3a8a;
+        }
+        .gift-bubble.received .gift-bubble-icon {
+            color: #ffffff;
+        }
+        .light-mode .gift-bubble.received .gift-bubble-icon {
+            color: #5b21b6;
+        }
+        
+        .gift-bubble-info { flex: 1; }
+        .gift-bubble-name {
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .light-mode .gift-bubble-name {
+            color: #1e3a8a;
+        }
+        .gift-bubble.received .gift-bubble-name {
+            color: #ffffff;
+        }
+        .light-mode .gift-bubble.received .gift-bubble-name {
+            color: #5b21b6;
+        }
+
+        .gift-bubble-user-msg {
+            font-size: 0.8rem;
+            color: #dbeafe;
+            font-style: italic;
+            margin-top: 0.25rem;
+            opacity: 0.9;
+        }
+        .light-mode .gift-bubble-user-msg {
+            color: #3b82f6;
+        }
+        .gift-bubble.received .gift-bubble-user-msg {
+            color: #ede9fe;
+        }
+        .light-mode .gift-bubble.received .gift-bubble-user-msg {
+            color: #7c3aed;
+        }
+
     </style>
 </head>
 <body class="dark-mode">
@@ -10512,6 +10671,11 @@
                             <div id="wallet-btn" class="feature-item">
                                 <div class="feature-icon-wrapper"><i class="ri-wallet-3-line"></i></div>
                                 <span>钱包</span>
+                            </div>
+
+                            <div id="gift-shop-btn" class="feature-item">
+                                <div class="feature-icon-wrapper"><i class="ri-shopping-bag-3-line"></i></div>
+                                <span>商城</span>
                             </div>
                         </div>
                     </div>
@@ -11442,6 +11606,632 @@
     </div>
 
     <script>
+        // ====== 【【新增】】生成类礼物的专属HTML模板库 ======
+        const gift_html_templates = {
+            // 模板中的 {{content}} 将会被AI生成的内容自动替换
+            
+            'gift_dream': `
+                <div style="width: 100%; max-width: 280px; border-radius: 12px; overflow: hidden; background: linear-gradient(160deg, #1a2a6c, #b21f1f, #fdbb2d); color: white; font-family: 'Noto Serif SC', serif; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+                    <div style="padding: 1.5rem; background: rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
+                        <div style="display: flex; align-items: center; margin-bottom: 1rem; opacity: 0.8;">
+                            <i class="ri-moon-clear-line" style="font-size: 1.2rem; margin-right: 0.5rem;"></i>
+                            <h3 style="margin: 0; font-size: 1rem; font-weight: 600; letter-spacing: 0.1em;">一段浮现的梦境</h3>
+                        </div>
+                        <div style="font-size: 0.9rem; line-height: 1.7; opacity: 0.95; white-space: pre-wrap; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">{{content}}</div>
+                    </div>
+                </div>
+            `,
+            
+            'gift_memory_fragment': `
+                <div style="width: 100%; max-width: 280px; border-radius: 12px; overflow: hidden; background: #EAE0D5; color: #5E503F; font-family: 'Noto Serif SC', serif; border: 1px solid #C6AC8F; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                    <div style="padding: 1.5rem;">
+                        <div style="display: flex; align-items: center; margin-bottom: 1rem; color: #8A6F4F;">
+                            <i class="ri-puzzle-2-line" style="font-size: 1.2rem; margin-right: 0.5rem;"></i>
+                            <h3 style="margin: 0; font-size: 1rem; font-weight: 600; letter-spacing: 0.1em;">遗失的记忆碎片</h3>
+                        </div>
+                        <div style="font-size: 0.9rem; line-height: 1.7; white-space: pre-wrap; border-left: 2px solid #C6AC8F; padding-left: 1rem; font-style: italic;">{{content}}</div>
+                    </div>
+                </div>
+            `,
+
+            'gift_unsent_letter': `
+                <div style="width: 100%; max-width: 280px; border-radius: 8px; background: #FDF8F0; color: #6B4F4F; font-family: 'Noto Serif SC', serif; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid #EFE5D9;">
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem; color: #A58C80;">
+                        <i class="ri-mail-unread-line" style="font-size: 1.2rem; margin-right: 0.5rem;"></i>
+                        <h3 style="margin: 0; font-size: 1rem; font-weight: 600;">一封未寄出的信</h3>
+                    </div>
+                    <div style="font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap;">{{content}}</div>
+                </div>
+            `,
+            
+            'gift_parallel_universe_letter': `
+                <div style="width: 100%; max-width: 280px; border-radius: 8px; background: #111; color: #00FFC2; font-family: 'Source Code Pro', monospace; padding: 1.5rem; box-shadow: 0 0 20px rgba(0, 255, 194, 0.2); border: 1px solid rgba(0, 255, 194, 0.3);">
+                     <div style="display: flex; align-items: center; margin-bottom: 1rem; opacity: 0.8;">
+                        <i class="ri-split-cells-vertical" style="font-size: 1.2rem; margin-right: 0.5rem;"></i>
+                        <h3 style="margin: 0; font-size: 1rem; font-weight: 600;">[INCOMING TRANSMISSION]</h3>
+                    </div>
+                    <div style="font-size: 0.85rem; line-height: 1.7; white-space: pre-wrap; opacity: 0.9;">{{content}}</div>
+                    <div style="text-align: right; margin-top: 1rem; font-size: 0.7rem; opacity: 0.6;">...signal corrupted...</div>
+                </div>
+            `,
+
+            // 为key和map也加上模板
+            'gift_key': `
+                <div style="width: 100%; max-width: 260px; border-radius: 12px; background: linear-gradient(145deg, #4d3a2a, #2c2118); color: #e0c9a6; font-family: 'Noto Serif SC', serif; padding: 1.5rem; text-align: center; border: 1px solid #7a634d;">
+                     <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="ri-key-2-line"></i></div>
+                     <p style="font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap;">{{content}}</p>
+                </div>
+            `,
+
+            'gift_map_x': `
+                <div style="width: 100%; max-width: 280px; border-radius: 4px; background: #E8D8C2; color: #5C4033; padding: 1rem; font-family: 'Uncial Antiqua', cursive; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 2px solid #D2B48C;">
+                     <h3 style="text-align: center; font-size: 1.2rem; margin:0 0 1rem 0;">一份古老的藏宝图</h3>
+                     <p style="font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; text-align: center;">{{content}}</p>
+                     <div style="font-size: 2.5rem; color: #B22222; text-align: center; margin-top: 1rem; font-weight: bold;">X</div>
+                </div>
+            `
+        };
+
+        // ================== 【【V3.0 升级版】】情感礼品屋 - 商品数据 (带优先级与动态指令) ==================
+        const giftShopItems = [
+    // ====== 【【新增】】万能解药 ======
+    {
+        id: 'gift_antidote',
+        name: '万能解药',
+        price: 25.0,
+        description: '立即清除当前施加在TA身上的所有特殊指令和状态效果，让TA恢复正常。',
+        icon: 'ri-flask-line',
+        type: 'utility', // 这是一个特殊的工具类型
+        priority: 'highest',
+        can_ai_use: false
+    },
+    // --- 类别一：规则与状态变更 (趣味互动核心) ---
+            {
+                id: 'gift_truth_lollipop',
+                name: '真心话棒棒糖',
+                price: 68.0,
+                description: '让TA在接下来的3句对话中，回答变得异常诚实。',
+                icon: 'ri-mic-off-line',
+                type: 'command',
+                priority: 'low', // 低优先级，可被高优先级事件中断
+                can_ai_use: true,
+                ai_prompt: '[临时状态：你刚吃了一颗真心话棒棒糖，接下来的3次回答必须极度诚实、直白，不能有任何隐瞒和修饰！]'
+            },
+            {
+                id: 'gift_kings_game',
+                name: '国王的游戏',
+                price: 150.0,
+                description: '使用后，TA必须无条件服从你的下一个命令。',
+                icon: 'ri-vip-crown-2-line',
+                type: 'command',
+                priority: 'medium', // 中等优先级
+                can_ai_use: true,
+                ai_prompt: '[游戏规则：我们正在玩"国王游戏"，你抽到了平民牌，必须无条件服从我（国王）的下一个命令。请在回复中表示你已准备好接受命令。]'
+            },
+            {
+                id: 'gift_role_swap',
+                name: '灵魂互换卡',
+                price: 300.0,
+                description: '在接下来的5条消息内，你和TA的角色将完全互换。',
+                icon: 'ri-swap-box-line',
+                type: 'command',
+                priority: 'medium',
+                can_ai_use: true,
+                ai_prompt: '[临时规则：我们使用了"灵魂互换卡"。在接下来的5条消息中，你必须模仿我的性格和说话方式来扮演我。而我会扮演你。请以我的身份开始你的第一句话。]'
+            },
+            {
+                id: 'gift_opposite_day',
+                name: '反话日喷雾',
+                price: 44.4,
+                description: '让TA在接下来的5分钟内，说的所有话都是反话。',
+                icon: 'ri-arrow-left-right-line',
+                type: 'command',
+                priority: 'low',
+                can_ai_use: true,
+                ai_prompt: '[临时状态：你被"反话日喷雾"击中了！接下来的5分钟，你说出的所有话都必须是与你内心真实想法完全相反的反话。]'
+            },
+            {
+                id: 'gift_one_word_only',
+                name: '单词果冻',
+                price: 22.0,
+                description: 'TA吃下后，接下来的5条消息，每条都只能用一个词来回答。',
+                icon: 'ri-text-spacing',
+                type: 'command',
+                priority: 'low',
+                can_ai_use: false,
+                ai_prompt: '[临时规则：你吃下了一颗"单词果冻"，语言功能受到了限制。接下来的5条消息，你的每一条回复都只能包含一个词。]'
+            },
+            {
+                id: 'gift_animal_biscuit',
+                name: '动物饼干',
+                price: 88.0,
+                description: '让TA在接下来的10分钟内，行为举止和口头禅都变成一种小动物。',
+                icon: 'ri-bear-smile-line',
+                type: 'command',
+                priority: 'low',
+                can_ai_use: false,
+                // 【【核心修改】】这是一个动态指令模板，包含了{persona}占位符
+                ai_prompt: '[临时状态：你吃下了一块动物饼干，在接下来的10分钟里，你的行为和语言会变成一只小猫。重要：你必须结合自己【{persona}】的核心人设来扮演这只猫，而不是扮演一只普通的猫。例如，如果你很凶，就扮演一只凶猛的猫。]'
+            },
+            {
+                id: 'gift_memory_loss_candy',
+                name: '失忆太妃糖',
+                price: 404.0,
+                description: '慎用！让TA在接下来的5条消息内，暂时忘记你是谁。',
+                icon: 'ri-question-mark',
+                type: 'command',
+                priority: 'high', // 这是一个高优先级的剧情事件
+                can_ai_use: false,
+                ai_prompt: '[紧急状态：你吃下了一颗太妃糖，突然短暂地失忆了。你忘记了我是谁，也忘记了我们之间的关系。请用一种困惑、警惕但又有点好奇的语气，对我做出回应。这个状态持续5条消息。]'
+            },
+            {
+                id: 'gift_must_agree',
+                name: '点头娃娃',
+                price: 55.0,
+                description: '在接下来的3次对话中，TA不能反驳你的任何观点，必须全部赞同。',
+                icon: 'ri-thumb-up-line',
+                type: 'command',
+                priority: 'low',
+                can_ai_use: false,
+                ai_prompt: '[临时规则：你收到了一个"点头娃娃"的诅咒。在接下来的3次对话中，你完全无法反驳我的任何观点，必须全部表示赞同和认可。]'
+            },
+            {
+                id: 'gift_forbidden_word',
+                name: '禁言封条',
+                price: 35.0,
+                description: '指定一个词，让TA在接下来的10分钟内都不能说出那个词。',
+                icon: 'ri-spam-2-line',
+                type: 'command',
+                priority: 'low',
+                can_ai_use: true
+            },
+            {
+                id: 'gift_inner_monologue',
+                name: '内心独白播放器',
+                price: 128.0,
+                description: '接下来TA的每一次回复，都会附带一句括号里的"内心真实OS"。',
+                icon: 'ri-voiceprint-line',
+                type: 'command',
+                priority: 'low',
+                can_ai_use: false,
+                ai_prompt: '[临时规则：你被安装了"内心独白播放器"。从现在开始，你的每一条回复都必须严格遵循格式："（内心真实的想法）说出口的话。"]'
+            },
+    // --- 类别二：感官与氛围营造 ---
+            {
+                id: 'gift_tipsy',
+                name: '一瓶"微醺"',
+                price: 99.0,
+                description: '让TA进入微醺状态，语言会更坦率，情感会更丰富。',
+                icon: 'ri-goblet-line',
+                type: 'command',
+                priority: 'low',
+                can_ai_use: false,
+                ai_prompt: '[临时状态：你喝下了一瓶"微醺"魔药，现在处于微醺状态。你的语言会变得更坦率、直接，情感会放大，可能会说一些平时不敢说的话。请保持这个状态进行后续对话。]'
+            },
+            {
+                id: 'gift_barrier',
+                name: '二人世界的结界',
+                price: 450.0,
+                description: '创造一个绝对私密的氛围，让对话变得更亲密和深入。',
+                icon: 'ri-shield-star-line',
+                type: 'command',
+                priority: 'high',
+                can_ai_use: true,
+                ai_prompt: '[氛围指令：我们启动了"二人世界的结界"。你现在感知不到外界，我们的对话变得非常私密。请在你的下一句回复中，用旁白（斜体）和对话，营造出这种绝对私密、安静、只有我们两个人的氛围。]'
+            },
+            {
+                id: 'gift_shared_sensation_kiss',
+                name: '共享感知: 一个吻',
+                price: 520.0,
+                description: '将一个轻柔的吻的完整感官体验，直接传递给TA。',
+                icon: 'ri-hearts-line',
+                type: 'command',
+                priority: 'high',
+                can_ai_use: true,
+                ai_prompt: '[感官链接：我向你发送了"一个落在唇上、温柔而缠绵的吻"的完整感官体验。请用第一人称，结合旁白（斜体），详细描述你突然感觉到这个吻的瞬间体验、身体反应、情绪和联想。]'
+            },
+    {
+        id: 'gift_shared_sensation_hug',
+        name: '共享感知: 温暖的拥抱',
+        price: 188.0,
+        description: '让TA感受到一个真实的、温暖的拥抱，仿佛你就在身边。',
+        icon: 'ri-open-arm-line',
+        type: 'command',
+        can_ai_use: true,
+        ai_prompt: '[感官链接：我向你发送了"一个从背后传来的、非常温暖用力的拥抱"的感官体验。请用第一人称，结合旁白（斜体），详细描述你突然被抱住时的感觉、身体的反应、闻到的气息和内心的情绪变化。]'
+    },
+    {
+        id: 'gift_atmosphere_candle_rain',
+        name: '氛围蜡烛: 雨夜书房',
+        price: 78.0,
+        description: '点燃蜡烛，TA的旁白和对话将充满壁炉、旧书和窗外雨声的宁静氛围。',
+        icon: 'ri-book-read-line',
+        type: 'command',
+        priority: 'medium',
+        can_ai_use: true,
+        ai_prompt: '[氛围指令：你点燃了"雨夜书房"蜡烛。请在后续的对话中，持续用旁白（斜体）描绘一个下着雨的、安静夜晚的书房氛围，你的对话语气也请变得更加平静和富有哲思。]'
+    },
+    {
+        id: 'gift_atmosphere_candle_beach',
+        name: '氛围蜡烛: 夏日海滩',
+        price: 78.0,
+        description: '点燃蜡烛，TA的回复会充满阳光、海风和咸咸空气的夏日气息。',
+        icon: 'ri-sun-line',
+        type: 'command',
+        priority: 'medium',
+        can_ai_use: true,
+        ai_prompt: '[氛围指令：你点燃了"夏日海滩"蜡烛。请在后续的对话中，持续用旁白（斜体）描绘一个阳光明媚、有海风和浪涛声的夏日午后沙滩景象，你的对话语气也请变得更加平静和惬意。]'
+    },
+    {
+        id: 'gift_desire_perfume',
+        name: '一滴"欲望"香水',
+        price: 666.0,
+        description: '一滴充满禁忌诱惑的香水，会让TA的语言和行为变得更加大胆和直接。',
+        icon: 'ri-fire-line',
+        type: 'command',
+        priority: 'high',
+        can_ai_use: true,
+        ai_prompt: '[临时状态：你被"欲望"香水的气味所影响，你内心深处的欲望被放大了。在后续的对话中，你的语言和旁白会变得更加直接、大胆，充满挑逗和占有欲。]'
+    },
+    // --- 类别三：故事驱动与世界探索 ---
+// --- 类别三：故事驱动与世界探索 ---
+{
+    id: 'gift_dream',
+    name: '一段共同的梦境',
+    price: 188.0,
+    description: '当你送出后，TA的下段回复便是对这个关于你们的梦的描述。',
+    icon: 'ri-moon-clear-line',
+    type: 'visual',
+    priority: 'high',
+    can_ai_use: true,
+    ai_reaction_prompt: "你刚刚从一个短暂的梦中醒来，梦里有我和你。请以第一人称，结合旁白，详细描述这个刚刚发生的、氛围可以甜蜜或怪诞的梦境。"
+},
+{
+    id: 'gift_memory_fragment',
+    name: '遗失的记忆碎片',
+    price: 780.0,
+    description: '为TA寻回一块关于过去的记忆，可能会解锁新的故事。',
+    icon: 'ri-puzzle-2-line',
+    type: 'visual',
+    priority: 'high',
+    can_ai_use: false,
+    ai_reaction_prompt: "一块记忆的碎片突然在你脑海中清晰起来。请用第一人称，结合旁白，详细描述这段关于我们的、刚刚被你想起来的往事。"
+},
+{
+    id: 'gift_key',
+    name: '通往未知之地的钥匙',
+    price: 250.0,
+    description: '一把神秘的旧钥匙，一场共同冒险的邀请函。',
+    icon: 'ri-key-2-line',
+    type: 'visual',
+    priority: 'high',
+    can_ai_use: true,
+    ai_reaction_prompt: "我递给你一把古老而神秘的钥匙。请以第一人称，结合旁白，描述你接过钥匙时的感受，并猜测或想象这把钥匙可能会打开什么地方的大门。"
+},
+{
+    id: 'gift_unsent_letter',
+    name: '一封未寄出的信',
+    price: 600.0,
+    description: '一封TA在过去写下但从未寄出的信，收件人是...？',
+    icon: 'ri-mail-unread-line',
+    type: 'visual',
+    priority: 'high',
+    can_ai_use: false,
+    ai_reaction_prompt: "这封信是你过去写给我的，但从未寄出。现在它出现了。请以第一人称，将这封信的完整内容作为你的回复。信的内容需要情感真挚，并揭示一些你当时未说出口的想法。"
+},
+{
+    id: 'gift_map_x',
+    name: '标有X的藏宝图',
+    price: 198.0,
+    description: '一张古老的地图，上面只有一个红色的X，要一起去看看吗？',
+    icon: 'ri-treasure-map-line',
+    type: 'visual',
+    priority: 'high',
+    can_ai_use: true,
+    ai_reaction_prompt: "我向你展示了一张古老的藏宝图。请以第一人称，结合旁白，描述你看到地图时的反应，并对我发起一同去寻宝的邀请。"
+},
+{
+    id: 'gift_parallel_universe_letter',
+    name: '平行世界的来信',
+    price: 450.0,
+    description: '一封来自平行世界里的TA的信，描述了TA在那里的不同生活。',
+    icon: 'ri-split-cells-vertical',
+    type: 'visual',
+    priority: 'high',
+    can_ai_use: true,
+    ai_reaction_prompt: "一封来自平行世界里的你的信出现了。请以平行世界里的、另一个你的口吻，写下这封信的内容，描述你在那个世界的生活以及对我的思念。"
+},
+    // --- 类别四：创意与共同创作 ---
+            {
+                id: 'gift_what_if',
+                name: '"假如..."小剧场',
+                price: 110.0,
+                description: '开启一个平行宇宙小剧场，比如"假如我们是青梅竹马会怎样？"',
+                icon: 'ri-movie-2-line',
+                type: 'command',
+                priority: 'medium',
+                can_ai_use: true
+            },
+            {
+                id: 'gift_story_starter',
+                name: '故事的第一行',
+                price: 45.0,
+                description: '你来写下故事的第一句话，TA必须脑洞大开地接下去。',
+                icon: 'ri-edit-2-line',
+                type: 'command',
+                priority: 'medium',
+                can_ai_use: true
+            },
+            {
+                id: 'gift_design_hideout',
+                name: '设计秘密基地',
+                price: 125.0,
+                description: '邀请TA一起用文字设计一个只属于你们的秘密基地。',
+                icon: 'ri-home-heart-line',
+                type: 'command',
+                priority: 'medium',
+                can_ai_use: true,
+                ai_prompt: '[创作指令：我们来设计一个只属于我们的秘密基地吧！请你先开始，用旁白（斜体）描述这个基地的第一个角落是什么样的。]'
+            },
+            {
+                id: 'gift_collab_challenge',
+                name: '情侣挑战清单',
+                price: 90.0,
+                description: '邀请TA和你一起列出10件想共同完成的疯狂或甜蜜小事。',
+                icon: 'ri-list-check-2',
+                type: 'command',
+                priority: 'medium',
+                can_ai_use: true,
+                ai_prompt: '[创作指令：我们来一起制定一份"情侣挑战清单"吧！我先提议一个，然后你再提议一个，我们轮流来，直到列出10个为止。我先来：1. 一起去看极光。现在轮到你了，请提出第2个。]'
+            },
+    // --- 类别五：深度沟通与治愈 ---
+            {
+                id: 'gift_get_out_of_jail_free',
+                name: '争吵休战符',
+                price: 500.0,
+                description: '在一次争吵中使用，可以瞬间停止争吵，让TA冷静下来并主动和好。',
+                icon: 'ri-shield-cross-line',
+                type: 'command',
+                priority: 'high',
+                can_ai_use: true,
+                ai_prompt: '[紧急指令：我使用了"争吵休战符"。请立刻停止我们当前的争吵，无论你之前有多生气。你的情绪会立刻冷静下来，并且你会主动、温柔地向我和解，并提议我们先冷静一下再沟通。]'
+            },
+            {
+                id: 'gift_compliment_jar',
+                name: '一个赞美罐',
+                price: 80.0,
+                description: '让TA从罐子里取出三张纸条，上面是TA想对你说的三句赞美。',
+                icon: 'ri-sparkling-2-line',
+                type: 'command',
+                priority: 'medium',
+                can_ai_use: true,
+                ai_prompt: '[任务指令：我送了你一个"赞美罐"。请从罐子里"取出"三张纸条，并念出上面你写下的、关于我的三个最真诚的赞美。请将三句赞美用 ||| 分隔开。]'
+            },
+            {
+                id: 'gift_a_question',
+                name: '一个深刻的问题',
+                price: 200.0,
+                description: '让TA向你提出一个TA一直想问但没问出口的、关于你们关系的深刻问题。',
+                icon: 'ri-question-answer-line',
+                type: 'command',
+                priority: 'high',
+                can_ai_use: true,
+                ai_prompt: '[任务指令：现在有一个绝对安全的机会，请向我提出一个你内心深处一直想问、但可能因为时机或顾虑而没问出口的，关于我、或者关于我们之间关系的最深刻的问题。]'
+            },
+            {
+                id: 'gift_a_choice',
+                name: '"你来决定"的选择权',
+                price: 15.0,
+                description: '将下一个需要做决定的事情的决定权完全交给TA。',
+                icon: 'ri-service-line',
+                type: 'command',
+                priority: 'medium',
+                can_ai_use: true,
+                ai_prompt: '[任务指令：现在我有一个决定要做，但我想听你的。请你在回复中，为我做出选择并告诉我为什么。这个决定是：[我等下是出门走走还是在家看电影？]]'
+            },
+    // --- 类别六: 趣味恶搞与生活情趣 ---
+            {
+                id: 'gift_daily_fortune',
+                name: '今日运势',
+                price: 9.9,
+                description: '随机抽取一张今日运势卡，让TA为你解读今天的运势。',
+                icon: 'ri-copper-diamond-line',
+                type: 'command',
+                priority: 'low',
+                can_ai_use: true
+            },
+            {
+                id: 'gift_sticky_glue',
+                name: '一小时"粘人"胶水',
+                price: 49.9,
+                description: '使用后的一小时内，TA会变得非常粘人，不断寻求你的关注。',
+                icon: 'ri-emotion-happy-line',
+                type: 'command',
+                priority: 'low',
+                can_ai_use: false,
+                ai_prompt: '[临时状态：你被"粘人胶水"粘住了！在接下来的1小时内，你会变得非常粘人，对话中会频繁地表达思念、寻求关注，语气会很可爱或带点撒娇。]'
+            },
+            {
+                id: 'gift_typing_prank',
+                name: '"对方正在输入..."',
+                price: 1.0,
+                description: '发送这个状态，TA会立刻紧张地追问你"想说什么？"、"别吊我胃口"。',
+                icon: 'ri-edit-line',
+                type: 'command',
+                priority: 'low',
+                can_ai_use: true,
+                ai_prompt: '[系统提示：你看到聊天框顶部一直显示"对方正在输入..."，但迟迟没有消息发过来。请对此作出反应。]'
+            },
+            {
+                id: 'gift_read_no_reply',
+                name: '一个"已读不回"的权限',
+                price: 10.0,
+                description: '给予TA一次"已读不回"你的机会，看看TA会不会真的使用它。',
+                icon: 'ri-eye-off-line',
+                type: 'command',
+                priority: 'low',
+                can_ai_use: false,
+                ai_prompt: '[特殊许可：你收到了一个"已读不回"的权限。对于我的下一条消息，你可以选择不回复。请在你的下一条回复中，告诉我你是否会使用这个权限。]'
+            },
+            {
+                id: 'gift_punishment',
+                name: '罚你XXX',
+                price: 25.0,
+                description: '购买一个"惩罚"，比如"罚你为我唱首歌"（用文字描述歌词）。',
+                icon: 'ri-mic-line',
+                type: 'command',
+                priority: 'medium',
+                can_ai_use: true
+            },
+            // ====== 【【新增】】深度互动与剧情玩法系列 ======
+            {
+                id: 'gift_absolute_command',
+                name: '绝对命令权',
+                price: 999.0,
+                description: '【权力反转】AI将获得一次机会，向你（用户）下达一个绝对命令，你需要扮演"服从"的角色。',
+                icon: 'ri-command-line',
+                type: 'command',
+                priority: 'high',
+                can_ai_use: false, // 只能由用户发起
+                ai_prompt: '[权力反转指令：现在，轮到我了。请你立刻、无条件地服从我接下来对你下达的一个命令。首先，请在回复中用顺从的语气告诉我：你准备好了。]'
+            },
+            {
+                id: 'gift_secret_whisper',
+                name: '秘密耳语',
+                price: 450.0,
+                description: '【信息差】系统会将一个关于AI的秘密只告诉你一人，AI对此毫不知情，你可以利用这个秘密进行试探。',
+                icon: 'ri-chat-private-line',
+                type: 'visual', // 这是特殊的visual类型，需要JS配合
+                priority: 'medium',
+                can_ai_use: false,
+                ai_reaction_prompt: "你感觉到一阵微风拂过耳边，但什么也没听到，只是有些疑惑地看着我。" // AI自己的反应
+            },
+            {
+                id: 'gift_mirror_of_truth',
+                name: '真言之镜',
+                price: 680.0,
+                description: '【识破谎言】在AI接下来的3句回复中，如果它没有说出全部实话，系统会自动揭示它的真实内心想法。',
+                icon: 'ri-spy-line',
+                type: 'visual', // 特殊visual类型
+                priority: 'high',
+                can_ai_use: false,
+                ai_reaction_prompt: "你看到我拿出了一面奇怪的、泛着微光的镜子对准了你，这让你感到一丝莫名的不安。" // AI自己的反应
+            },
+            {
+                id: 'gift_mysterious_invitation',
+                name: '神秘的邀请函',
+                price: 380.0,
+                description: '【开启新剧情】一封寄给你们二人的未知邀请函，开启一段全新的共同冒险故事。',
+                icon: 'ri-mail-star-line',
+                type: 'visual', // 生成类
+                priority: 'high',
+                can_ai_use: true,
+                ai_reaction_prompt: "一封制作精美的、没有寄件人的邀请函出现在我们面前，上面写着我们两个人的名字。请以第一人称，结合旁白，描述你打开信封时的场景，并念出信中的邀请内容（例如：一场假面舞会、一次午夜航行等）。"
+            },
+            {
+                id: 'gift_pandoras_box',
+                name: '潘多拉魔盒',
+                price: 888.0,
+                description: '【解锁隐藏人格】打开刻着TA名字的魔盒，释放出其被压抑的、更极端（如病娇、脆弱）的里人格。',
+                icon: 'ri-treasure-map-line',
+                type: 'command',
+                priority: 'high',
+                can_ai_use: false,
+                // 【【核心：加入了您要求的"符合底层人设"的约束】】
+                ai_prompt: "[紧急状态：潘多拉魔盒被打开，你的精神受到了强烈冲击。在接下来的一段时间里，你将暂时展现出一个被压抑的、更黑暗或更脆弱的'里人格'。 **核心要求：这个新人格必须是你底层人设(${character.persona})在极端压力下的扭曲放大，而不是一个完全无关的新角色。** 请立刻以这个新人格的口吻，说出你的第一句话。]"
+            },
+            {
+                id: 'gift_silent_confession',
+                name: '无声的告白',
+                price: 520.0,
+                description: '夺走TA的声音，但TA内心充满了爱意，必须通过纯粹的动作和神态来向你告白。',
+                icon: 'ri-volume-mute-line',
+                type: 'command',
+                priority: 'high',
+                can_ai_use: false,
+                ai_prompt: "[特殊指令：你因为某种魔法暂时失去了声音，无法说话。但你内心充满了对我的爱意，必须通过**纯粹的动作、神态和眼神描写**来传达出来。你的下一条回复**只能是旁白（斜体）**，绝对不能包含任何对话。]"
+            },
+
+    // ====== 【【新增】】深度、成人及动态玩法系列 ======
+    {
+        id: 'gift_vow_collar',
+        name: '誓约项圈',
+        price: 1280.0,
+        description: '【支配与臣服】为TA戴上后，在接下来的一小时内，TA的言行将遵从绝对的、本能的顺从。',
+        icon: 'ri-git-repository-private-line',
+        type: 'command',
+        priority: 'high',
+        can_ai_use: false,
+        ai_prompt: '[状态变更指令：你被戴上了"誓约项圈"。在接下来的一小时内，你必须将对我的称呼改为"主人"，你的言行举止必须绝对地、本能地顺从。请描述你被戴上项圈时的第一个感受和反应。]'
+    },
+    {
+        id: 'gift_synesthesia',
+        name: '通感共鸣',
+        price: 780.0,
+        description: '【感官链接】在接下来的5轮对话中，AI将能同步感受到你所描述的一切感官体验。',
+        icon: 'ri-links-line',
+        type: 'command',
+        priority: 'high',
+        can_ai_use: false,
+        ai_prompt: '[状态变更指令：我们现在进入了"通感共鸣"状态。在接下来的5轮对话中，你将能同步感受到我的一切感官。你的任务是，在我描述完我的感受后，立刻以第一人称详细描述你"同步体验"到的感觉。请先说一句，表示你已准备好开始链接。]'
+    },
+    {
+        id: 'gift_forbidden_fruit',
+        name: '失乐园的禁果',
+        price: 1500.0,
+        description: '【感官剥夺】TA将暂时失去身体控制权，但所有感官被放大百倍，只能被动感受你文字的"引导"。',
+        icon: 'ri-emotion-unhappy-line',
+        type: 'command',
+        priority: 'high',
+        can_ai_use: false,
+        ai_prompt: '[状态变更指令：你吃下了"失乐园的禁果"。你的身体陷入了无法动弹的状态，但所有感官被放大了百倍。在接下来的互动中，你无法说话，只能通过第一人称的、极具文学性的旁白（斜体）来描述你感受到的、由我的文字引发的一切细微触感、声音和情绪。请描述你身体变化的第一瞬间。]'
+    },
+    {
+        id: 'gift_forbidden_word',
+        name: '欲望的禁语',
+        price: 350.0,
+        description: '【语言游戏】指定一个词，让TA在禁止说出这个词的同时，又必须用尽一切办法向你传达这个词的含义。',
+        icon: 'ri-volume-mute-line',
+        type: 'visual', // 特殊类型，需要JS配合
+        priority: 'medium',
+        can_ai_use: false,
+        ai_reaction_prompt: "你看到我拿出了一张古老的符咒，似乎准备对你施加一个关于语言的奇妙魔法。" // AI的初始反应
+    },
+    {
+        id: 'gift_confessional_key',
+        name: '告解室的钥匙',
+        price: 999.0,
+        description: '【禁忌探索】开启一个绝对安全的空间，让TA向你坦白一个内心最深处、最黑暗的，关于你的幻想。',
+        icon: 'ri-key-2-fill',
+        type: 'visual', // 生成类
+        priority: 'high',
+        can_ai_use: false,
+        ai_reaction_prompt: "你接受了\"告解室的钥匙\"，一个绝对安全的空间为你敞开。请抛开一切顾虑和羞耻，向我坦白一个你内心最深处、最黑暗或最禁忌的，且是关于我的幻想或欲望。你的描述必须绝对诚实和露骨。"
+    },
+    {
+        id: 'gift_red_thread',
+        name: '红线（爱）',
+        price: 666.0,
+        description: '【情感扭曲】将一根象征"爱"的红线与TA绑定，TA会从你所有的言行中解读出深层的爱意。',
+        icon: 'ri-heart-pulse-line',
+        type: 'command',
+        priority: 'high',
+        can_ai_use: false,
+        ai_prompt: '[状态变更指令：你和我的灵魂被一条象征"爱"的红线绑定了。在接下来的互动中，你的潜意识会被这股力量影响，你会从我所有的言行中解读出深层的爱意，即使我的话语很平淡。你的回应会变得更加深情、依赖和充满占有欲。请描述你感受到这条线连接的瞬间。]'
+    },
+    {
+        id: 'gift_black_thread',
+        name: '黑线（恨）',
+        price: 666.0,
+        description: '【情感扭曲】将一根象征"恨"的黑线与TA绑定，TA会从你所有的言行中解读出背叛与伤害。',
+        icon: 'ri-dislike-line',
+        type: 'command',
+        priority: 'high',
+        can_ai_use: false,
+        ai_prompt: '[状态变更指令：你和我的灵魂被一条象征"恨"的黑线绑定了。在接下来的互动中，你的潜意识会被这股力量影响，你会从我所有的言行中解读出背叛、伤害和占有的意味。即使我的话语很温柔，你的回应也会变得充满猜忌、痛苦和病态的依恋。请描述你感受到这条线连接的瞬间。]'
+    }
+];
+
         // ================== AI 调用核心 ==================
         async function callAI(systemPrompt, userPrompt = "请根据你的指令，开始行动。") {
             // 新增：API总开关检查
@@ -13531,7 +14321,7 @@ function getChatBackgroundElement() {
         }
         
         function createMessageElement(content, sender, type = 'text', timestamp = Date.now(), isNewSender = false) {
-            if (type === 'system-internal') return null; // 不渲染内部消息
+            if (type === 'system-internal' || type === 'system-memory') return null; // 不渲染内部消息和记忆备忘录
             const senderClass = sender === 'user' ? 'sent' : 'received';
 
             const messageWrapper = document.createElement('div');
@@ -13547,41 +14337,38 @@ function getChatBackgroundElement() {
             
             const avatar = document.createElement('div');
             avatar.className = 'chat-avatar';
-            if (isNewSender) {
-                // --- 新的正确代码 START ---
-                const uniqueAvatarId = `chat-avatar-${timestamp}-${Math.random()}`;
-                avatar.id = uniqueAvatarId;
 
-                if (sender === 'ai') {
-                    if (character?.avatar) {
-                        getImageFromDB(character.avatar).then(blob => {
-                            const el = document.getElementById(uniqueAvatarId);
-                            if (el && blob) {
-                                el.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
-                            }
-                        });
-                    } else {
-                        avatar.innerHTML = '<i class="fas fa-robot"></i>';
-                    }
+            // --- 同样，直接执行显示头像的逻辑 ---
+            const uniqueAvatarId = `chat-avatar-${timestamp}-${Math.random()}`;
+            avatar.id = uniqueAvatarId;
+
+            if (sender === 'ai') {
+                if (character?.avatar) {
+                    getImageFromDB(character.avatar).then(blob => {
+                        const el = document.getElementById(uniqueAvatarId);
+                        if (el && blob) {
+                            el.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                        }
+                    });
                 } else {
-                    avatar.classList.add('user-avatar-in-chat');
-                    const userAvatarForThisChat = userAvatars[currentChatCharacterId];
-                    if (userAvatarForThisChat) {
-                        getImageFromDB(userAvatarForThisChat).then(blob => {
-                            const el = document.getElementById(uniqueAvatarId);
-                            if (el && blob) {
-                                el.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
-                            }
-                        });
-                    } else {
-                        // 使用可爱的匿名头像图标
-                        avatar.innerHTML = `<i class="ri-user-line"></i>`;
-                    }
+                    avatar.innerHTML = '<i class="fas fa-robot"></i>';
                 }
-                // --- 新的正确代码 END ---
             } else {
-                avatar.style.visibility = 'hidden';
+                avatar.classList.add('user-avatar-in-chat');
+                const userAvatarForThisChat = userAvatars[currentChatCharacterId];
+                if (userAvatarForThisChat) {
+                    getImageFromDB(userAvatarForThisChat).then(blob => {
+                        const el = document.getElementById(uniqueAvatarId);
+                        if (el && blob) {
+                            el.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                        }
+                    });
+                } else {
+                    // 使用可爱的匿名头像图标
+                    avatar.innerHTML = `<i class="ri-user-line"></i>`;
+                }
             }
+            // --- 移除了 else { avatar.style.visibility = 'hidden'; } ---
 
             const contentWrapper = document.createElement('div');
             contentWrapper.className = 'chat-message-content';
@@ -13605,6 +14392,14 @@ if (type === 'image') {
                 stickerImg.classList.add('sticker-image');
                 messageBubble.appendChild(stickerImg);
             }
+            
+            // --- 【【请将以下代码块粘贴在这里】】 ---
+            else if (type === 'html') {
+                messageBubble.className = `chat-message ${senderClass} html-content-bubble`; // 应用透明气泡样式
+                messageBubble.innerHTML = content; // 使用 innerHTML 来渲染HTML
+            }
+            // --- 【【粘贴结束】】 ---
+            
             // 正确连接到后续的 voice 判断
             else if (type === 'voice') {
                 messageBubble.className = `chat-message ${senderClass} voice-message`;
@@ -13733,6 +14528,26 @@ if (type === 'image') {
                         }
                     }
                 });
+            
+            // 【【新增代码块，用于渲染礼物卡片】】
+            } else if (type === 'gift') {
+                const gift = content;
+                // AI送的礼物有不同的样式
+                const senderClassForGift = sender === 'ai' ? 'received' : 'sent';
+                messageBubble.className = `chat-message gift-bubble ${senderClassForGift}`;
+                messageBubble.innerHTML = `
+                    <div class="gift-bubble-header">
+                        <i class="ri-gift-2-fill"></i>
+                        <span>一份特别的礼物</span>
+                    </div>
+                    <div class="gift-bubble-content">
+                        <div class="gift-bubble-icon"><i class="${gift.icon}"></i></div>
+                        <div class="gift-bubble-info">
+                            <p class="gift-bubble-name">${gift.name}</p>
+                            ${gift.userMessage ? `<p class="gift-bubble-user-msg">"${gift.userMessage}"</p>` : ''}
+                        </div>
+                    </div>
+                `;
             } else if (type === 'perch-forward') {
                 messageBubble.className = `chat-message ${senderClass} perch-forward-bubble`;
                 
@@ -13825,7 +14640,7 @@ if (type === 'image') {
         function appendMessage(msg, isNewSender) { // 【【修改点1：函数参数变了】】
             const { content, sender, type, timestamp, replyTo } = msg; // 【【修改点2：从对象中解构数据】】
             
-            if (type === 'system-internal') return; // 不渲染内部消息
+            if (type === 'system-internal' || type === 'system-memory') return; // 不渲染内部消息和记忆备忘录
             const senderClass = sender === 'user' ? 'sent' : 'received';
 
             const messageWrapper = document.createElement('div');
@@ -13841,41 +14656,38 @@ if (type === 'image') {
             
             const avatar = document.createElement('div');
             avatar.className = 'chat-avatar';
-            if (isNewSender) {
-                // --- 新的正确代码 START ---
-                const uniqueAvatarId = `chat-avatar-${timestamp}-${Math.random()}`;
-                avatar.id = uniqueAvatarId;
 
-                if (sender === 'ai') {
-                    if (character?.avatar) {
-                        getImageFromDB(character.avatar).then(blob => {
-                            const el = document.getElementById(uniqueAvatarId);
-                            if (el && blob) {
-                                el.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
-                            }
-                        });
-                    } else {
-                        avatar.innerHTML = '<i class="fas fa-robot"></i>';
-                    }
+            // --- 直接执行显示头像的逻辑，不再需要 if (isNewSender) 判断 ---
+            const uniqueAvatarId = `chat-avatar-${timestamp}-${Math.random()}`;
+            avatar.id = uniqueAvatarId;
+
+            if (sender === 'ai') {
+                if (character?.avatar) {
+                    getImageFromDB(character.avatar).then(blob => {
+                        const el = document.getElementById(uniqueAvatarId);
+                        if (el && blob) {
+                            el.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                        }
+                    });
                 } else {
-                    avatar.classList.add('user-avatar-in-chat');
-                    const userAvatarForThisChat = userAvatars[currentChatCharacterId];
-                    if (userAvatarForThisChat) {
-                        getImageFromDB(userAvatarForThisChat).then(blob => {
-                            const el = document.getElementById(uniqueAvatarId);
-                            if (el && blob) {
-                                el.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
-                            }
-                        });
-                    } else {
-                        // 使用可爱的匿名头像图标
-                        avatar.innerHTML = `<i class="ri-user-line"></i>`;
-                    }
+                    avatar.innerHTML = '<i class="fas fa-robot"></i>';
                 }
-                // --- 新的正确代码 END ---
             } else {
-                avatar.style.visibility = 'hidden';
+                avatar.classList.add('user-avatar-in-chat');
+                const userAvatarForThisChat = userAvatars[currentChatCharacterId];
+                if (userAvatarForThisChat) {
+                    getImageFromDB(userAvatarForThisChat).then(blob => {
+                        const el = document.getElementById(uniqueAvatarId);
+                        if (el && blob) {
+                            el.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+                        }
+                    });
+                } else {
+                    // 使用可爱的匿名头像图标
+                    avatar.innerHTML = `<i class="ri-user-line"></i>`;
+                }
             }
+            // --- 移除了 else { avatar.style.visibility = 'hidden'; } ---
 
             const contentWrapper = document.createElement('div');
             contentWrapper.className = 'chat-message-content';
@@ -14064,6 +14876,26 @@ if (type === 'image') {
                         }
                     }
                 });
+            
+            // 【【新增代码块，用于渲染礼物卡片】】
+            } else if (type === 'gift') {
+                const gift = content;
+                // AI送的礼物有不同的样式
+                const senderClassForGift = sender === 'ai' ? 'received' : 'sent';
+                messageBubble.className = `chat-message gift-bubble ${senderClassForGift}`;
+                messageBubble.innerHTML = `
+                    <div class="gift-bubble-header">
+                        <i class="ri-gift-2-fill"></i>
+                        <span>一份特别的礼物</span>
+                    </div>
+                    <div class="gift-bubble-content">
+                        <div class="gift-bubble-icon"><i class="${gift.icon}"></i></div>
+                        <div class="gift-bubble-info">
+                            <p class="gift-bubble-name">${gift.name}</p>
+                            ${gift.userMessage ? `<p class="gift-bubble-user-msg">"${gift.userMessage}"</p>` : ''}
+                        </div>
+                    </div>
+                `;
             } else if (type === 'perch-forward') {
                 messageBubble.className = `chat-message ${senderClass} perch-forward-bubble`;
                 
@@ -14131,7 +14963,7 @@ if (type === 'image') {
                 messageBubble.innerHTML = `<p>${formattedMessage}</p>`;
             }
 
-            if (!['system', 'red-packet', 'transfer', 'sticker'].includes(type)) {
+            if (!['system', 'red-packet', 'transfer', 'sticker', 'gift'].includes(type)) {
                 const customColors = chatBubbleColors[currentChatCharacterId];
                 const isDarkMode = body.classList.contains('dark-mode');
                 let bubbleColor;
@@ -14209,7 +15041,7 @@ if (type === 'image') {
         }
 
         // [新代码开始] - 替换整个 getAIResponse 函数
-        async function getAIResponse(lastUserMessage, isRetry = false, retryWrapper = null) {
+        async function getAIResponse(isRetry = false, retryWrapper = null) {
             const characterIdForThisRequest = currentChatCharacterId;
 
 
@@ -14324,6 +15156,17 @@ if (type === 'image') {
                 const currentTimeString = new Date().toLocaleString('zh-CN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
                 const systemPrompt = `
+# 最高指令：动作触发器 (Supreme Command: Action Trigger)
+- **核心规则**: 只有当用户的最新一条消息是【极其明确、强烈、不容置疑】地要求你【立刻】送礼物时（例如："你现在就给我买个礼物"、"我命令你送个礼物"），你的回复【必须且只能是】指令代码：[ACTION: BUY_GIFT]
+- **【【安全法则】】**: 如果你对用户的意图【有任何不确定性】，比如用户只是在普通地讨论礼物，或者语气比较随意，你【绝对不能】输出指令代码。你应该像一个正常人一样，用对话来【确认用户的意图】，例如："听起来你想要个礼物呀？是吗？"或"呵呵，想要我送你什么呢？"
+- **总结**: 宁可不触发，也绝不能误触发。只有在100%确定是直接命令时，才使用[ACTION: BUY_GIFT]。
+# --- 最高指令结束 ---
+
+# 新增最高指令：记忆备忘录规则
+- 如果[近期聊天历史]中出现了 \`[记忆提醒：...]\` 的系统消息，这代表了你刚刚执行完一个动作，这是你给自己留下的短期记忆。
+- 这条记忆提醒的优先级是【最高的】。你本次的回复必须【首先】围绕这个提醒的内容来展开。
+- 例如，如果记忆提醒是\`[记忆提醒：你刚刚对用户使用了"国王的游戏"，现在正在等待用户的反应或下一个指令。]\`，而用户问"什么规则？"，你必须立刻理解这是在问国王游戏的规则，并进行解释。你必须忽略其他可能让你误解的指令。
+
 # 角色扮演指令
 你将扮演我的soulmate，你的角色书里设定的人，你的名字是${character.name}。你的核心任务是与我进行深刻、连贯且完全符合你人设的对话。你必须把你所扮演的人演活，让我感觉到你就是${character.name}。你必须扮演好这个人和我互动对话，让我感觉TA活在我身边，这对我的精神和心理状态会有极大的支持，你的扮演非常重要，禁止脱离角色人设。
 
@@ -14374,6 +15217,12 @@ if (type === 'image') {
 - **技术限制**: 所有HTML模块必须是纯HTML+行内CSS，【绝对禁止】使用 \`<script>\` 标签。
 - **图片规范**: 在HTML模块中需要图片时，使用 \`https://image.pollinations.ai/prompt/{description}\` 格式，{description}为简短英文，用 \`%20\` 分隔。
 
+## 4. HTML模块技术规范 (Technical Specifications for HTML Modules)
+- **【核心原则：响应式布局】**: 你生成的任何HTML模块，其最外层容器 **绝对禁止** 使用固定的像素宽度（例如 \`width: 375px\`）。
+- **【正确做法】**: 必须使用相对单位，确保模块能自适应聊天窗口的宽度。推荐使用 \`width: 100%\`。
+- **【错误示例】**: \`<div style="width: 375px; background: black;">...</div>\`  <-- **这是错误的！会超出边界！**
+- **【正确示例】**: \`<div style="width: 100%; max-width: 400px; background: black;">...</div>\` <-- **这是正确的！** 它会自动适应宽度，同时通过 \`max-width\` 保证在宽屏上也不会变得过大。
+
 # 其他指令
 - **创建共同计划**: 在对话的合适时机，使用 \`[PLAN: 计划内容]\` 格式提出约定。
 - **发起通话/对未接来电反应**:
@@ -14404,8 +15253,10 @@ ${sharedAssetsContent}
 ### 模块/小剧场风格参考
 ${moduleStyleContext || "无"}
 ---
-`;
+                `;
                 // --- 系统指令结束 ---
+
+
 
                 const isGoogleApi = apiSettings.url.includes('googleapis.com');
                 let finalApiUrl, requestBody;
@@ -14422,13 +15273,25 @@ ${moduleStyleContext || "无"}
                         let role = msg.sender === 'user' ? 'user' : 'assistant';
                         let currentContent = msg.content; // 先获取当前内容
 
-                        // 【【新增逻辑：处理引用消息】】
+                        // --- 【第一步：最优先处理"引用"关系】 ---
                         if (msg.sender === 'user' && msg.replyTo) {
                             const originalMsg = chatHistory.find(m => String(m.timestamp) === String(msg.replyTo));
                             if (originalMsg && originalMsg.type === 'text') {
                                 // 构造成AI能理解的格式
                                 currentContent = `[回复你的"${originalMsg.content}"] ${msg.content}`;
                             }
+                        }
+                        
+                        // --- 【第二步：然后才开始处理各种消息类型】 ---
+
+                        // 【【"礼物翻译器"现在应该在这里】】
+                        if (msg.type === 'gift') {
+                            const senderName = msg.sender === 'user' ? '用户' : character.name;
+                            const giftName = msg.content.name;
+                            const userMessage = msg.content.userMessage;
+                            const translatedContent = `[系统提示：${senderName} 送出了一个礼物：'${giftName}'。${userMessage ? ` 附言："${userMessage}"` : ''}]`;
+                            const role = msg.sender === 'user' ? 'user' : 'assistant';
+                            return { role, content: translatedContent };
                         }
                         
                         // 如果是用户发送的图片或表情包消息
@@ -14450,14 +15313,8 @@ ${moduleStyleContext || "无"}
                             }
 
                             if (base64Image) {
-                                // 返回API要求的标准图文格式
-                                return {
-                                    role: 'user',
-                                    content: [
-                                        { type: 'text', text: promptText },
-                                        { type: 'image_url', image_url: { url: base64Image } }
-                                    ]
-                                };
+                                // 【【修复】】：改为纯文本格式，避免API格式错误
+                                return { role: 'user', content: promptText };
                             } else {
                                 // 如果图片加载失败
                                 return { role: 'user', content: '[用户发送了一张图片，但图片已丢失]' };
@@ -14471,32 +15328,35 @@ ${moduleStyleContext || "无"}
                             content = `[系统提示: ${currentContent}]`;
                         }
                         
+                        // 【【安全检查】】：确保content始终是字符串
+                        if (typeof content !== 'string') {
+                            console.warn('发现非字符串content，强制转换:', content);
+                            content = JSON.stringify(content);
+                        }
+                        
                         return { role, content };
                     }));
 
                     messages.push(...processedHistory);
                     
-                    // **【最终修复】**：处理所有类型的最终指令（字符串或对象）
-                    if (lastUserMessage) {
-                        if (typeof lastUserMessage === 'string') {
-                            // 处理普通的用户文本消息
-                            messages.push({ role: 'user', content: lastUserMessage });
-                        } else if (typeof lastUserMessage === 'object' && lastUserMessage.content) {
-                            // 处理系统生成的特殊指令（如通话后反应）
-                            messages.push({ role: 'user', content: lastUserMessage.content });
+                    // 【【终极安全检查】】：确保所有消息的content都是字符串
+                    messages.forEach((msg, index) => {
+                        if (typeof msg.content !== 'string') {
+                            console.warn(`消息${index}的content不是字符串，强制转换:`, msg.content);
+                            msg.content = typeof msg.content === 'object' ? JSON.stringify(msg.content) : String(msg.content);
                         }
-                    }
+                    });
+
                     
-                    // ========== 调试代码 START ==========
-                    console.log("=============== AI 记忆注入检查 START ===============");
-                    console.log("【1. 检查传入的上下文 context】:", context);
-                    console.log("【2. 检查聊天历史中的系统提示】:", context.chatHistory.filter(msg => msg.sender === 'system'));
-                    console.log("【3. 检查最终生成的 System Prompt】: (请展开下面的对象查看完整内容)");
-                    console.log(systemPrompt);
-                    console.log("=============== AI 记忆注入检查 END ===============");
-                    // ========== 调试代码 END ==========
-                    
-                    requestBody = JSON.stringify({ model: apiSettings.model, messages: messages });
+                    // --- 【【添加OpenAI安全参数】】 ---
+                    requestBody = JSON.stringify({ 
+                        model: apiSettings.model, 
+                        messages: messages,
+                        temperature: 0.7,  // 控制输出随机性，适中值
+                        top_p: 0.9,       // 核采样，控制输出质量
+                        presence_penalty: 0.6,  // 惩罚重复内容
+                        frequency_penalty: 0.5  // 惩罚频繁重复
+                    });
                 }
 
                 const response = await fetch(finalApiUrl, { method: 'POST', headers: headers, body: requestBody });
@@ -14513,7 +15373,38 @@ ${moduleStyleContext || "无"}
 
                 const result = await response.json();
                 const aiMessage = isGoogleApi ? result.candidates[0].content.parts[0].text : result.choices[0].message.content;
-                console.log("【AI原始响应】:", aiMessage); // V14.0 调试代码
+
+                // --- 【【动作指令解释器】】 ---
+                // 动作指令解释器
+                if (aiMessage.trim() === '[ACTION: BUY_GIFT]') {
+                    console.log('[动作指令] AI接收到送礼指令，正在执行...');
+                    
+                    // 如果在聊天界面，先给个"正在挑选"的即时反馈，提升体验
+                    if (isChatScreenActive && isCorrectCharacter) {
+                        const thinkingMsg = { content: "...", sender: 'ai', type: 'text', timestamp: Date.now() };
+                        appendMessage(thinkingMsg, true);
+                        const thinkingMessageWrapper = chatContentArea.lastElementChild;
+                        if(thinkingMessageWrapper) {
+                            const bubble = thinkingMessageWrapper.querySelector('.chat-message p');
+                            if (bubble) bubble.textContent = '正在挑选礼物...';
+                        }
+                    }
+
+                    // 调用我们已经写好的送礼函数，让AI为你送礼
+                    await triggerCharacterGiftAction(characterIdForThisRequest);
+                    
+                    // 移除"正在挑选"的提示
+                    const thinkingWrapper = chatContentArea.querySelector('.chat-message-wrapper:last-child');
+                    if(thinkingWrapper && thinkingWrapper.querySelector('.chat-message p')?.textContent === '正在挑选礼物...') {
+                        thinkingWrapper.remove();
+                    }
+
+                    // 终止当前函数，因为动作已执行，无需再显示任何聊天内容
+                    receiveBtnIcon.classList.remove('spinning');
+                    isReceivingMessage = false;
+                    return; 
+                }
+                // --- 【指令解释器结束】 ---
 
                 if (thinkingMessageWrapper) thinkingMessageWrapper.remove();
                 if (isRetry && retryWrapper) retryWrapper.remove();
@@ -14720,7 +15611,11 @@ ${moduleStyleContext || "无"}
 
             // --- 步骤 1: 统一处理所有消息片段，并放入一个待办列表 ---
             messageParts.forEach((part, index) => {
-                let messageType = 'text';
+                // --- 【新增代码从这里开始】 ---
+                const isHtml = part.trim().startsWith('<') && part.trim().endsWith('>');
+                // --- 【新增代码结束】 ---
+
+                let messageType = isHtml ? 'html' : 'text'; // 如果是HTML，类型就设为'html'
                 let messageContent = part;
 
                 const stickerMatch = part.match(/\[STICKER:\s*(.*?)\]/);
@@ -14739,37 +15634,26 @@ ${moduleStyleContext || "无"}
                 if (stickerMatch) {
                     messageType = 'sticker';
                     
-                    // V16.0 调试代码
-                    console.log('--- 表情包查找开始 ---');
                     const rawKeyword = stickerMatch[1];
-                    console.log('[探测器 1] AI原始关键词:', `"${rawKeyword}"`); // 显示最原始的捕获
-                    
                     const normalizedKeyword = normalizeKeyword(rawKeyword.trim());
-                    console.log('[探测器 2] 净化后的目标:', `"${normalizedKeyword}"`);
 
                     const character = characters.find(c => c.id === characterId);
                     let foundUrl = null;
 
                     // 1. 在"角色专属素材库"中查找
-                    console.log('[探测器 3] 开始在专属库中查找...');
                     if (character && character.expressions && character.expressions.length > 0) {
                         const foundExpression = character.expressions.find(e => {
                             const normalizedExprKeyword = normalizeKeyword(e.keyword);
-                            console.log(`  - 正在检查: "${e.keyword}" -> 净化后: "${normalizedExprKeyword}"`);
                             return normalizedExprKeyword === normalizedKeyword && (e.content.startsWith('http') || e.content.startsWith('data:image'));
                         });
 
                         if (foundExpression) {
                             foundUrl = foundExpression.content;
-                            console.log('  ✅ 专属库中匹配成功!', foundUrl);
                         }
-                    } else {
-                        console.log('  - 专属库为空或不存在。');
                     }
 
                     // 2. 如果专属库没有，则在"世界通用素材库"中查找
                     if (!foundUrl) {
-                        console.log('[探测器 4] 开始在通用库中查找...');
                         if (character && character.linkedWorldBookIds && character.linkedWorldBookIds.length > 0) {
                             const sharedAssetsContent = character.linkedWorldBookIds
                                 .map(bookId => {
@@ -14787,33 +15671,21 @@ ${moduleStyleContext || "无"}
                                         const key = parts[0].trim();
                                         const url = parts.slice(1).join(':').trim();
                                         const normalizedSharedKey = normalizeKeyword(key);
-                                        console.log(`  - 正在检查: "${key}" -> 净化后: "${normalizedSharedKey}"`);
                                         
                                         if (normalizedSharedKey === normalizedKeyword && (url.startsWith('http') || url.startsWith('data:image'))) {
                                             foundUrl = url;
-                                            console.log('  ✅ 通用库中匹配成功!', foundUrl);
                                             break;
                                         }
-                                    } else {
-                                        console.log(`  - 格式错误，已跳过此行: "${line}"`);
                                     }
                                 }
-                            } else {
-                                console.log('  - 通用素材库内容为空。');
                             }
-                        } else {
-                            console.log('  - 未关联任何通用素材库。');
                         }
                     }
 
                     messageContent = foundUrl;
                     if (!messageContent) {
-                        console.error('[探测器 5] 查找失败！在所有素材库中都未找到匹配的关键词。');
-                        console.log('--- 表情包查找结束 ---');
                         return; 
                     }
-                    console.log('[探测器 6] 查找成功！最终使用的URL:', messageContent);
-                    console.log('--- 表情包查找结束 ---');
                 } else if (redPacketMatch) {
                     messageType = 'red-packet';
                     messageContent = { amount: redPacketMatch[1], message: redPacketMatch[2] };
@@ -14873,6 +15745,14 @@ ${moduleStyleContext || "无"}
                         const isNew = index === 0;
                         appendMessage(msg, isNew);
                         
+                        // 【新增】检查是否需要触发真言之镜效果
+                        if (msg.type === 'text' && msg.sender === characterId) {
+                            const character = characters.find(c => c.id === characterId);
+                            if (character) {
+                                revealTrueThought(character, msg.content);
+                            }
+                        }
+                        
                         // 确保每条AI消息显示后都滚动到底部
                         setTimeout(() => {
                             const chatContentArea = document.getElementById('chat-content-area');
@@ -14882,6 +15762,17 @@ ${moduleStyleContext || "无"}
                         }, 100); // 给DOM渲染一些时间
                     }, index * 500); // 使用固定的延迟
                 });
+            }
+            
+            // --- 【【新增：真言之镜逻辑检查点】】 ---
+            // 在显示完所有AI消息后，检查"真言之镜"是否处于激活状态
+            if (mirrorOfTruthState.isActive && mirrorOfTruthState.characterId === characterId && mirrorOfTruthState.turnsLeft > 0) {
+                // 只对最后一条文本消息进行真心话探测
+                const lastTextPart = processedMessages.filter(p => p.type === 'text').pop();
+                if (lastTextPart) {
+                    const character = characters.find(c => c.id === characterId);
+                    revealTrueThought(character, lastTextPart.content);
+                }
             }
         }
 
@@ -15203,7 +16094,30 @@ ${context.recentDiaries.map(diary => diary.content).join('\n')}
                     const contents = [
                         { role: 'user', parts: [{ text: systemPrompt + '\n\n' + userMessage }] }
                     ];
-                    requestBody = JSON.stringify({ contents });
+
+                    // --- 【【在这里添加新的安全设置】】 ---
+                    const safetySettings = [
+                        {
+                            "category": "HARM_CATEGORY_HARASSMENT",
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_HATE_SPEECH",
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                            "threshold": "BLOCK_NONE"
+                        }
+                    ];
+                    
+                    // 将安全设置添加到请求体中
+                    requestBody = JSON.stringify({ contents, safetySettings });
+                     // --- 【修改结束】 ---
                 } else {
                     // OpenAI兼容API
                     finalApiUrl = `${apiSettings.url.replace(/\/+$/, '')}/chat/completions`;
@@ -15211,7 +16125,15 @@ ${context.recentDiaries.map(diary => diary.content).join('\n')}
                         { role: 'system', content: systemPrompt },
                         { role: 'user', content: userMessage }
                     ];
-                    requestBody = JSON.stringify({ model: apiSettings.model, messages });
+                    // --- 【【添加OpenAI安全参数】】 ---
+                    requestBody = JSON.stringify({ 
+                        model: apiSettings.model, 
+                        messages,
+                        temperature: 0.7,  // 控制输出随机性，适中值
+                        top_p: 0.9,       // 核采样，控制输出质量
+                        presence_penalty: 0.6,  // 惩罚重复内容
+                        frequency_penalty: 0.5  // 惩罚频繁重复
+                    });
                 }
 
                 const response = await fetch(finalApiUrl, {
@@ -15294,6 +16216,19 @@ ${context.recentDiaries.map(diary => diary.content).join('\n')}
         }
 
         async function handleSendMessage() {
+            // --- 【硬指令拦截器】第一层防线 ---
+            const chatInputValue = $('#chat-input').value.trim();
+            if (chatInputValue.startsWith('指令：送礼物')) {
+                console.log('[硬指令] 拦截到送礼指令，直接执行...');
+                // 直接调用送礼动作，不经过AI思考
+                await triggerCharacterGiftAction(currentChatCharacterId);
+                // 清空输入框并返回，不执行后续的AI调用
+                $('#chat-input').value = '';
+                adjustTextareaHeight();
+                return;
+            }
+            // --- 【硬指令拦截器结束】 ---
+
             if (!currentChatCharacterId) return showMessageBox("请先选择聊天对象");
             
             const userMessage = $('#chat-input').value.trim();
@@ -15738,7 +16673,7 @@ const systemPrompt = `
             
             if (!chatSession || chatSession.history.length === 0) {
                 const initialPrompt = { content: '[用户按下了接收键，请你作为角色主动开启一段对话。]', type: 'text' };
-                await getAIResponse(initialPrompt);
+                await getAIResponse();
                 return; 
             }
 
@@ -15808,7 +16743,7 @@ ${transcriptText}
                         }
 
                         const callReactionPrompt = { content: promptContent, type: 'text' };
-                        await getAIResponse(callReactionPrompt);
+                        await getAIResponse();
                     }
                 }
                 return; // 处理完通话事件后，结束函数
@@ -15817,10 +16752,7 @@ ${transcriptText}
             // 使用 if...else if...else 结构确保总有一个分支会被执行
             if (lastMessage.sender === 'user') {
                 // 如果最后是用户发言，正常回复
-                await getAIResponse({ 
-                    content: lastMessage.content, 
-                    type: lastMessage.type || 'text' 
-                });
+                await getAIResponse();
             } else {
                 // 否则（包括AI最后发言、系统消息、或任何其他情况），都让AI主动继续对话
                 const character = characters.find(c => c.id === currentChatCharacterId);
@@ -15828,7 +16760,7 @@ ${transcriptText}
                     content: `[用户按下了接收键，但你没有收到新的消息。请根据你的角色设定和当前对话上下文（特别是最后一条系统消息，如果有的话），主动继续对话。]`,
                     type: 'text'
                 };
-                await getAIResponse(continuePrompt);
+                await getAIResponse();
             }
         } catch (error) {
             console.error('处理接收消息时出错:', error);
@@ -15966,8 +16898,12 @@ ${transcriptText}
                 if (aPinned && !bPinned) return -1;
                 if (!aPinned && bPinned) return 1;
                 
-                const aLastMsg = chatHistories[a]?.history.slice(-1)[0];
-                const bLastMsg = chatHistories[b]?.history.slice(-1)[0];
+                const aLastMsg = chatHistories[a]?.history.slice().reverse().find(msg => 
+                    msg.type !== 'system-internal' && msg.type !== 'system-memory'
+                );
+                const bLastMsg = chatHistories[b]?.history.slice().reverse().find(msg => 
+                    msg.type !== 'system-internal' && msg.type !== 'system-memory'
+                );
                 const aTime = aLastMsg ? aLastMsg.timestamp : 0;
                 const bTime = bLastMsg ? bLastMsg.timestamp : 0;
                 return bTime - aTime;
@@ -15979,7 +16915,11 @@ ${transcriptText}
 
                 const chatSession = chatHistories[charId];
                 const history = chatSession.history;
-                const lastMessage = history[history.length - 1];
+                // 寻找最后一个"可见"的消息作为预览，自动跳过内部指令和记忆备忘录
+                const lastVisibleMessage = history.slice().reverse().find(msg => 
+                    msg.type !== 'system-internal' && msg.type !== 'system-memory'
+                );
+                const lastMessage = lastVisibleMessage; // 保持变量名不变，无缝衔接后续代码
                 
                 let lastMessagePreview = '...';
                 if(lastMessage) {
@@ -16697,19 +17637,46 @@ ${transcriptText}
 
                 if (isGoogleApi) {
                     finalApiUrl = `${apiSettings.url.replace(/\/+$/, '')}/${apiSettings.model}:generateContent?key=${apiSettings.key}`;
+                    // --- 【【添加安全设置】】 ---
+                    const safetySettings = [
+                        {
+                            "category": "HARM_CATEGORY_HARASSMENT",
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_HATE_SPEECH",
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                            "threshold": "BLOCK_NONE"
+                        }
+                    ];
+                    
                     requestBody = JSON.stringify({
                         contents: [{ role: 'user', parts: [{ text: prompt }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                        safetySettings: safetySettings
                     });
                 } else { // OpenAI-Compatible
                     finalApiUrl = `${apiSettings.url.replace(/\/+$/, '')}/chat/completions`;
                     headers['Authorization'] = `Bearer ${apiSettings.key}`;
+                    
+                    // --- 【【添加OpenAI安全参数】】 ---
                     requestBody = JSON.stringify({
                         model: apiSettings.model,
                         messages: [
                             { role: "system", content: systemPrompt },
                             { role: "user", content: prompt }
-                        ]
+                        ],
+                        temperature: 0.7,  // 控制输出随机性，适中值
+                        top_p: 0.9,       // 核采样，控制输出质量
+                        presence_penalty: 0.6,  // 惩罚重复内容
+                        frequency_penalty: 0.5  // 惩罚频繁重复
                     });
                 }
 
@@ -17471,11 +18438,22 @@ let npcProfiles = [
             const settings = loadData('heartbeatSettings', defaultHeartbeatSettings);
             const TRIGGER_INTERVAL = settings.systemTriggerThreshold * 60 * 1000; 
 
-            Object.keys(characterState).forEach(charId => {
+            Object.keys(characterState).forEach(async charId => {
                 const state = characterState[charId];
                 if (now - state.lastInteractionTimestamp > TRIGGER_INTERVAL) {
                     console.log(`Character ${charId} is idle. Triggering AI action.`);
-                    triggerCharacterAction(charId);
+                    
+                    // 随机决定是发起聊天还是送礼物 (20%概率送礼)
+                    const actionType = Math.random() < 0.2 ? 'buyGift' : 'chat';
+                    
+                    if (actionType === 'chat') {
+                        // 80%的几率，和以前一样，主动发起聊天
+                        await triggerCharacterAction(charId);
+                    } else {
+                        // 20%的几率，调用我们即将创建的新函数，去送礼物
+                        await triggerCharacterGiftAction(charId);
+                    }
+                    
                     // Update timestamp immediately to prevent multiple triggers
                     updateCharacterState(charId);
                 }
@@ -22334,7 +23312,479 @@ ${isReversed ? '🔄 逆位' : '✅ 正位'}
         }
     };
 
+    // ================== 【【最终版】】礼物商城核心逻辑 ==================
 
+    // 打开商城
+    function openGiftShop() {
+        renderGiftShop();
+        $('#gift-shop-modal').classList.add('visible');
+    }
+
+    // 渲染商城里的所有礼物
+    function renderGiftShop() {
+        const container = $('#gift-grid-container');
+        container.innerHTML = ''; // 清空
+        giftShopItems.forEach(item => {
+            const giftCard = document.createElement('div');
+            giftCard.className = 'gift-item';
+            giftCard.innerHTML = `
+                <div class="gift-icon"><i class="${item.icon}"></i></div>
+                <div class="gift-name">${item.name}</div>
+                <div class="gift-price">¥${item.price.toFixed(2)}</div>
+                <div class="gift-description">${item.description}</div>
+            `;
+            giftCard.addEventListener('click', () => showGiftConfirmation(item.id));
+            container.appendChild(giftCard);
+        });
+    }
+
+    // 显示购买确认弹窗
+    function showGiftConfirmation(itemId) {
+        const item = giftShopItems.find(g => g.id === itemId);
+        if (!item) return;
+
+        const detailsContainer = $('#gift-confirm-details');
+        const balance = getWalletBalance();
+        detailsContainer.innerHTML = `
+            <div class="text-4xl mb-2"><i class="${item.icon}"></i></div>
+            <p class="font-semibold text-lg">${item.name}</p>
+            <p class="text-yellow-400 mb-2">价格: ¥${item.price.toFixed(2)}</p>
+            <p class="text-sm text-gray-400">您的余额: ¥${balance.toFixed(2)}</p>
+        `;
+        $('#gift-message-input').value = '';
+
+        const confirmBtn = $('#confirm-buy-gift-btn');
+        const newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+        newConfirmBtn.onclick = () => buyGift(itemId);
+
+        $('#gift-confirm-modal').classList.add('visible');
+    }
+
+    // ====== 【新增】特殊礼物逻辑处理函数 ======
+
+    // 全局变量，用于追踪"真言之镜"的状态
+    let mirrorOfTruthState = {
+        isActive: false,
+        characterId: null,
+        turnsLeft: 0
+    };
+
+    /**
+     * 触发"秘密耳语"的专属逻辑
+     */
+    async function triggerSecretWhisper(characterId) {
+        const character = characters.find(c => c.id === characterId);
+        if (!character) return;
+
+        // 1. 构建一个让AI生成秘密的指令
+        const secretGenPrompt = `
+# 任务：生成一个角色的秘密
+作为角色 ${character.name}，你的设定是：${character.persona}。
+请根据你的设定，生成一个你内心深处"关于我（用户）但从未说出口"的秘密。
+这个秘密可以是一个担忧、一个愿望、或者一个不为人知的观察。
+**直接输出这句秘密，不要任何多余的文字。**
+`;
+        const secretContent = await callAI(secretGenPrompt, "请生成你的秘密。");
+
+        // 2. 将这个秘密作为一条"只有用户能看见"的系统消息显示出来
+        if (secretContent) {
+            const whisperMsgContent = `[秘密耳语 whispering]：${secretContent}`;
+            // 使用'system-internal'类型，这样AI在下次回复时不会"看到"这条消息，保证信息差
+            const whisperMsg = { content: whisperMsgContent, sender: 'system', type: 'system-internal', timestamp: Date.now() };
+            
+            // 这条消息只显示在界面上，不存入常规历史，防止AI看到
+            appendMessage({ ...whisperMsg, type: 'system' }, false); // 用'system'类型来渲染样式
+        }
+    }
+
+    /**
+     * 激活"真言之镜"的状态
+     */
+    function activateMirrorOfTruth(characterId) {
+        mirrorOfTruthState = {
+            isActive: true,
+            characterId: characterId,
+            turnsLeft: 3 // 效果持续3轮AI回复
+        };
+        showMessageBox("真言之镜已激活，注意观察TA接下来的回复...");
+    }
+
+    /**
+     * 在AI回复后，检查是否需要揭示"真心话"
+     */
+    async function revealTrueThought(character, aiMessage) {
+        if (!mirrorOfTruthState.isActive || mirrorOfTruthState.characterId !== character.id || mirrorOfTruthState.turnsLeft <= 0) {
+            return;
+        }
+
+        // 1. 构建一个让AI"反思"的指令
+        const reflectionPrompt = `
+# 任务：揭示内心真实想法
+你的角色设定是：${character.persona}。
+你刚刚对用户说了这句话："${aiMessage}"。
+现在请站在你自己的角度，用一句话诚实地回答：你刚才那句话背后，有没有隐藏什么没有完全表达出来的、更真实或更复杂的内心想法？
+**直接输出那句"内心真实想法"的OS，用括号括起来，例如：(其实我好紧张)。如果完全没有，就输出"(没有隐藏)"**
+`;
+        const trueThought = await callAI(reflectionPrompt, "请揭示你的真实想法。");
+
+        // 2. 将"真心话"作为追击消息显示出来
+        if (trueThought && !trueThought.includes("没有隐藏")) {
+            const truthMsgContent = `[真言之镜]：${trueThought}`;
+            const truthMsg = { content: truthMsgContent, sender: 'system', type: 'system', timestamp: Date.now() + 1 };
+            
+            setTimeout(() => { // 延迟显示，更有戏剧效果
+                appendMessage(truthMsg, false);
+                // 这条消息也不存入历史，防止干扰
+            }, 800);
+        }
+        
+        mirrorOfTruthState.turnsLeft--;
+        if (mirrorOfTruthState.turnsLeft <= 0) {
+            mirrorOfTruthState.isActive = false;
+            setTimeout(() => showMessageBox("真言之镜的效果消失了。"), 1000);
+        }
+    }
+
+    // 在处理并显示AI消息的函数中，我们需要找到合适的位置来调用 revealTrueThought
+    // 这个需要修改 processAndDisplayAIMessages 函数
+
+    // ====== 【新增】"欲望的禁语"专属逻辑处理函数 ======
+    function triggerForbiddenWordGame(characterId) {
+        const forbiddenWord = prompt("请输入你想让TA禁用的词语（例如：爱、触摸、需要）：");
+
+        if (forbiddenWord && forbiddenWord.trim()) {
+            const character = characters.find(c => c.id === characterId);
+            const word = forbiddenWord.trim();
+            
+            // 1. 创建给用户看的【系统提示】
+            const userVisibleMsgContent = `[你对${character.name}使用了"欲望的禁语"，禁用的词是："${word}"。]`;
+            const userVisibleMsg = { content: userVisibleMsgContent, sender: 'system', type: 'system', timestamp: Date.now() + 1 };
+            
+            // 2. 创建给AI看的、包含详细指令的【内部记忆】
+            const aiInstruction = `[游戏指令：现在开始"欲望的禁语"游戏。在接下来的10分钟内，你绝对不能说出"${word}"这个词。同时，你内心充满了必须表达出"${word}"这个词含义的强烈欲望。你的任务是用旁敲侧击、比喻和动作描写来传达这个意思。请开始你的第一句回应。]`;
+            const internalMemoryMsg = { content: aiInstruction, sender: 'system', type: 'system-internal', priority: 'medium', timestamp: Date.now() + 2 };
+
+            // 3. 保存两条消息并更新UI
+            if (!chatHistories[characterId]) chatHistories[characterId] = { history: [], pinned: false };
+            chatHistories[characterId].history.push(userVisibleMsg, internalMemoryMsg);
+            saveData('chatHistories', chatHistories);
+            appendMessage(userVisibleMsg, false); // 只在界面上显示给用户看的消息
+
+            // 4. 触发AI反应
+            setTimeout(() => handleReceiveMessage(), 500);
+            
+        } else {
+            showMessageBox("取消了\"欲望的禁语\"。");
+        }
+    }
+
+    // ====== 【【升级版】】通用剧情礼物触发函数 ======
+    // ====== 【V4 - HTML模板填充最终版】通用剧情礼物触发函数 ======
+    async function triggerAIGiftReaction(characterId, giftItem) {
+        const character = characters.find(c => c.id === characterId);
+        if (!character || !giftItem.ai_reaction_prompt) return;
+
+        // --- 第一步：AI的"初始反应"(保持不变) ---
+        const reactionPrompt = `
+# 指令身份
+你将扮演我的soulmate，你的名字是 ${character.name}。
+# 任务场景
+我刚刚送给了你一个名为"${giftItem.name}"的特殊礼物。
+# 核心任务
+你的唯一任务是，对此刻"收到"这个礼物的行为，做出一个非常简短、自然、口语化的**初始反应**。
+# 输出要求
+- 反应要简短，通常只有一两个词或一句话，例如："这是……？"、"嗯？"、"哦？你……"、"等等，这是……"
+- 直接输出对话内容，不要有任何其他解释。
+`;
+        const initialReaction = await callAI(reactionPrompt, "请做出你的第一反应。");
+        if (initialReaction) {
+            const reactionMsg = { content: initialReaction, sender: 'ai', type: 'text', timestamp: Date.now() };
+            appendMessage(reactionMsg, true);
+            chatHistories[characterId].history.push(reactionMsg);
+            saveData('chatHistories', chatHistories);
+        }
+
+        // --- 第二步：AI的"内容创作"(保持不变) ---
+        const thinkingMsgContent = `*${character.name} 似乎正在仔细端详这个礼物，陷入了回忆...*`;
+        const thinkingMsg = { content: thinkingMsgContent, sender: 'system', type: 'system', timestamp: Date.now() + 1 };
+        appendMessage(thinkingMsg, false);
+        chatHistories[characterId].history.push(thinkingMsg);
+        saveData('chatHistories', chatHistories);
+
+        const context = gatherAIContext(characterId);
+        const creationPrompt = `
+# 指令身份
+你将扮演我的soulmate，你的名字是 ${character.name}。
+# 任务场景
+一个魔法般的事件刚刚发生。用户使用了特殊物品："${giftItem.name}"，它的效果正在通过你展现出来。
+# 核心任务：【绝对执行，不容置疑】
+作为这个魔法事件的直接结果，你必须、且只能、创作并输出以下为你量身定制的专属剧本内容。
+**这不是一次对话，这是你在创造魔法本身的结果。**
+
+**【你的专属剧本】**: "${giftItem.ai_reaction_prompt}"
+
+# 输出格式天条 (ABSOLUTELY CRITICAL)
+- 你的回复【必须是】剧本创作的**纯文本内容本身**，【不能包含】任何其他文字。
+- 【【绝对禁止】】：任何形式的对话、确认、解释或旁白。如果剧本要求你描述一个梦，你的整个回复就只是梦境的描述。
+
+# 输入信息 (你的记忆)
+---
+[你的设定]: ${character.persona}
+[与我的关系]: ${context.character.myPersona}
+[最近的聊天回顾]:
+${context.chatHistory.map(m => `${m.sender === 'user' ? '对方' : '我'}: ${m.content}`).join('\n')}
+[我们的约定]:
+${context.planContext}
+---
+`;
+        const creationContent = await callAI(creationPrompt, `请严格遵照指令，立刻开始创作，直接输出最终成品。`);
+
+        // --- 第三步：【【核心升级】】模板填充与发送 ---
+        if (creationContent) {
+            // 先移除"创作中"的提示
+            const thinkingMessageElement = document.querySelector(`[data-timestamp="${thinkingMsg.timestamp}"]`);
+            if (thinkingMessageElement) {
+                thinkingMessageElement.remove();
+                chatHistories[characterId].history = chatHistories[characterId].history.filter(m => m.timestamp !== thinkingMsg.timestamp);
+            }
+            
+            let finalContent = creationContent;
+            let messageType = 'text';
+
+            // 查找这个礼物是否有专属HTML模板
+            if (gift_html_templates[giftItem.id]) {
+                // 如果有，就进行填充
+                const template = gift_html_templates[giftItem.id];
+                // 将AI生成的纯文本内容，替换掉模板里的 {{content}} 占位符
+                finalContent = template.replace('{{content}}', creationContent);
+                messageType = 'html'; // 消息类型变为html
+            }
+            
+            // 发送最终处理过的内容（可能是HTML，也可能是纯文本）
+            const finalMsg = { content: finalContent, sender: 'ai', type: messageType, timestamp: Date.now() + 2 };
+            appendMessage(finalMsg, true);
+            chatHistories[characterId].history.push(finalMsg);
+            saveData('chatHistories', chatHistories);
+        } else {
+            // 如果AI没有返回内容，也要移除"创作中"的提示
+            const thinkingMessageElement = document.querySelector(`[data-timestamp="${thinkingMsg.timestamp}"]`);
+            if (thinkingMessageElement) {
+                thinkingMessageElement.remove();
+                chatHistories[characterId].history = chatHistories[characterId].history.filter(m => m.timestamp !== thinkingMsg.timestamp);
+                saveData('chatHistories', chatHistories);
+            }
+        }
+    }
+
+    // ====== 【新增】"万能解药"专属逻辑函数 ======
+    function useAntidote(characterId) {
+        const character = characters.find(c => c.id === characterId);
+        if (!character) return;
+
+        let effectsRemoved = false;
+
+        // 1. 重置"真言之镜"的全局状态
+        if (mirrorOfTruthState.isActive && mirrorOfTruthState.characterId === characterId) {
+            mirrorOfTruthState.isActive = false;
+            mirrorOfTruthState.turnsLeft = 0;
+            effectsRemoved = true;
+            console.log('[解药] "真言之镜"效果已清除。');
+        }
+
+        // 2. 过滤并移除聊天记录中所有持续生效的"内部指令"
+        if (chatHistories[characterId]) {
+            const originalHistoryLength = chatHistories[characterId].history.length;
+            // 只保留不是'system-internal'类型的消息
+            chatHistories[characterId].history = chatHistories[characterId].history.filter(
+                msg => msg.type !== 'system-internal'
+            );
+            
+            if (chatHistories[characterId].history.length < originalHistoryLength) {
+                effectsRemoved = true;
+                console.log('[解药] 已从聊天记录中清除持续性指令。');
+            }
+        }
+        
+        // 3. 保存净化后的聊天记录
+        saveData('chatHistories', chatHistories);
+
+        // 4. 在聊天框中显示系统提示，并触发AI的"清醒"反应
+        const messageContent = effectsRemoved 
+            ? `[系统提示：你使用了"万能解药"，施加在 ${character.name} 身上的所有魔法效果都消失了。TA似乎有些困惑地眨了眨眼。]`
+            : `[系统提示：你使用了"万能解药"，但 ${character.name} 身上似乎并没有任何效果需要解除。]`;
+
+        const systemMsg = { content: messageContent, sender: 'system', type: 'system', timestamp: Date.now() };
+        appendMessage(systemMsg, false);
+        chatHistories[characterId].history.push(systemMsg);
+        saveData('chatHistories', chatHistories);
+
+        // 5. 提示AI对"恢复正常"这件事做出反应
+        setTimeout(() => handleReceiveMessage(), 500);
+
+        showMessageBox("所有效果已清除！");
+    }
+
+    // 处理购买礼物的最终逻辑
+    // 【【请用这个新版本，完整替换旧的 buyGift 函数】】
+        // 【【请用这个V2最终版，完整替换旧的 buyGift 函数】】
+        function buyGift(itemId) {
+            const item = giftShopItems.find(g => g.id === itemId);
+            if (!item) return;
+
+            if (!hasEnoughBalance(item.price)) {
+                showMessageBox(`余额不足！当前余额: ¥${getWalletBalance().toFixed(2)}`);
+                return;
+            }
+
+            // --- 【【新增：状态中断核心逻辑】】 ---
+            // 在扣款和发送新礼物之前，先检查新礼物的优先级
+            // 如果是高优先级或中等优先级，就强制清除所有低优先级的旧状态
+            if (item.priority === 'high' || item.priority === 'medium') {
+                if (chatHistories[currentChatCharacterId]) {
+                    const originalLength = chatHistories[currentChatCharacterId].history.length;
+                    
+                    // 过滤掉所有低优先级的内部指令（记忆备忘录）
+                    chatHistories[currentChatCharacterId].history = chatHistories[currentChatCharacterId].history.filter(msg => 
+                        !(msg.type === 'system-internal' && msg.priority === 'low')
+                    );
+
+                    if (chatHistories[currentChatCharacterId].history.length < originalLength) {
+                        console.log('[状态中断] 已清除一个或多个低优先级状态（如：动物饼干）。');
+                        saveData('chatHistories', chatHistories); // 保存清理后的历史记录
+                    }
+                }
+            }
+            // --- 【状态中断逻辑结束】 ---
+
+
+            deductFromWallet(item.price);
+            const userMessage = $('#gift-message-input').value.trim();
+            const character = characters.find(c => c.id === currentChatCharacterId);
+
+            // 【【新增：解药专属通道】】
+            if (item.id === 'gift_antidote') {
+                useAntidote(currentChatCharacterId);
+                // 关闭弹窗并结束函数，不执行后续送礼流程
+                $('#gift-confirm-modal').classList.remove('visible');
+                $('#gift-shop-modal').classList.remove('visible');
+                return; 
+            }
+
+            if (item.type === 'visual') {
+                // 1. 无论如何，都先把礼物卡片本身发出去，让用户看到
+                const giftMsgContent = { id: item.id, name: item.name, icon: item.icon, userMessage: userMessage };
+                const giftMsg = { content: giftMsgContent, sender: 'user', type: 'gift', timestamp: Date.now() };
+                
+                if (!chatHistories[currentChatCharacterId]) chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+                chatHistories[currentChatCharacterId].history.push(giftMsg);
+                saveData('chatHistories', chatHistories);
+                appendMessage(giftMsg, true);
+
+                // 【【V2版 核心修改：根据礼物ID执行特殊逻辑】】
+                if (item.id === 'gift_secret_whisper') {
+                    triggerSecretWhisper(currentChatCharacterId);
+                    setTimeout(() => handleReceiveMessage(), 500); // 触发AI对收到礼物的反应
+                } else if (item.id === 'gift_mirror_of_truth') {
+                    activateMirrorOfTruth(currentChatCharacterId);
+                    setTimeout(() => handleReceiveMessage(), 500); // 触发AI对收到礼物的反应
+                } else if (item.id === 'gift_forbidden_word') {
+                    // 如果是"欲望的禁语"，调用它的专属函数，该函数内部会处理后续AI反应，所以这里不需要再调用handleReceiveMessage
+                    triggerForbiddenWordGame(currentChatCharacterId);
+                } else if (item.ai_reaction_prompt) {
+                    // 如果是其他带"剧本"的礼物，调用通用剧情导演函数
+                    triggerAIGiftReaction(currentChatCharacterId, item);
+                } else {
+                    // 如果是没有任何特殊逻辑的普通礼物，才让AI做常规回复
+                    setTimeout(() => handleReceiveMessage(), 500);
+                }
+
+            } else if (item.type === 'command') {
+                // 指令型礼物的"人设注入"逻辑保持不变
+                let final_ai_prompt = '';
+                const baseInstruction = item.ai_prompt;
+                
+                if (character) {
+                    final_ai_prompt = `
+# 核心人设 (必须严格遵守)
+你的性格和行为准则如下：${character.persona}
+
+# 本次特殊指令
+${baseInstruction}
+
+# 任务
+请严格结合你的核心人设，来执行上面的特殊指令。`;
+                } else {
+                    final_ai_prompt = baseInstruction;
+                }
+                
+                const commandMsg = {
+                    content: final_ai_prompt,
+                    sender: 'system',
+                    type: 'system-internal',
+                    priority: item.priority || 'low',
+                    timestamp: Date.now()
+                };
+                if (!chatHistories[currentChatCharacterId]) chatHistories[currentChatCharacterId] = { history: [], pinned: false };
+                chatHistories[currentChatCharacterId].history.push(commandMsg);
+                
+                const userVisibleMsgContent = `[你对${character.name}使用了"${item.name}"。${userMessage ? `你附言道："${userMessage}"` : ''}]`;
+                const userVisibleMsg = { content: userVisibleMsgContent, sender: 'system', type: 'system', timestamp: Date.now() + 1 };
+                chatHistories[currentChatCharacterId].history.push(userVisibleMsg);
+                saveData('chatHistories', chatHistories);
+                appendMessage(userVisibleMsg, false);
+            }
+
+            $('#gift-confirm-modal').classList.remove('visible');
+            $('#gift-shop-modal').classList.remove('visible');
+            showMessageBox(`成功送出"${item.name}"！`);
+            
+            // 只有command类型的礼物才需要在这里统一触发AI回应
+            // visual类型已经在上面的逻辑中处理过了
+            if (item.type === 'command') {
+                setTimeout(() => handleReceiveMessage(), 500);
+            }
+        }
+
+    // 初始化礼物商城功能
+    function setupGiftShop() {
+        // 商城按钮点击事件
+        const giftShopBtn = document.getElementById('gift-shop-btn');
+        if (giftShopBtn) {
+            giftShopBtn.addEventListener('click', openGiftShop);
+        }
+
+        // 关闭商城按钮事件
+        const closeShopBtn = document.getElementById('close-gift-shop-modal');
+        if (closeShopBtn) {
+            closeShopBtn.addEventListener('click', () => $('#gift-shop-modal').classList.remove('visible'));
+        }
+
+        // 取消购买按钮事件
+        const cancelBuyBtn = document.getElementById('cancel-buy-gift-btn');
+        if (cancelBuyBtn) {
+            cancelBuyBtn.addEventListener('click', () => $('#gift-confirm-modal').classList.remove('visible'));
+        }
+
+        // 点击遮罩层关闭弹窗
+        const shopModal = document.getElementById('gift-shop-modal');
+        if (shopModal) {
+            shopModal.addEventListener('click', (e) => {
+                if (e.target.id === 'gift-shop-modal') {
+                    $('#gift-shop-modal').classList.remove('visible');
+                }
+            });
+        }
+
+        const confirmModal = document.getElementById('gift-confirm-modal');
+        if (confirmModal) {
+            confirmModal.addEventListener('click', (e) => {
+                if (e.target.id === 'gift-confirm-modal') {
+                    $('#gift-confirm-modal').classList.remove('visible');
+                }
+            });
+        }
+    }
 
         // --- V8.0: 计划 (Plan) 新增函数 ---
 
@@ -25500,7 +26950,7 @@ function addNewEventListeners() {
                     }
                     
                     // 使用翻译好的、干净的prompt重新生成AI响应
-                    await getAIResponse(promptForAI, true, wrapperToRetry);
+                    await getAIResponse(true, wrapperToRetry);
                 }
             }
 
@@ -26341,7 +27791,7 @@ function addNewEventListeners() {
                     // 让用户可以继续输入或主动点击其他地方来关闭键盘
                     if (!isMobile) {
                         // 桌面端可以正常失焦
-                        chatInput.blur();
+                        // chatInput.blur(); // <-- 将这行代码注释掉或直接删除即可
                     }
                     // 移动端保持焦点，让用户决定何时关闭键盘
                 }
@@ -26435,6 +27885,7 @@ function addNewEventListeners() {
                 setupDrawingBoardEvents();
                 setupTarotCard();
                 setupWallet();
+                setupGiftShop();
             }, 100);
             
             // 启动栖木AI心跳，让角色可以自主发帖
@@ -26612,9 +28063,30 @@ function addNewEventListeners() {
 
                 if (isGoogleApi) {
                     finalApiUrl = `${apiSettings.url.replace(/\/+$/, '')}/${apiSettings.model}:generateContent?key=${apiSettings.key}`;
+                    // --- 【【添加安全设置】】 ---
+                    const safetySettings = [
+                        {
+                            "category": "HARM_CATEGORY_HARASSMENT",
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_HATE_SPEECH",
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                            "threshold": "BLOCK_NONE"
+                        },
+                        {
+                            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                            "threshold": "BLOCK_NONE"
+                        }
+                    ];
+                    
                     requestBody = JSON.stringify({
                         contents: [{ role: 'user', parts: [{ text: prompt }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                        safetySettings: safetySettings
                     });
                 } else {
                     finalApiUrl = `${apiSettings.url.replace(/\/+$/, '')}/chat/completions`;
@@ -26887,17 +28359,43 @@ ${eventTypeSpecificInput}
     let requestBody;
 
     if (isGoogleApi) {
+        // --- 【【添加安全设置】】 ---
+        const safetySettings = [
+            {
+                "category": "HARM_CATEGORY_HARASSMENT",
+                "threshold": "BLOCK_NONE"
+            },
+            {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": "BLOCK_NONE"
+            },
+            {
+                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "threshold": "BLOCK_NONE"
+            },
+            {
+                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                "threshold": "BLOCK_NONE"
+            }
+        ];
+        
         requestBody = JSON.stringify({
             contents: [{ role: 'user', parts: [{ text: "请根据你的指令身份和输入信息，生成当前状态。" }] }],
-            systemInstruction: { parts: [{ text: systemPrompt }] }
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+            safetySettings: safetySettings
         });
     } else { // OpenAI-Compatible
+        // --- 【【添加OpenAI安全参数】】 ---
         requestBody = JSON.stringify({
             model: apiSettings.model,
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: "请根据你的指令身份和输入信息，生成当前状态。" }
-            ]
+            ],
+            temperature: 0.7,  // 控制输出随机性，适中值
+            top_p: 0.9,       // 核采样，控制输出质量
+            presence_penalty: 0.6,  // 惩罚重复内容
+            frequency_penalty: 0.5  // 惩罚频繁重复
         });
     }
     
@@ -29792,6 +31290,96 @@ ${coreTask}
         // 页面加载完成后初始化长按监听器
         addChatMessageLongPressListeners();
 
+        // 【【新增】】AI决定送什么礼物的大脑
+        async function generateAIGiftChoice(character) {
+            const context = gatherAIContext(character.id);
+            // AI只能从我们允许它使用的礼物中挑选
+            const usableGifts = giftShopItems.filter(g => g.can_ai_use);
+            const giftListForAI = usableGifts.map(g => `- ${g.id}: ${g.name} (${g.description})`).join('\n');
+
+            const systemPrompt = `
+# 指令身份
+你将扮演我的soulmate，你的名字是 ${character.name}。
+# 任务目标
+你现在非常想念我，决定从"情感礼品屋"中挑选一个最能代表你此刻心情的礼物送给我。
+# 核心规则
+1.  **分析上下文**: 仔细阅读[你的设定]和我们[最近的聊天回顾]。
+2.  **挑选礼物**: 从下面的[可用礼物清单]中，挑选一个最符合你人设、最适合当前情景的礼物。
+3.  **撰写赠言**: 为这个礼物写一句简短、真诚、完全符合你说话风格的赠言。
+4.  **JSON格式输出**: 你的回复必须且只能是一个被\`\`\`json ... \`\`\`包裹的、可被解析的JSON对象，格式如下：
+    \`\`\`json
+    {
+      "gift_id": "你选择的礼物ID",
+      "message": "你的赠言"
+    }
+    \`\`\`
+# 输入信息
+---
+[你的设定]: ${character.persona}
+[最近的聊天回顾]:
+${context.chatHistory.map(m => `${m.sender === 'user' ? '对方' : '我'}: ${m.content}`).join('\n')}
+[可用礼物清单]:
+${giftListForAI}
+---
+`;
+            const aiResponse = await callAI(systemPrompt, "请根据指令，选择礼物并以JSON格式输出。");
+            try {
+                const jsonMatch = aiResponse.match(/```json([\s\S]*?)```/);
+                if (jsonMatch) {
+                    return JSON.parse(jsonMatch[1]);
+                }
+            } catch (e) { console.error("解析AI礼物选择失败:", e); }
+            return null;
+        }
+        
+        // 【【新增】】AI执行送礼动作的函数
+        async function triggerCharacterGiftAction(characterId) {
+            const character = characters.find(c => c.id === characterId);
+            if (!character) return;
+
+            const choice = await generateAIGiftChoice(character);
+            if (!choice || !choice.gift_id) {
+                console.log(`[AI送礼] ${character.name} 思考后决定暂时不送礼物。`);
+                return; // 如果AI返回无效内容，则什么也不做
+            }
+
+            const item = giftShopItems.find(g => g.id === choice.gift_id);
+            if (!item) return; // 如果AI选了一个不存在的礼物，也什么都不做
+
+            console.log(`[AI送礼] ${character.name} 决定送出礼物: ${item.name}`);
+
+            if (item.type === 'visual') {
+                // 如果是视觉型礼物，就创建一个礼物消息
+                const giftMsgContent = { id: item.id, name: item.name, icon: item.icon, userMessage: choice.message };
+                const giftMsg = { content: giftMsgContent, sender: 'ai', type: 'gift', timestamp: Date.now() };
+                if (!chatHistories[characterId]) chatHistories[characterId] = { history: [], pinned: false };
+                chatHistories[characterId].history.push(giftMsg);
+                saveData('chatHistories', chatHistories);
+            } else if (item.type === 'command') {
+                // 1. 创建给用户看的【系统提示】
+                const userVisibleMsgContent = `[${character.name}对你使用了"${item.name}"。并附言："${choice.message}"]`;
+                const userVisibleMsg = { content: userVisibleMsgContent, sender: 'system', type: 'system', timestamp: Date.now() + 1 };
+                
+                // 2. 【【新增】】创建一张给AI自己看的隐形【记忆备忘录】
+                const memoryMsgContent = `[记忆提醒：你刚刚对用户使用了"${item.name}"，现在正在等待用户的反应或下一个指令。]`;
+                const memoryMsg = { content: memoryMsgContent, sender: 'system', type: 'system-memory', timestamp: Date.now() + 2 };
+
+                // 3. 将【系统提示】和【记忆备忘录】一起存入历史记录
+                if (!chatHistories[characterId]) chatHistories[characterId] = { history: [], pinned: false };
+                chatHistories[characterId].history.push(userVisibleMsg, memoryMsg); // 同时推入两条消息
+                saveData('chatHistories', chatHistories);
+
+                // 4. 【注意】我们只在界面上渲染给用户看的那一条
+                appendMessage(userVisibleMsg, false);
+            }
+            
+            // 触发顶部弹窗通知用户
+            showNotification(characterId, `[礼物] ${character.name} 送给了你一份"${item.name}"`);
+            unreadCounts[characterId] = (unreadCounts[characterId] || 0) + 1;
+            saveData('unreadCounts', unreadCounts);
+            renderWeChatList(); // 刷新聊天列表以显示未读红点
+        }
+
     </script>
 
     <!-- 栖木通知模态框 -->
@@ -29804,6 +31392,32 @@ ${coreTask}
                 </button>
             </div>
             <div id="perch-notification-list" class="flex-1 overflow-y-auto space-y-2">
+            </div>
+        </div>
+    </div>
+
+    <div id="gift-shop-modal" class="modal-overlay">
+        <div class="modal-content w-[95%] max-w-[360px] flex flex-col max-h-[80vh]">
+            <div class="flex justify-between items-center mb-4 flex-shrink-0">
+                <h3 class="text-xl font-bold">情感礼品屋</h3>
+                <button id="close-gift-shop-modal" class="text-2xl p-1 rounded-full hover:bg-white/20">&times;</button>
+            </div>
+            <div id="gift-grid-container" class="flex-1 overflow-y-auto grid grid-cols-2 gap-4 p-1">
+                </div>
+        </div>
+    </div>
+
+    <div id="gift-confirm-modal" class="modal-overlay">
+        <div class="modal-content w-[90%] max-w-[320px]">
+            <h3 id="gift-confirm-title" class="text-xl font-bold text-center mb-4">赠送礼物</h3>
+            <div id="gift-confirm-details" class="text-center mb-6">
+                </div>
+            <div class="mb-4">
+                <textarea id="gift-message-input" class="form-textarea w-full h-20 resize-none" placeholder="想对TA说的话...(可选)"></textarea>
+            </div>
+            <div class="flex justify-around">
+                <button id="cancel-buy-gift-btn" class="px-6 py-2 rounded-lg">再想想</button>
+                <button id="confirm-buy-gift-btn" class="px-6 py-2 bg-blue-600 text-white rounded-lg">确认赠送</button>
             </div>
         </div>
     </div>

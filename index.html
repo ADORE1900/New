@@ -8889,35 +8889,358 @@
             transform: scale(1.1);
         }
 
+        /* 剧场界面 - 质感阅读体验 (V2.0 皮质效果) */
+        #scenario-interaction-view {
+            /* 创建皮革质感的多层背景 */
+            background: 
+                /* 顶层：模拟皮革纹理的噪点 */
+                radial-gradient(circle at 25% 25%, rgba(180, 140, 120, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(160, 120, 100, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(140, 100, 80, 0.15) 0%, transparent 50%),
+                /* 中层：皮革的自然斑纹 */
+                linear-gradient(45deg, rgba(120, 80, 60, 0.1) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(100, 70, 50, 0.1) 25%, transparent 25%),
+                /* 底层：皮革的基础颜色 */
+                linear-gradient(135deg, #4d3a2a 0%, #3e2723 50%, #2c2118 100%);
+            background-size: 120px 120px, 80px 80px, 150px 150px, 20px 20px, 20px 20px, 100% 100%;
+            position: relative;
+            /* 添加内阴影增加深度感 */
+            box-shadow: 
+                inset 0 0 80px rgba(0,0,0,0.4),
+                inset 0 0 40px rgba(139, 101, 89, 0.1);
+        }
+
+        /* 剧本界面标题栏美化 - 皮革质感风格 */
+        #scenario-interaction-view .app-header {
+            padding-top: 1.2rem;
+            padding-bottom: 0.4rem;
+            /* 皮革质感渐变背景 */
+            background: linear-gradient(135deg, 
+                rgba(77, 58, 42, 0.95) 0%, 
+                rgba(62, 39, 35, 0.9) 50%, 
+                rgba(44, 33, 24, 0.95) 100%);
+            /* 添加细微的纹理效果 */
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(139, 101, 89, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(139, 101, 89, 0.08) 0%, transparent 50%);
+            background-size: 60px 60px, 80px 80px;
+            /* 边框和阴影效果 */
+            border-bottom: 1px solid rgba(139, 101, 89, 0.3);
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(139, 101, 89, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+            /* 增加质感 */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 标题栏顶部光泽效果 */
+        #scenario-interaction-view .app-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, 
+                rgba(139, 101, 89, 0.15) 0%, 
+                transparent 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #scenario-interaction-view .app-header-title {
+            transform: translateY(6px);
+            color: #f5f2ed !important; /* 温暖的米白色 */
+            text-shadow: 
+                0 1px 2px rgba(0, 0, 0, 0.5),
+                0 0 8px rgba(139, 101, 89, 0.3);
+            position: relative;
+            z-index: 2;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        #scenario-interaction-view .app-header .text-xs {
+            color: rgba(245, 242, 237, 0.8) !important; /* 稍微透明的米白色 */
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 2;
+            transform: translateY(6px);
+        }
+
+        #scenario-interaction-view .app-header-btn {
+            transform: translateY(6px);
+            color: #f5f2ed !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            padding: 6px;
+            background: rgba(139, 101, 89, 0.2);
+            backdrop-filter: blur(2px);
+        }
+
+        #scenario-interaction-view .app-header-btn:hover {
+            background: rgba(139, 101, 89, 0.35);
+            color: #ffffff !important;
+            text-shadow: 0 0 8px rgba(139, 101, 89, 0.6);
+            transform: translateY(5px);
+        }
+
         #scenario-content-container {
-            font-family: 'Noto Serif SC', serif; /* 给整个互动界面一种文学感 */
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(145deg, #f8f5f0 0%, #f5f2ed 30%, #f3efea 70%, #f0ebe6 100%);
+            border-radius: 20px;
+            margin: 15px;
+            padding: 15px 20px;
+            box-shadow: 
+                0 12px 32px rgba(139, 101, 89, 0.15),
+                0 4px 12px rgba(139, 101, 89, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                inset 0 -1px 0 rgba(139, 101, 89, 0.05);
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(139, 101, 89, 0.08);
         }
+
+        #scenario-content-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(139, 101, 89, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 80% 70%, rgba(139, 101, 89, 0.02) 1px, transparent 1px),
+                radial-gradient(circle at 40% 80%, rgba(139, 101, 89, 0.025) 1px, transparent 1px);
+            background-size: 60px 60px, 80px 80px, 100px 100px;
+            border-radius: 20px;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
         .scenario-turn {
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            line-height: 1.7; /* 调整行高，让阅读更舒适 */
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            position: relative;
         }
+
+        .turn-actions {
+            display: none;
+            position: absolute;
+            bottom: 0.5rem;
+            left: 0.5rem;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .scenario-turn:hover .turn-actions {
+            display: flex;
+        }
+
+        .turn-action-btn {
+            border: none;
+            color: #333;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            transition: opacity 0.2s ease;
+            margin-left: 4px;
+        }
+
+        .turn-action-btn.edit-btn {
+            background: #fff;
+        }
+
+        .turn-action-btn.delete-btn {
+            background: #ccc;
+        }
+
+        .turn-action-btn:hover {
+            opacity: 0.8;
+        }
+
+        .edit-mode-actions {
+            position: absolute;
+            bottom: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .edit-mode-btn {
+            border: none;
+            color: #333;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            transition: opacity 0.2s ease;
+            margin-left: 4px;
+        }
+
+        .edit-mode-btn.save-btn {
+            background: #fff;
+        }
+
+        .edit-mode-btn.cancel-btn {
+            background: #ccc;
+        }
+
+        .edit-mode-btn:hover {
+            opacity: 0.8;
+        }
+
+        .turn-edit-textarea {
+            width: 100%;
+            min-height: 100px;
+            background: #2a2a2a !important;
+            color: #ffffff !important;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+        }
+
         .ai-turn {
-            background-color: transparent; /* AI的描述没有背景 */
-            color: inherit;
-            font-size: 0.9rem; /* AI 叙述的字号调整 */
+            background-color: transparent;
+            color: #3e2723;
+            font-size: 0.85rem;
+            font-weight: 400;
+            position: relative;
+            padding-left: 2rem;
+            padding-right: 2rem;
         }
+
+        .ai-turn::before {
+            content: '"';
+            position: absolute;
+            left: 0;
+            top: -0.2rem;
+            font-size: 2.2rem;
+            color: #8b6559;
+            font-family: 'Times New Roman', serif;
+            line-height: 1;
+            opacity: 0.6;
+        }
+
+        .ai-turn::after {
+            content: '"';
+            position: absolute;
+            right: 0;
+            bottom: -0.8rem;
+            font-size: 2.2rem;
+            color: #8b6559;
+            font-family: 'Times New Roman', serif;
+            line-height: 1;
+            opacity: 0.6;
+        }
+
         .user-turn {
-            background-color: rgba(255, 255, 255, 0.05); /* 用户的描述有淡淡的背景以作区分 */
-            color: #a5b4fc; /* 用户文字用淡蓝色高亮 */
-            font-size: 0.85rem; /* 用户输入的字号调整，比AI稍小以作区分 */
-            line-height: 1.6; /* 用户回合的行高设置 */
+            background: linear-gradient(135deg, rgba(139, 101, 89, 0.1) 0%, rgba(121, 85, 72, 0.05) 100%);
+            color: #5d4037;
+            font-size: 0.8rem;
+            line-height: 1.5;
             font-style: italic;
-            border-left: 2px solid #6366f1;
-            padding-left: 1rem;
+            border-left: 3px solid #8b6559;
+            padding-left: 1.2rem;
+            border-radius: 0 8px 8px 0;
+            box-shadow: inset 0 1px 3px rgba(139, 101, 89, 0.1);
         }
+
         .light-mode .user-turn {
-            background-color: rgba(0, 0, 0, 0.03);
-            color: #4f46e5;
-            border-left-color: #a5b4fc;
+            background: linear-gradient(135deg, rgba(139, 101, 89, 0.1) 0%, rgba(121, 85, 72, 0.05) 100%);
+            color: #5d4037;
+            border-left-color: #8b6559;
         }
+        /* 剧场界面输入栏美化 */
+        #scenario-input-bar {
+            background: linear-gradient(135deg, #3e2723 0%, #4e342e 100%);
+            border-top: 2px solid #8b6559;
+            position: relative;
+            z-index: 3;
+        }
+
         #scenario-input {
-            max-height: 120px; /* 限制输入框最大高度 */
+            max-height: 120px;
+            background: linear-gradient(145deg, #faf7f0 0%, #f5f1e8 100%);
+            border: 2px solid #8b6559;
+            border-radius: 8px;
+            color: #3e2723;
+            font-family: 'Noto Serif SC', serif;
+            box-shadow: inset 0 2px 4px rgba(139, 101, 89, 0.1);
+        }
+
+        #scenario-input:focus {
+            outline: none;
+            border-color: #6d4c41;
+            box-shadow: 
+                inset 0 2px 4px rgba(139, 101, 89, 0.1),
+                0 0 0 3px rgba(139, 101, 89, 0.2);
+        }
+
+        /* 复古精致按钮样式 */
+        #retry-scenario-turn-btn, #send-scenario-turn-btn {
+            background: linear-gradient(145deg, #8b6559 0%, #6d4c41 50%, #5d4037 100%);
+            border: 2px solid #a1887f;
+            border-radius: 8px;
+            color: #faf7f0;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 
+                0 4px 8px rgba(62, 39, 35, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #retry-scenario-turn-btn::before, #send-scenario-turn-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        #retry-scenario-turn-btn:hover, #send-scenario-turn-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 12px rgba(62, 39, 35, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+            border-color: #bcaaa4;
+        }
+
+        #retry-scenario-turn-btn:hover::before, #send-scenario-turn-btn:hover::before {
+            left: 100%;
+        }
+
+        #retry-scenario-turn-btn:active, #send-scenario-turn-btn:active {
+            transform: translateY(0);
+            box-shadow: 
+                0 2px 4px rgba(62, 39, 35, 0.3),
+                inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #send-scenario-turn-btn {
+            background: linear-gradient(145deg, #8b6559 0%, #795548 50%, #6d4c41 100%);
         }
 
         /* ====== 栖木 App 样式 (文字卡片) ====== */
@@ -10269,6 +10592,13 @@
       <filter id="paper-edge-filter">
         <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
         <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="leather-texture-filter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.2" numOctaves="5" result="noise"/>
+        <feDiffuseLighting in="noise" lighting-color="#A47454" surfaceScale="3" result="light">
+          <feDistantLight azimuth="235" elevation="60"/>
+        </feDiffuseLighting>
+        <feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="1.5" k2="0" k3="0" k4="0"/>
       </filter>
     </svg>
     
@@ -29953,7 +30283,7 @@ ${linkedWorldBooksContent ? linkedWorldBooksContent + '\n' : ''}[当前剧本]: 
 我小心翼翼地推开那扇沉重的橡木门，门轴发出"吱呀"一声。昏暗的房间里，我首先闻到的是一股浓重的血腥味。
 
 **[你的合格输出 (叙述+对话)]**:
-那声轻微的门轴转动声，在寂静的房间里显得格外刺耳。坐在壁炉阴影中的${character.name}缓缓抬起头，他擦拭着手中那把沾着血迹的银色匕首的动作没有丝毫停顿。一缕火光跳跃在他冰冷的眼眸中，他那双眼睛平静地望向门口，声音低沉而不起波澜：「你终于来了。」
+那声轻微的门轴转动声，在寂静的房间里显得格外刺耳。坐在壁炉阴影中的${character.name}缓缓抬起头，他擦拭着手中那把沾着血迹的银色匕首的动作没有丝毫停顿。一缕火光跳跃在他冰冷的眼眸中，他那双眼睛平静地望向门口，声音低沉而不起波澜对她说：「你终于来了。」
 ---
 
 # 当前互动历史
@@ -30002,9 +30332,14 @@ ${historyText}
                 const contentContainer = document.getElementById('scenario-content-container');
                 contentContainer.innerHTML = ''; // 清空
 
-                currentScenarioHistory.forEach(turn => {
+                currentScenarioHistory.forEach((turn, turnIndex) => {
                     const turnElement = document.createElement('div');
                     turnElement.className = `scenario-turn ${turn.role.toLowerCase()}-turn`;
+                    turnElement.dataset.turnIndex = turnIndex;
+
+                    // 添加内容容器
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'turn-content';
 
                     // 复用分段逻辑
                     const paragraphs = turn.content.split('\n').filter(p => p.trim() !== '');
@@ -30012,8 +30347,30 @@ ${historyText}
                         const pElement = document.createElement('p');
                         pElement.textContent = pText;
                         pElement.style.marginBottom = '1em';
-                        turnElement.appendChild(pElement);
+                        contentDiv.appendChild(pElement);
                     });
+
+                    turnElement.appendChild(contentDiv);
+
+                    // 添加编辑/删除按钮
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'turn-actions';
+
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'turn-action-btn edit-btn';
+                    editBtn.innerHTML = '编辑';
+                    editBtn.title = '编辑';
+                    editBtn.onclick = () => editTurn(turnIndex);
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'turn-action-btn delete-btn';
+                    deleteBtn.innerHTML = '删除';
+                    deleteBtn.title = '删除';
+                    deleteBtn.onclick = () => deleteTurn(turnIndex);
+
+                    actionsDiv.appendChild(editBtn);
+                    actionsDiv.appendChild(deleteBtn);
+                    turnElement.appendChild(actionsDiv);
 
                     contentContainer.appendChild(turnElement);
                 });
@@ -30037,7 +30394,29 @@ ${historyText}
                 const contentContainer = document.getElementById('scenario-content-container');
                 const userTurnElement = document.createElement('div');
                 userTurnElement.className = 'scenario-turn user-turn';
-                userTurnElement.textContent = userInput;
+                userTurnElement.dataset.turnIndex = currentScenarioHistory.length - 1;
+
+                // 添加编辑/删除按钮
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'turn-actions';
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'turn-action-btn turn-edit-btn';
+                editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                editBtn.title = '编辑';
+                editBtn.onclick = () => editTurn(currentScenarioHistory.length - 1);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'turn-action-btn turn-delete-btn';
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.title = '删除';
+                deleteBtn.onclick = () => deleteTurn(currentScenarioHistory.length - 1);
+
+                actionsDiv.appendChild(editBtn);
+                actionsDiv.appendChild(deleteBtn);
+                userTurnElement.appendChild(actionsDiv);
+
+                userTurnElement.appendChild(document.createTextNode(userInput));
                 contentContainer.appendChild(userTurnElement);
                 contentContainer.scrollTop = contentContainer.scrollHeight;
 
@@ -30058,6 +30437,27 @@ ${historyText}
                     currentScenarioHistory.push({ role: 'AI', content: aiResponse });
                     const aiTurnElement = document.createElement('div');
                     aiTurnElement.className = 'scenario-turn ai-turn';
+                    aiTurnElement.dataset.turnIndex = currentScenarioHistory.length - 1;
+
+                    // 添加编辑/删除按钮
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'turn-actions';
+
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'turn-action-btn turn-edit-btn';
+                    editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                    editBtn.title = '编辑';
+                    editBtn.onclick = () => editTurn(currentScenarioHistory.length - 1);
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'turn-action-btn turn-delete-btn';
+                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                    deleteBtn.title = '删除';
+                    deleteBtn.onclick = () => deleteTurn(currentScenarioHistory.length - 1);
+
+                    actionsDiv.appendChild(editBtn);
+                    actionsDiv.appendChild(deleteBtn);
+                    aiTurnElement.appendChild(actionsDiv);
                     
                     // 将AI回复按换行符分割成段落
                     const paragraphs = aiResponse.split('\n').filter(p => p.trim() !== '');
@@ -30121,6 +30521,27 @@ ${historyText}
                     currentScenarioHistory.push({ role: 'AI', content: aiResponse }); // 保存新结果
                     const aiTurnElement = document.createElement('div');
                     aiTurnElement.className = 'scenario-turn ai-turn';
+                    aiTurnElement.dataset.turnIndex = currentScenarioHistory.length - 1;
+
+                    // 添加编辑/删除按钮
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'turn-actions';
+
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'turn-action-btn turn-edit-btn';
+                    editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                    editBtn.title = '编辑';
+                    editBtn.onclick = () => editTurn(currentScenarioHistory.length - 1);
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'turn-action-btn turn-delete-btn';
+                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                    deleteBtn.title = '删除';
+                    deleteBtn.onclick = () => deleteTurn(currentScenarioHistory.length - 1);
+
+                    actionsDiv.appendChild(editBtn);
+                    actionsDiv.appendChild(deleteBtn);
+                    aiTurnElement.appendChild(actionsDiv);
 
                     // 复用分段逻辑
                     const paragraphs = aiResponse.split('\n').filter(p => p.trim() !== '');
@@ -30145,6 +30566,136 @@ ${historyText}
                 // 保存更新后的历史记录
                 scenarioHistories[currentScenarioId] = currentScenarioHistory;
                 saveData('scenarioHistories', scenarioHistories);
+            }
+
+            /**
+             * 编辑剧本回合
+             */
+            function editTurn(turnIndex) {
+                if (!currentScenarioHistory[turnIndex]) return;
+                
+                const turn = currentScenarioHistory[turnIndex];
+                const turnElement = document.querySelector(`[data-turn-index="${turnIndex}"]`);
+                if (!turnElement) return;
+                
+                const contentElement = turnElement.querySelector('.turn-content');
+                if (!contentElement) return;
+                
+                // 隐藏原有的操作按钮
+                const actionsElement = turnElement.querySelector('.turn-actions');
+                if (actionsElement) {
+                    actionsElement.style.display = 'none';
+                }
+                
+                // 保存原始内容
+                const originalContent = turn.content;
+                const originalHTML = contentElement.innerHTML;
+                
+                // 创建可编辑的textarea
+                const textarea = document.createElement('textarea');
+                textarea.value = originalContent;
+                textarea.className = 'turn-edit-textarea';
+                
+                // 替换内容
+                contentElement.innerHTML = '';
+                contentElement.appendChild(textarea);
+                
+                // 创建编辑模式按钮容器（放在右下角）
+                const editActions = document.createElement('div');
+                editActions.className = 'edit-mode-actions';
+                
+                const saveBtn = document.createElement('button');
+                saveBtn.textContent = '保存';
+                saveBtn.className = 'edit-mode-btn save-btn';
+                
+                const cancelBtn = document.createElement('button');
+                cancelBtn.textContent = '取消';
+                cancelBtn.className = 'edit-mode-btn cancel-btn';
+                
+                editActions.appendChild(saveBtn);
+                editActions.appendChild(cancelBtn);
+                turnElement.appendChild(editActions);
+                
+                // 聚焦并选中所有文本
+                textarea.focus();
+                textarea.select();
+                
+                // 保存功能
+                const saveEdit = () => {
+                    const newContent = textarea.value.trim();
+                    if (newContent !== '') {
+                        currentScenarioHistory[turnIndex].content = newContent;
+                        
+                        // 更新localStorage
+                        let scenarioHistories = loadData('scenarioHistories') || {};
+                        if (currentScenarioId && scenarioHistories[currentScenarioId]) {
+                            scenarioHistories[currentScenarioId] = currentScenarioHistory;
+                            saveData('scenarioHistories', scenarioHistories);
+                        }
+                        
+                        // 重新渲染
+                        renderScenarioHistory();
+                    }
+                };
+                
+                // 取消功能
+                const cancelEdit = () => {
+                    // 恢复原始内容
+                    contentElement.innerHTML = originalHTML;
+                    
+                    // 移除编辑按钮
+                    editActions.remove();
+                    
+                    // 恢复原有操作按钮
+                    if (actionsElement) {
+                        actionsElement.style.display = '';
+                    }
+                };
+                
+                // 绑定事件
+                saveBtn.addEventListener('click', saveEdit);
+                cancelBtn.addEventListener('click', cancelEdit);
+                
+                // ESC取消，Ctrl+Enter保存
+                textarea.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        cancelEdit();
+                    } else if (e.key === 'Enter' && e.ctrlKey) {
+                        e.preventDefault();
+                        saveEdit();
+                    }
+                });
+                
+                // 自动调整高度
+                const adjustHeight = () => {
+                    textarea.style.height = 'auto';
+                    textarea.style.height = Math.max(100, textarea.scrollHeight) + 'px';
+                };
+                
+                textarea.addEventListener('input', adjustHeight);
+                adjustHeight();
+            }
+
+            /**
+             * 删除剧本回合
+             */
+            function deleteTurn(turnIndex) {
+                if (!currentScenarioHistory[turnIndex]) return;
+                
+                if (confirm('确定要删除这段内容吗？')) {
+                    currentScenarioHistory.splice(turnIndex, 1);
+                    
+                    // 更新localStorage
+                    let scenarioHistories = loadData('scenarioHistories') || {};
+                    if (currentScenarioId && scenarioHistories[currentScenarioId]) {
+                        scenarioHistories[currentScenarioId] = currentScenarioHistory;
+                        saveData('scenarioHistories', scenarioHistories);
+                    }
+                    
+                    // 重新渲染
+                    renderScenarioHistory();
+                }
             }
 
             // ====== 【【最终版】】剧场 App 导航逻辑 ======
@@ -30228,11 +30779,13 @@ ${historyText}
                 sendScenarioTurnBtn.addEventListener('click', handleScenarioTurn);
             }
             if(scenarioInput) {
+                // 移除回车自动发送功能，允许换行
                 scenarioInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault(); // 阻止回车换行
-                        handleScenarioTurn();
-                    }
+                    // 注释掉自动发送逻辑，现在回车键可以正常换行
+                    // if (e.key === 'Enter' && !e.shiftKey) {
+                    //     e.preventDefault(); // 阻止回车换行
+                    //     handleScenarioTurn();
+                    // }
                 });
             }
 
@@ -32954,8 +33507,8 @@ ${giftListForAI}
                     const script = scriptsData[currentScenarioId];
                     if (!script.settings) script.settings = {};
 
-                    script.settings.wordCount = document.getElementById('scenario-word-count-input').value.trim();
-                    script.settings.customStyle = document.getElementById('scenario-custom-style-input').value.trim();
+                                    script.settings.wordCount = document.getElementById('scenario-word-count-input').value.trim();
+                script.settings.customStyle = document.getElementById('scenario-custom-style-input').value.trim();
 
                     saveData('scriptsData', scriptsData);
                     showMessageBox('剧本设置已保存！');
@@ -33074,6 +33627,8 @@ ${giftListForAI}
             </div>
         </div>
     </div>
+
+
 
         </body>
 </html>

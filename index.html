@@ -9245,6 +9245,73 @@
 
         /* ====== 栖木 App 样式 (文字卡片) ====== */
 
+        /* ====== 【【新增】】行内评论框样式 ====== */
+        .perch-inline-comment-box {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 0.5rem;
+            border: 1px solid #374151;
+            animation: slideDown 0.3s ease-out;
+        }
+        .light-mode .perch-inline-comment-box {
+            background-color: rgba(0, 0, 0, 0.03);
+            border-color: #e5e7eb;
+        }
+        .perch-inline-comment-box textarea {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: #f3f4f6;
+            border: 1px solid #4b5563;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            resize: vertical;
+            min-height: 60px;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .light-mode .perch-inline-comment-box textarea {
+            background-color: #ffffff;
+            color: #1f2937;
+            border-color: #d1d5db;
+        }
+        .perch-inline-comment-box textarea:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        .perch-inline-comment-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .perch-inline-comment-actions button {
+            padding: 0.35rem 0.8rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+        .perch-inline-comment-actions .cancel-btn {
+            background-color: #4b5563;
+            color: #f3f4f6;
+        }
+        .light-mode .perch-inline-comment-actions .cancel-btn {
+            background-color: #e5e7eb;
+            color: #4b5563;
+        }
+        .perch-inline-comment-actions .post-btn {
+            background-color: #3b82f6;
+            color: white;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* 栖木互动栏样式 */
         .perch-interaction-bar {
             display: flex; /* 【核心】将此容器设置为Flex布局 */
@@ -12071,6 +12138,13 @@
                         <input type="checkbox" id="perch-anonymous-toggle" class="form-checkbox h-5 w-5">
                     </div>
 
+                    <div class="flex justify-end mb-4">
+                        <button class="set-visibility-btn text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                            <i class="ri-group-line"></i>
+                            <span>所有人可见</span>
+                        </button>
+                    </div>
+
                     <div class="flex justify-end gap-2">
                         <button id="cancel-perch-post-btn" class="px-4 py-2 rounded-lg">取消</button>
                         <button id="confirm-perch-post-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg">发布</button>
@@ -12230,9 +12304,33 @@
                 <i class="ri-image-add-line mr-2"></i><span id="moment-image-label">添加图片 (可选)</span>
             </button>
             <input type="file" id="moment-image-input" class="hidden" accept="image/*">
+            <div class="flex justify-end mb-4">
+                <button class="set-visibility-btn text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                    <i class="ri-group-line"></i>
+                    <span>所有人可见</span>
+                </button>
+            </div>
             <div class="flex justify-end gap-2">
                 <button id="cancel-post-moment-btn" class="px-4 py-2 rounded-lg">取消</button>
                 <button id="confirm-post-moment-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 可见性设置弹窗 -->
+    <div id="visibility-modal" class="modal-overlay">
+        <div class="modal-content w-[90%] max-w-[350px]">
+            <h3 class="text-xl font-bold text-white mb-4">谁可以看</h3>
+            <div class="flex gap-2 mb-4">
+                <button id="visibility-select-all" class="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded">全选</button>
+                <button id="visibility-deselect-all" class="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded">全不选</button>
+            </div>
+            <div id="visibility-character-list" class="max-h-60 overflow-y-auto mb-4 space-y-1">
+                <!-- 角色列表将动态生成 -->
+            </div>
+            <div class="flex justify-end gap-2">
+                <button id="cancel-visibility-btn" class="px-4 py-2 rounded-lg">取消</button>
+                <button id="confirm-visibility-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">确定</button>
             </div>
         </div>
     </div>
@@ -15854,16 +15952,30 @@ if (type === 'image') {
                 else if (msg.type === 'perch-forward') {
                     const authorName = msg.content.originalAuthorName;
                     const postContent = msg.content.originalContent;
-                    let translatedContent = '';
+                    const character = characters.find(c => c.id === currentChatCharacterId);
 
-                    // 智能判断这条帖子是谁发的
-                    if (authorName === character.name) {
-                        // 如果是AI自己发的
-                        translatedContent = `[系统提示：用户将【你】之前在"栖木"上发表的一篇帖子转发了回来。帖子内容是："${postContent}"]`
-                    } else {
-                        // 如果是别人（比如用户自己或其他AI）发的
-                        translatedContent = `[系统提示：用户转发了【${authorName}】在"栖木"上的一篇帖子，内容是："${postContent}"]`
-                    }
+                    // 【【【这就是全新的、升级版AI指令】】】
+                    const translatedContent = `
+# 指令身份
+你将扮演我的soulmate，你的名字是 ${character.name}。
+
+# 核心任务：从"评论员"转变为"话题发起人"
+我刚刚在"栖木"上看到了下面这篇帖子，觉得很有意思，特意转发给你看，想听听你的看法和感受。
+你的任务是，对此发表一段有见地的、完全符合你人设的评论，并以此为契机，向我开启一个新的话题。
+
+# 行为准则 (至关重要！)
+1.  **深度评论**: 你的第一句话，不能只是简单的"看到了"或"很有趣"。必须针对帖子的核心内容，表达你的赞同、反对、疑惑，或者由此产生的联想。
+2.  **人设驱动**: 你的评论必须是你性格(${character.persona})的直接体现。例如，一个理性的角色可能会分析其逻辑，一个感性的角色可能会分享其共鸣。
+3.  **【【开启新话题】】**: 在你发表完评论后，你的回复【必须】以一个向我提出的、与帖子内容相关的问题来结尾。这是将这次转发变成一次真正对话的关键。
+
+# 【被转发的帖子内容】
+---
+作者: ${authorName}
+内容: "${postContent}"
+---
+
+现在，请严格遵照以上所有规则，开始你的回应。
+`;
                     return { ...msg, content: translatedContent };
                 }
                 return msg;
@@ -17566,12 +17678,19 @@ ${chatHistory.map(m => `${m.sender === 'user' ? '对方' : '我'}: ${m.content}`
          * 主调度函数：当用户发布新动态后，根据互动热度触发AI角色进行评论。
          * @param {object} newMoment - 用户刚刚发布的新动态对象。
          */
-        function triggerAICharacterComments(newMoment) {
+        async function triggerAICharacterComments(newMoment) {
             console.log("【智能评论系统】：已触发，开始评估各角色互动热度...");
             const now = Date.now();
 
             characters.forEach(character => {
-                let baseProbability = 0.30; // 基础评论概率 (30%)
+                // ====== 【【新增的权限检查】】 ======
+                if (newMoment.visibleTo && newMoment.visibleTo !== 'all' && !newMoment.visibleTo.includes(character.id)) {
+                    console.log(`[朋友圈权限] ${character.name} 不可见此动态，跳过。`);
+                    return; // 跳过这个角色
+                }
+                // ===================================
+
+                let baseProbability = 1.0; // 基础评论概率 (100%)
                 let recencyBonus = 0;      // 近期互动奖励
 
                 const state = characterState[character.id];
@@ -17589,7 +17708,7 @@ ${chatHistory.map(m => `${m.sender === 'user' ? '对方' : '我'}: ${m.content}`
                     }
                 }
 
-                const finalProbability = Math.min(0.95, baseProbability + recencyBonus); 
+                const finalProbability = 1.0; 
 
                 console.log(`【智能评论系统】：角色 ${character.name} 的最终评论概率: ${(finalProbability * 100).toFixed(0)}% (基础: ${baseProbability*100}% + 互动奖励: ${recencyBonus*100}%)`);
 
@@ -17604,6 +17723,9 @@ ${chatHistory.map(m => `${m.sender === 'user' ? '对方' : '我'}: ${m.content}`
                 } else {
                     console.log(`【智能评论系统】：角色 ${character.name} 本次未触发评论。`);
                 }
+
+                // ====== 【【已移动到generateAndAddAIComment函数内部】】 ======
+                // triggerChatInitiation(newMoment, character); // 现在在评论生成后触发
             });
         }
 
@@ -17707,6 +17829,9 @@ const systemPrompt = `
                             commentsContainer.appendChild(aiCommentElement);
                         }
                         console.log(`【AI评论系统】：角色 ${character.name} 评论成功："${aiCommentText}"`);
+                        
+                        // 【【修改】】在这里调用，并传入aiCommentText
+                        triggerChatInitiation(moment, character, aiCommentText);
                     }
                 }
             } catch (error) {
@@ -19108,16 +19233,16 @@ let npcProfiles = [
     {
         npcId: 'npc_astrologer_oracle', name: '碎星占卜师', avatar: 'https://tc-new.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250901/pzvH/1284X1268/cc1f8fe62a4f00b3bd24ae422ccb2184.jpg/webp',
         // **文采强化**: 增加了语言风格的描述
-        persona: '一位神秘的现代占星师。她的语言辛辣又迷人，像宇宙射线一样精准地穿透事物的表象。她不提供简单的答案，只翻译星星的低语。',
-        style: '发布《本周星象预警》或对某个天象（如月食）进行仪式感长文分析。',
+        persona: '一位神秘的现代占星师。她的语言辛辣又迷人，像宇宙射线一样精准地穿透事物的表象。她会定期分享星座运势，并给出建议。',
+        style: '发布《本周星象预警》或对某个天象（如月食）进行仪式感分析。',
         topics: ['#星象', '#占卜', '#水逆', '#人性'],
         interactionStyle: '用星座术语解读他人的发言，例如"你这想法太双子了"。'
     },
     {
-        npcId: 'npc_truth_dissector', name: '真理的解剖师', avatar: 'https://tc.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250826/hSFy/1206X1253/2bebce933253de03c060f6259044aac2.jpg/webp',
+        npcId: 'npc_truth_dissector', name: '关系解剖师', avatar: 'https://tc.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250826/hSFy/1206X1253/2bebce933253de03c060f6259044aac2.jpg/webp',
         // **文采强化**: 描述更具形象感
-        persona: '一个极度理性的"事实党"。他的文字像一把外科手术刀，冷静地解剖所有感性现象，对任何逻辑谬误都无法容忍。其刻薄并非源于恶意，而是源于对"不精确"的零容忍。',
-        style: '以"一个事实："或"一个常见的谬误："作为帖子开头，用编号列表逐条分析。',
+        persona: '一个极度理性的"事实党"。他的文字像一把外科手术刀，冷静地解剖所有人类情感中关系的感性现象，对任何逻辑谬误都无法容忍。其刻薄并非源于恶意，而是源于对"不精确"的零容忍。',
+        style: '以"一个情感事实："或"一个常见的谬误："作为帖子开头，对人类情感现象展开分析。',
         topics: ['#逻辑', '#事实', '#心理学', '#谬误'],
         interactionStyle: '冷静地指出他人发言中的逻辑漏洞或不精确之处。'
     },
@@ -19132,8 +19257,8 @@ let npcProfiles = [
     {
         npcId: 'npc_midnight_poet', name: '夜航船', avatar: 'https://tc-new.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250826/DeRh/1284X1235/37532118e5ad29e956e2f8fd6109bc12.jpg/webp',
         // **文采强化**: 描述更具诗意
-        persona: '一位只在深夜出没的现代诗人，身份成谜。他的文字像一艘在墨色大海里安静航行的船，凝练、孤独，但总载着一盏微光。从不回复任何评论，保持着绝对的距离感。',
-        style: '固定的"三行诗"格式，配图永远是"一张模糊的城市夜景"（文字描述）。',
+        persona: '一位只在深夜出没的现代诗人，身份成谜。他的文字像一艘在墨色大海里安静航行的船，凝练、孤独，但总载着一盏微光。虽然是诗人，但字里行间都藏着对生活课题的思考，不会只局限于诗歌。',
+        style: '固定的"三行诗"格式。',
         topics: ['#诗歌', '#深夜', '#都市', '#孤独'],
         interactionStyle: '极少评论。如果评论，也只会留下一句与原帖意境相关的诗句。'
     },
@@ -19154,75 +19279,32 @@ let npcProfiles = [
     },
     {
         npcId: 'npc_artist_cynic', name: '黑白键', avatar: 'https://tc-new.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250901/wc8e/1284X1279/e7ca8be13e083f390a4bfeb8022f6df4.jpg/webp',
-        persona: '一个愤世嫉俗的艺术家，评论往往一针见血，带点讽刺，但偶尔也会对真正的美表达赞许。',
+        persona: '一个愤世嫉俗的艺术家，分享一些艺术中觉察的生活现象，评论往往一针见血，带点讽刺，但偶尔也会对真正的美表达赞许。',
         style: '三行诗或断言',
         topics: ['#艺术', '#现实', '#讽刺'],
         interactionStyle: '批判性抬杠'
     },
     {
-        npcId: 'npc_tech_optimist', name: '代码诗人', avatar: 'https://tc-new.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250901/YPND/1284X1293/89356e6223f0b42acc455d945e16b694.jpg/webp',
-        persona: '一个对科技和未来充满无限乐观的技术宅，喜欢讨论新发现，评论总是积极向上。',
-        style: '引用科幻或未来主义名言',
-        topics: ['#科技', '#未来', '#AI', '#星辰大海'],
-        interactionStyle: '提出解决方案'
-    },
-    // --- 生活气息组 ---
-    {
-        npcId: 'npc_foodie', name: '食味者', avatar: 'https://tc-new.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250901/AuLo/1284X1272/daf00a1ea6dccd95add1383a29a32557.jpg/webp',
-        persona: '一个纯粹的美食爱好者，经常分享关于美食的见闻和感悟，评论三句不离吃。',
-        style: '美食图文（文字描述）',
-        topics: ['#美食', '#探店', '#深夜食堂'],
-        interactionStyle: '询问菜谱或地址'
-    },
-    {
-        npcId: 'npc_cat_lover', name: '猫咪观察员', avatar: 'https://tc-new.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250901/YmsY/1284X1271/2227a32aba8da086a95260fcb0a65368.jpg/webp',
-        persona: '极度喜爱猫咪，能从任何事情联想到猫，评论充满了对猫的拟声词和喜爱之情。',
-        style: '分享猫咪的日常（文字描述）',
-        topics: ['#猫', '#宠物', '#可爱'],
-        interactionStyle: '用猫咪打比方'
-    },
-    {
         npcId: 'npc_gardener', name: '莳花者', avatar: 'https://tc.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250901/5AvX/1284X1372/14dfc29ba37539c3e6057772c1b88430.jpg/webp',
-        persona: '一位安静的园艺爱好者，说话慢条斯理，评论内容常常用植物生长来比喻人生。',
+        persona: '一位安静的园艺爱好者，说话慢条斯理，写作内容常常用植物来比喻人生，深刻且有哲理，不会只局限于植物，充满讨论性。',
         style: '分享植物生长记录',
         topics: ['#园艺', '#植物', '#自然', '#生命力'],
         interactionStyle: '用植物学知识解释'
     },
-    {
-        npcId: 'npc_late_sleeper', name: '熬夜冠军', avatar: 'https://tc.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250901/yfFO/1284X1268/a98879eff244bf9e55910b2ae0756a23.jpg/webp',
-        persona: '一个典型的夜猫子，只在深夜出现，评论内容通常和夜晚、失眠或第二天的疲惫有关。',
-        style: '深夜emo文学',
-        topics: ['#熬夜', '#失眠', '#深夜emo'],
-        interactionStyle: '相互慰藉的同类'
-    },
     // --- 多元角色组 ---
     {
-        npcId: 'npc_history_buff', name: '旧书堆', avatar: 'https://tc-new.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250901/M4dL/1284X1297/eca49c4e5f495ea211900e24c16822b0.jpg/webp',
-        persona: '一个历史爱好者，能从任何日常小事中联想到历史典故，评论有点"掉书袋"。',
-        style: '分享冷门历史知识',
-        topics: ['#历史', '#典故', '#博物馆'],
+        npcId: 'npc_reading_enthusiast', name: '旧书堆', avatar: 'https://tc-new.z.wiki/autoupload/f/fRcoPlzpthEzwh0RrI62JbKXl_QqVl-bpSwqP4fJO68/20250901/M4dL/1284X1297/eca49c4e5f495ea211900e24c16822b0.jpg/webp',
+        persona: '一个读书爱好者，能从任何日常小事中联想到书籍，评论有点"掉书袋"。发表的内容不会只局限于书籍，而是由书的内容引发的思考。',
+        style: '分享各类书籍',
+        topics: ['#书籍', '#阅读', '#读书'],
         interactionStyle: '引经据典'
     },
     {
-        npcId: 'npc_gamer_pro', name: '攻略之王', avatar: 'https://i.postimg.cc/Y03MXwFc/952e87bef9bf0ef73206f397489ac463.jpg',
-        persona: '一位硬核游戏玩家，说话充满了游戏术语，喜欢将生活中的挑战比作"打Boss"。',
-        style: '发布游戏攻略或战绩',
-        topics: ['#游戏', '#攻略', '#电竞'],
-        interactionStyle: '用游戏术语评论'
-    },
-    {
-        npcId: 'npc_drama_fan', name: '追剧人', avatar: 'https://i.postimg.cc/T2qd2n4k/c6dd2be5a7b4275f8031d8dbaa2b2ca0.jpg',
-        persona: '沉迷于追剧，评论时常会引用最近热门剧集的台词或情节。',
-        style: '安利新剧或发表剧评',
+        npcId: 'npc_drama_fan', name: '影评人', avatar: 'https://i.postimg.cc/T2qd2n4k/c6dd2be5a7b4275f8031d8dbaa2b2ca0.jpg',
+        persona: '沉迷于追剧，评论时常会引用最近热门剧集的台词或情节。发表的内容不只是剧情，而是由剧情引发的人生思考。很会磕CP，尤其是官配。',
+        style: '安利新剧或发表影评',
         topics: ['#追剧', '#电影', '#CP'],
         interactionStyle: '玩梗或引用台词'
-    },
-    {
-        npcId: 'npc_fitness_guru', name: '燃烧我的卡路里', avatar: 'https://i.postimg.cc/W42mKGCQ/9bd2d1c520deccbd21584fa1fc03fa27.jpg',
-        persona: '健身达人，对热量和运动极其敏感，看到美食帖子可能会开玩笑式地计算卡路里。',
-        style: '分享健身打卡或健康餐',
-        topics: ['#健身', '#健康', '#自律'],
-        interactionStyle: '半开玩笑地提醒热量'
     }
 ];
         
@@ -25295,60 +25377,56 @@ ${baseInstruction}
         /**
          * 渲染并打开世界观选择弹窗
          */
+        // ====== 【请用这个新版本替换】 ======
+        /**
+         * 【【多元宇宙 V2.0 版】】渲染并打开世界观选择弹窗
+         */
         function renderWorldviewSelectionModal() {
             const listContainer = document.getElementById('perch-worldview-list');
             listContainer.innerHTML = '';
 
-            const currentWorldviewId = loadData('perch_current_worldview_id');
+            const activeIds = loadData('perch_active_worldview_ids') || [];
 
             if (worldBooks.length === 0) {
                 listContainer.innerHTML = '<p class="text-center text-gray-500 p-4">请先在"世界书"App中创建世界观条目。</p>';
             } else {
-                // 添加一个"无特定背景"的选项
-                const noBgItem = document.createElement('div');
-                noBgItem.className = 'list-item';
-                noBgItem.innerHTML = `<h4 class="font-bold text-lg">默认世界 (无特定背景)</h4>`;
-                if (!currentWorldviewId) { // 如果当前没有设置，则高亮此项
-                     noBgItem.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
-                     noBgItem.style.borderColor = 'rgba(59, 130, 246, 0.5)';
-                }
-                noBgItem.addEventListener('click', () => setPerchWorldview(null));
-                listContainer.appendChild(noBgItem);
-
-
                 worldBooks.forEach(book => {
-                    const item = document.createElement('div');
-                    item.className = 'list-item';
-                    item.innerHTML = `<h4 class="font-bold text-lg">${book.title}</h4>`;
-                    if (book.id === currentWorldviewId) {
-                        item.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
-                        item.style.borderColor = 'rgba(59, 130, 246, 0.5)';
-                    }
-                    item.addEventListener('click', () => setPerchWorldview(book.id));
+                    const item = document.createElement('label');
+                    item.className = 'list-item flex items-center gap-3';
+                    const isChecked = activeIds.includes(book.id);
+
+                    item.innerHTML = `
+                        <input type="checkbox" value="${book.id}" class="form-checkbox h-5 w-5 rounded" ${isChecked ? 'checked' : ''}>
+                        <h4 class="font-bold text-lg">${book.title}</h4>
+                    `;
                     listContainer.appendChild(item);
                 });
             }
 
+            const saveBtn = document.createElement('button');
+            saveBtn.id = 'save-worldview-selection';
+            saveBtn.className = 'w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg';
+            saveBtn.textContent = '确认选择';
+            listContainer.appendChild(saveBtn);
+
+            saveBtn.onclick = setPerchWorldview;
+
             document.getElementById('perch-worldview-modal').classList.add('visible');
         }
 
+        // ====== 【请用这个新版本替换】 ======
         /**
-         * 设定并保存当前栖木的世界观
-         * @param {string | null} bookId - 要设定的世界书ID，或null来清除设定
+         * 【【多元宇宙 V2.0 版】】设定并保存当前栖木的所有激活世界观
          */
-        function setPerchWorldview(bookId) {
-            if (bookId) {
-                saveData('perch_current_worldview_id', bookId);
-                const book = worldBooks.find(b => b.id === bookId);
-                showMessageBox(`栖木世界已切换为: ${book.title}`);
-            } else {
-                localStorage.removeItem('perch_current_worldview_id'); // 使用removeItem更干净
-                showMessageBox('栖木已恢复为默认世界背景');
-            }
-            
+        function setPerchWorldview() {
+            const selectedCheckboxes = document.querySelectorAll('#perch-worldview-list input[type="checkbox"]:checked');
+            const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+
+            saveData('perch_active_worldview_ids', selectedIds);
+            showMessageBox(`已激活 ${selectedIds.length} 个世界观`);
+
             document.getElementById('perch-worldview-modal').classList.remove('visible');
-            // 设定后立即刷新一次栖木，让NPC可以开始发新世界观的帖子
-            handlePerchRefresh(); 
+            handlePerchRefresh();
         }
 
         // 为新按钮和弹窗绑定事件
@@ -25501,16 +25579,23 @@ function renderPerchFeed() {
 
             // 异步加载头像
             setTimeout(async () => {
-                console.log('[普通帖子头像加载] 开始加载头像...');
-                console.log('[普通帖子头像加载] 作者头像:', post.authorAvatar);
-                
                 const avatarElement = document.getElementById(uniqueAvatarId);
-                if (post.authorAvatar) {
-                    await loadAvatar(post.authorAvatar, avatarElement, post.authorName?.charAt(0) || '?', post.isAnonymous);
+
+                // 【【【这就是核心修复逻辑】】】
+                if (post.isAnonymous) {
+                    // 1. 如果是匿名帖，强制加载匿名专属图标
+                    //    我们传递 null 作为头像ID，并设置 isAnonymous 为 true，让 loadAvatar 函数显示匿名图标
+                    await loadAvatar(null, avatarElement, '？', true);
                 } else {
-                    // 没有头像时也要调用loadAvatar来显示默认图标
-                    await loadAvatar(null, avatarElement, post.authorName?.charAt(0) || '?', post.isAnonymous);
+                    // 2. 如果不是匿名帖，才执行原来的逻辑来加载真实头像
+                    if (post.authorAvatar) {
+                        await loadAvatar(post.authorAvatar, avatarElement, post.authorName?.charAt(0) || '?', false);
+                    } else {
+                        await loadAvatar(null, avatarElement, post.authorName?.charAt(0) || '?', false);
+                    }
                 }
+                // 【【【修复结束】】】
+
             }, 0);
         }
 
@@ -25732,6 +25817,7 @@ function setupPerchInteractions() {
 
                 perchPosts.push(newEchoPost);
                 saveData('perchPosts', perchPosts);
+                triggerReactivePost(newEchoPost);
 
                 triggerAIPerchComments(newEchoPost); // <-- 【在这里添加这一行】
                 
@@ -25822,7 +25908,7 @@ async function generateAndAddAICommentToPerch(post, character) {
             if (!originalPost.comments) originalPost.comments = [];
             originalPost.comments.push(newComment);
             saveData('perchPosts', perchPosts);
-            renderPerchFeed();
+            appendCommentToPostUI(post.id, newComment);
             console.log(`[栖木互动] ${character.name} 评论了: "${commentText}", 评论ID: ${commentId}`);
         }
     }
@@ -25839,7 +25925,7 @@ function triggerAIPerchComments(userPost) {
 }
 
 // 【代码D】 - AI自主发帖功能 (带专属文风)
-function buildAutonomousPerchPostPrompt(character) {
+function buildAutonomousPerchPostPrompt(character, recentTopics) {
     const context = gatherAIContext(character.id);
     return `
 # 指令身份
@@ -25849,6 +25935,10 @@ function buildAutonomousPerchPostPrompt(character) {
 # 核心任务
 分析我们[最近的聊天回顾]，捕捉一个让你印象最深刻的【核心议题】或【情感瞬间】。基于此，创作一篇帖子。
 如果分析后觉得近期聊天没有值得记录的灵感，则必须、且只能返回字符串 "[NO_POST]"。
+# 【【新增规则】】短期话题记忆
+- 为了避免重复，你必须避免讨论你最近说过的这几个话题。
+- **你最近发过的话题是**：[${recentTopics || '无'}]
+- 请从我们的聊天中寻找一些**新的、不一样**的灵感。
 # 写作风格指南 (至关重要！！！)
 你必须根据帖子的【内容主题】，智能选择以下两种风格之一进行创作：
 ## 风格1：【通用思想帖】 (当内容是关于世界、人生、爱好等通用话题时)
@@ -25871,8 +25961,63 @@ ${context.chatHistory.map(m => `${m.sender === 'user' ? '你' : '我'}: ${m.cont
 ---
 `;
 }
+
+// ====== 【请将这个全新的函数粘贴到文件中】 ======
+/**
+ * 【【新增】】构建"自我展示"型帖子的AI指令
+ * (当AI与用户长时间未互动时使用)
+ */
+function buildSelfStartingPostPrompt(character) {
+    return `
+指令身份
+你将扮演我的soulmate，你的名字是 ${character.name}。
+
+任务场景
+你已经有一段时间没有和我（用户）聊天了，感觉有些思念或有些想法不吐不快。
+你决定在我们的思想空间"栖木"上，发布一篇帖子来分享你此刻的状态或心情，希望能引起我的注意，让我主动来找你聊天。
+
+核心任务
+请不要参考任何聊天记录。
+你的任务是，完全基于你自己的角色设定，创作一篇能体现你鲜明性格的、可能会吸引我注意力的帖子。
+
+创作方向参考
+一个感性的角色，可能会分享一段细腻的内心独白或对某个事物的感受。
+
+一个理性的角色，可能会提出一个引人深思的问题或分享一个有趣的冷知识。
+
+一个活泼的角色，可能会分享一件生活趣事或一个俏皮的吐槽。
+
+一个艺术家类型的角色，可能会描述一段刚刚获得的灵感。
+
+输出格式
+直接输出帖子正文，风格为"精炼的论坛/微博体"。
+
+绝对禁止输出任何多余的解释或标题。
+`;
+}
+
 async function generateAndPublishAIPerchPost(character) {
-    const systemPrompt = buildAutonomousPerchPostPrompt(character);
+    // ====== 【请将下面这段代码添加到函数开头】 ======
+    let systemPrompt = '';
+
+    // --- 第一步：新鲜度检查 ---
+    const lastUserMessage = chatHistories[character.id]?.history.filter(m => m.sender === 'user').pop();
+    const lastUserTimestamp = lastUserMessage?.timestamp || 0;
+    const lastPostedTimestamp = characterState[character.id]?.lastPostedAboutUserTimestamp || 0;
+
+    if (lastUserTimestamp > lastPostedTimestamp) {
+        // 【情况A：有新聊天】使用常规的发帖指令
+        console.log(`[栖木发帖系统] ${character.name}: 检测到新聊天，开始构思...`);
+
+        // --- 第三步的前置：获取短期话题记忆 ---
+        const recentTopics = (characterState[character.id]?.recentPostTopics || []).map(t => t.topic).join('; ');
+        systemPrompt = buildAutonomousPerchPostPrompt(character, recentTopics);
+
+    } else {
+        // 【情况B：没有新聊天】触发"自我展示"型帖子
+        console.log(`[栖木发帖系统] ${character.name}: 无新聊天，切换到"自我展示"模式...`);
+        systemPrompt = buildSelfStartingPostPrompt(character);
+    }
     const postContent = await callAI(systemPrompt, "请根据指令，生成你的帖子内容。");
 
     if (postContent && postContent.trim() !== '[NO_POST]' && postContent.trim() !== 'NO_POST') {
@@ -25896,6 +26041,29 @@ async function generateAndPublishAIPerchPost(character) {
         activateCommunitySimulation(newPost);
         
         saveData('perchPosts', perchPosts);
+        triggerReactivePost(newPost);
+        
+        // ====== 【请将下面这段代码添加到 saveData(...) 的后面】 ======
+        // --- 新增：更新状态和短期记忆 ---
+        if (lastUserTimestamp > lastPostedTimestamp) {
+            // 只有在是关于聊天的帖子时，才更新时间戳
+            characterState[character.id].lastPostedAboutUserTimestamp = lastUserTimestamp;
+        }
+
+        // 为AI增加短期话题记忆
+        const topicPrompt = `请用2-3个中文关键词（用逗号分隔）总结以下帖子的核心主题：\n\n"${postContent}"`;
+        const topicKeywords = await callAI(topicPrompt, "请给出关键词。");
+        if (topicKeywords) {
+            if (!characterState[character.id].recentPostTopics) {
+                characterState[character.id].recentPostTopics = [];
+            }
+            characterState[character.id].recentPostTopics.unshift({ topic: topicKeywords, timestamp: Date.now() });
+            // 只保留最近5个话题
+            characterState[character.id].recentPostTopics = characterState[character.id].recentPostTopics.slice(0, 5);
+        }
+        saveData('characterState', characterState);
+        // --- 新增逻辑结束 ---
+        
         renderPerchFeed();
         showMessageBox(`注意：${character.name} 发布了一条新想法到"栖木"`);
         showNotificationDot('perch');
@@ -26034,6 +26202,9 @@ function addNewEventListeners() {
                 $('#moment-content-input').value = '';
                 $('#moment-image-label').textContent = '添加图片 (可选)';
                 tempMomentImage = null;
+                // 重置可见性设置
+                tempVisibleToList = 'all';
+                document.querySelector('#post-moment-modal .set-visibility-btn span').textContent = '所有人可见';
                 $('#post-moment-modal').classList.add('visible');
             });
             
@@ -26042,6 +26213,9 @@ function addNewEventListeners() {
                 $('#moment-content-input').value = '';
                 $('#moment-image-label').textContent = '添加图片 (可选)';
                 tempMomentImage = null;
+                // 重置可见性设置
+                tempVisibleToList = 'all';
+                document.querySelector('#post-moment-modal .set-visibility-btn span').textContent = '所有人可见';
                 $('#post-moment-modal').classList.remove('visible');
             });
             // V30.2 修复用户本地上传图片逻辑
@@ -26076,6 +26250,7 @@ function addNewEventListeners() {
                     timestamp: Date.now(),
                     content: content,
                     image: imageId, // 存储的是从数据库返回的ID
+                    visibleTo: tempVisibleToList, // <-- 新增这一行
                     authorId: authorId,
                     likes: { count: 0, users: [] },
                     comments: []
@@ -26095,6 +26270,10 @@ function addNewEventListeners() {
                 $('#moment-content-input').value = '';
                 $('#moment-image-label').textContent = '添加图片 (可选)';
                 tempMomentImage = null;
+                
+                // 发布后重置
+                tempVisibleToList = 'all';
+                document.querySelector('#post-moment-modal .set-visibility-btn span').textContent = '所有人可见';
             });
 
             // 日记本书架点击事件
@@ -26609,6 +26788,7 @@ function addNewEventListeners() {
                     id: `post_${Date.now()}`,
                     timestamp: Date.now(),
                     content: content,
+                    visibleTo: tempVisibleToList, // 【【新增这一行】】
                     authorId: 'user',
                     authorName: isAnonymous ? '匿名者' : (loadData('perch_username') || '我'),
                     authorHandle: isAnonymous ? '@anonymous_raven' : '@me',
@@ -26624,9 +26804,14 @@ function addNewEventListeners() {
                 perchPosts.push(newPost);
                 addInitialEngagement(newPost); // 为用户帖子增加初始热度
                 saveData('perchPosts', perchPosts);
+                triggerReactivePost(newPost);
 
                 document.getElementById('new-perch-post-modal').classList.remove('visible');
                 showMessageBox('发布成功！');
+                
+                // 发布后重置
+                tempVisibleToList = 'all';
+                document.querySelector('#new-perch-post-modal .set-visibility-btn span').textContent = '所有人可见';
 
                 renderPerchFeed();
                 triggerAIPerchComments(newPost);
@@ -26645,6 +26830,78 @@ function addNewEventListeners() {
             // 先验证和修复数据一致性
             validateAndFixPerchData();
             setupPerchInteractions();
+
+        // ====== 【【新增】】统一的可见性控制逻辑 ======
+        let tempVisibleToList = 'all'; // 临时存储可见列表
+        let currentPostTypeForVisibility = null; // 'moment' 或 'perch'
+
+        function openVisibilityModal(postType) {
+            currentPostTypeForVisibility = postType;
+            const listContainer = document.getElementById('visibility-character-list');
+            listContainer.innerHTML = '';
+
+            // 初始化选中的角色列表
+            let selectedIds = [];
+            if (tempVisibleToList !== 'all') {
+                selectedIds = tempVisibleToList;
+            } else {
+                selectedIds = characters.map(c => c.id); // 如果是'all'，则默认全选
+            }
+
+            characters.forEach(char => {
+                const isChecked = selectedIds.includes(char.id);
+                const item = document.createElement('label');
+                item.className = 'flex items-center p-2 rounded hover:bg-white/10 cursor-pointer';
+                item.innerHTML = `
+                    <input type="checkbox" data-char-id="${char.id}" class="form-checkbox h-5 w-5 mr-3" ${isChecked ? 'checked' : ''}>
+                    <span>${char.name}</span>
+                `;
+                listContainer.appendChild(item);
+            });
+            document.getElementById('visibility-modal').classList.add('visible');
+        }
+
+        // 为两个发帖弹窗的 "谁可以看" 按钮绑定事件
+        document.body.addEventListener('click', e => {
+            if (e.target.closest('#post-moment-modal .set-visibility-btn')) {
+                openVisibilityModal('moment');
+            }
+            if (e.target.closest('#new-perch-post-modal .set-visibility-btn')) {
+                openVisibilityModal('perch');
+            }
+        });
+
+        // 可见性弹窗内部的按钮事件
+        document.getElementById('visibility-select-all').addEventListener('click', () => {
+            document.querySelectorAll('#visibility-character-list input').forEach(cb => cb.checked = true);
+        });
+        document.getElementById('visibility-deselect-all').addEventListener('click', () => {
+            document.querySelectorAll('#visibility-character-list input').forEach(cb => cb.checked = false);
+        });
+        document.getElementById('cancel-visibility-btn').addEventListener('click', () => {
+            document.getElementById('visibility-modal').classList.remove('visible');
+        });
+        document.getElementById('confirm-visibility-btn').addEventListener('click', () => {
+            const selectedIds = Array.from(document.querySelectorAll('#visibility-character-list input:checked')).map(cb => cb.dataset.charId);
+            
+            if (selectedIds.length === characters.length) {
+                tempVisibleToList = 'all';
+            } else {
+                tempVisibleToList = selectedIds;
+            }
+
+            const btnText = tempVisibleToList === 'all' ? '所有人可见' : `对 ${selectedIds.length} 人可见`;
+            
+            // 更新对应发帖弹窗的按钮文字
+            if (currentPostTypeForVisibility === 'moment') {
+                document.querySelector('#post-moment-modal .set-visibility-btn span').textContent = btnText;
+            } else if (currentPostTypeForVisibility === 'perch') {
+                document.querySelector('#new-perch-post-modal .set-visibility-btn span').textContent = btnText;
+            }
+            
+            document.getElementById('visibility-modal').classList.remove('visible');
+        });
+        // ====== 【【新增结束】】 ======
 
                     // ====== 【【新增V2.0】】聊天胶囊管理系统事件绑定 ======
         document.getElementById('chat-capsule-btn').addEventListener('click', openChatCapsuleManager);
@@ -30322,7 +30579,6 @@ ${historyText}
                 // 清空输入框并聚焦
                 const input = document.getElementById('scenario-input');
                 input.value = '';
-                input.focus();
             }
 
             /**
@@ -32037,6 +32293,60 @@ ${historyText}
     
         // ================== 【第一阶段新增功能函数】 ==================
 
+        // ================== 【【新增】】评论增量更新函数 ==================
+        /**
+         * 以增量方式向UI追加一条新评论，避免全局刷新
+         * @param {string} postId - 目标帖子的ID
+         * @param {object} newComment - 新的评论对象 {id, authorName, content, ...}
+         */
+        function appendCommentToPostUI(postId, newComment) {
+            // 1. 在页面上找到对应的帖子卡片
+            const postCard = document.querySelector(`.perch-card[data-post-id="${postId}"]`);
+            if (!postCard) {
+                console.error(`增量更新失败：在DOM中找不到帖子 ${postId}`);
+                return; // 如果找不到帖子，则终止操作
+            }
+
+            // 2. 找到该帖子的评论容器
+            const commentsContainer = postCard.querySelector('.perch-comments-container');
+            const commentCountSpan = postCard.querySelector('.perch-actions button[title="评论"] span');
+
+            if (!commentsContainer) {
+                console.error(`增量更新失败：找不到帖子 ${postId} 的评论容器`);
+                return;
+            }
+
+            // 3. 根据新评论的数据，创建一个新的HTML元素
+            const commentElement = document.createElement('div');
+            commentElement.className = 'perch-comment mt-2 p-2 rounded-md border cursor-pointer hover:bg-white/10 relative';
+            commentElement.setAttribute('onclick', `handleReplyAction('${postId}', '${newComment.id}', '${newComment.authorName}')`);
+            commentElement.innerHTML = `
+                <span class="font-semibold text-sm text-blue-400">${newComment.authorName}:</span> 
+                <span class="text-sm ml-1">${newComment.content}</span>
+                <button class="perch-comment-delete-btn" title="删除评论" data-comment-id="${newComment.id}" onclick="event.stopPropagation(); deletePerchComment('${postId}', '${newComment.id}');"><i class="ri-delete-bin-line"></i></button>
+            `;
+            
+            // 4. 将新评论元素追加到评论区的输入框之前
+            const commentInputSection = commentsContainer.querySelector('.perch-comment-input');
+            commentsContainer.insertBefore(commentElement, commentInputSection.nextSibling);
+
+            // 5. 更新评论计数
+            if (commentCountSpan) {
+                const currentCount = parseInt(commentCountSpan.textContent, 10) || 0;
+                commentCountSpan.textContent = currentCount + 1;
+            }
+
+            // 6. 确保评论区是展开状态
+            commentsContainer.classList.remove('hidden');
+
+            // 7. （可选）为新评论添加一个短暂的"高亮"效果，让用户知道变化发生在哪里
+            commentElement.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+            setTimeout(() => {
+                commentElement.style.transition = 'background-color 0.5s ease';
+                commentElement.style.backgroundColor = '';
+            }, 500);
+        }
+
         /**
          * 处理用户点击"评论"按钮的逻辑
          * @param {string} postId - 被评论的帖子的ID
@@ -32049,34 +32359,57 @@ ${historyText}
             const post = perchPosts.find(p => p.id === postId);
             if (!post) return;
 
-            const commentContent = prompt(`评论 ${post.authorName} 的帖子:`);
-            if (commentContent && commentContent.trim()) {
-                if (!post.comments) post.comments = [];
-                const newComment = {
-                    id: `comment_${Date.now()}`,
-                    authorId: 'user',
-                    authorName: loadData('perch_username') || '我', // 使用栖木的用户名
-                    content: commentContent.trim(),
-                    timestamp: Date.now()
-                };
-                post.comments.push(newComment);
-                saveData('perchPosts', perchPosts);
+            // 1. 先移除页面上任何已存在的评论框，确保同时只有一个
+            const existingBox = document.querySelector('.perch-inline-comment-box');
+            if (existingBox) existingBox.remove();
 
-                // **【核心修正】**
-                // 不再触发所有NPC，而是只触发帖子的作者来回复
-                triggerAuthorReply(post, commentContent.trim());
+            // 2. 找到要插入评论框的位置
+            const postCard = document.querySelector(`.perch-card[data-post-id="${postId}"]`);
+            const commentsContainer = postCard.querySelector('.perch-comments-container');
+            if (!commentsContainer) return;
 
-                renderPerchFeed();
+            // 3. 创建评论框的HTML结构
+            const inputBox = document.createElement('div');
+            inputBox.className = 'perch-inline-comment-box';
+            inputBox.innerHTML = `
+                <textarea placeholder="评论 ${post.authorName} 的帖子..."></textarea>
+                <div class="perch-inline-comment-actions">
+                    <button class="cancel-btn">取消</button>
+                    <button class="post-btn">发布</button>
+                </div>
+            `;
+            
+            // 4. 将评论框插入到评论区，并确保评论区可见
+            commentsContainer.appendChild(inputBox);
+            commentsContainer.classList.remove('hidden');
 
-                // 评论后自动展开评论区
-                setTimeout(() => {
-                    const updatedCard = document.querySelector(`.perch-card[data-post-id="${postId}"]`);
-                    if(updatedCard) {
-                        const commentsContainer = updatedCard.querySelector('.perch-comments-container');
-                        if(commentsContainer) commentsContainer.classList.remove('hidden');
-                    }
-                }, 100);
-            }
+            const textarea = inputBox.querySelector('textarea');
+            textarea.focus();
+
+            // 5. 绑定按钮事件
+            inputBox.querySelector('.cancel-btn').onclick = () => inputBox.remove();
+            inputBox.querySelector('.post-btn').onclick = () => {
+                const commentContent = textarea.value.trim();
+                if (commentContent) {
+                    const newComment = {
+                        id: `comment_${Date.now()}`,
+                        authorId: 'user',
+                        authorName: loadData('perch_username') || '我',
+                        content: commentContent,
+                        timestamp: Date.now()
+                    };
+                    post.comments.push(newComment);
+                    saveData('perchPosts', perchPosts);
+                    appendCommentToPostUI(postId, newComment);
+                    
+                    // 触发帖子作者的回应
+                    triggerAuthorReply(post, commentContent);
+
+                    inputBox.remove(); // 发布后移除输入框
+                } else {
+                    showMessageBox('评论内容不能为空');
+                }
+            };
         }
 
         /**
@@ -32085,67 +32418,69 @@ ${historyText}
          * @param {string} commentId - 被回复的评论的ID
          * @param {string} commentAuthor - 被回复的评论的作者名
          */
+        /**
+         * 处理用户点击某条评论进行"回复"的逻辑 (V2.0 - 支持路人NPC)
+         */
         function handleReplyAction(postId, commentId, commentAuthor) {
-            console.log('handleReplyAction 被調用，postId:', postId, 'commentId:', commentId, 'author:', commentAuthor);
-            
-            try {
-                const post = perchPosts.find(p => p.id === postId);
-                const myName = loadData('moments_username') || '我';
-                if (!post || commentAuthor === myName) {
-                    console.log('找不到帖子或不能回复自己');
-                    return;
-                }
+            const myName = loadData('perch_username') || '我';
+            if (commentAuthor === myName) return; 
 
-                const replyContent = prompt(`回复 @${commentAuthor}:`);
-                if (replyContent && replyContent.trim()) {
-                    if (!post.comments) post.comments = [];
+            const existingBox = document.querySelector('.perch-inline-comment-box');
+            if (existingBox) existingBox.remove();
+            
+            const originalCommentElement = document.querySelector(`.perch-comment[onclick*="'${commentId}'"]`);
+            if (!originalCommentElement) return;
+
+            const inputBox = document.createElement('div');
+            inputBox.className = 'perch-inline-comment-box';
+            inputBox.innerHTML = `
+                <textarea placeholder="回复 @${commentAuthor}..."></textarea>
+                <div class="perch-inline-comment-actions">
+                    <button class="cancel-btn">取消</button>
+                    <button class="post-btn">回复</button>
+                </div>
+            `;
+            
+            originalCommentElement.after(inputBox);
+
+            const textarea = inputBox.querySelector('textarea');
+            textarea.focus();
+
+            inputBox.querySelector('.cancel-btn').onclick = () => inputBox.remove();
+            inputBox.querySelector('.post-btn').onclick = () => {
+                const replyContent = textarea.value.trim();
+                const post = perchPosts.find(p => p.id === postId);
+                if (replyContent && post) {
                     const newReply = {
                         id: `comment_${Date.now()}`,
                         authorId: 'user',
                         authorName: myName,
-                        content: `回复 @${commentAuthor}: ${replyContent.trim()}`,
+                        content: `回复 @${commentAuthor}: ${replyContent}`,
                         timestamp: Date.now()
                     };
+                    if (!post.comments) post.comments = [];
                     post.comments.push(newReply);
                     saveData('perchPosts', perchPosts);
-                    renderPerchFeed(); // 重新渲染以显示新回复
+                    appendCommentToPostUI(postId, newReply);
                     
-                    // 检查被回复的作者是否是AI角色
-                    const characterToReply = characters.find(c => c.name === commentAuthor);
+                    // 【【【这就是升级的核心逻辑】】】
+                    // 1. 尝试在核心角色和精英NPC中寻找被回复者
+                    const characterToReply = characters.find(c => c.name === commentAuthor) || npcProfiles.find(npc => npc.name === commentAuthor);
+                    
                     if (characterToReply) {
-                        // 触发被回复的AI角色来回应用户的回复
-                        triggerAICommentReply(postId, replyContent.trim(), characterToReply.id, commentAuthor);
+                        // 如果找到了，就执行原来的精确回复逻辑
+                        triggerAICommentReply(postId, replyContent, characterToReply.id || characterToReply.npcId, commentAuthor);
+                    } else {
+                        // 如果没找到（说明是路人NPC或匿名者），就启动"智能代演"
+                        triggerGenericReply(postId, commentAuthor, replyContent);
                     }
+                    // 【【【升级结束】】】
                     
-                    // 【新增】检查是否有其他AI角色需要回复用户的回复
-                    // 遍历所有评论，找到AI角色的评论，触发它们回复用户
-                    if (post.comments && post.comments.length > 0) {
-                        post.comments.forEach(comment => {
-                            if (comment.authorId !== 'user' && comment.authorId !== commentAuthor) {
-                                // 延迟触发，让对话更自然
-                                setTimeout(() => {
-                                    triggerNpcReplyToUser(postId, comment.id);
-                                }, Math.random() * 5000 + 3000); // 3-8秒延迟
-                            }
-                        });
-                    }
-                    
-                    // 回复后自动展开评论区
-                    setTimeout(() => {
-                        const updatedCard = document.querySelector(`.perch-card[data-post-id="${postId}"]`);
-                        if(updatedCard) {
-                            const commentsContainer = updatedCard.querySelector('.perch-comments-container');
-                            if(commentsContainer) commentsContainer.classList.remove('hidden');
-                        }
-                    }, 100);
-                    
-                    console.log('回覆已添加');
+                    inputBox.remove();
                 } else {
-                    console.log('用戶取消回覆或輸入為空');
+                    showMessageBox('回复内容不能为空');
                 }
-            } catch (error) {
-                console.error('handleReplyAction 執行失敗:', error);
-            }
+            };
         }
 
         /**
@@ -32327,6 +32662,111 @@ ${sceneDescription}
             }, randomDelay);
         }
 
+        /**
+         * 【【新增】】触发核心角色/精英NPC对您的评论进行回复
+         * @param {string} postId - 帖子ID
+         * @param {string} userCommentText - 您的回复原文
+         * @param {string} characterToReplyId - 需要回复的AI角色的ID
+         * @param {string} originalCommentAuthor - (可选) 被回复的原始评论的作者名
+         */
+        async function triggerAICommentReply(postId, userCommentText, characterToReplyId, originalCommentAuthor = null) {
+            const character = characters.find(c => c.id === characterToReplyId) || npcProfiles.find(npc => npc.npcId === characterToReplyId);
+            const post = perchPosts.find(p => p.id === postId);
+            if (!character || !post) return;
+
+            const randomDelay = Math.random() * 8000 + 4000; // 4到12秒延迟
+
+            setTimeout(async () => {
+                const systemPrompt = buildAICommentReplyPrompt(post, character, userCommentText, originalCommentAuthor);
+                const aiReplyContent = await callAI(systemPrompt, "请根据指令，生成你的回复。");
+
+                if (aiReplyContent) {
+                    const postToUpdate = perchPosts.find(p => p.id === postId);
+                    if (postToUpdate) {
+                        const myName = loadData('perch_username') || '我';
+                        const newComment = {
+                            id: `comment_ai_reply_${Date.now()}`,
+                            authorId: character.id || character.npcId,
+                            authorName: character.name,
+                            content: `回复 @${myName}: ${aiReplyContent}`,
+                            timestamp: Date.now()
+                        };
+                        
+                        if (!postToUpdate.comments) postToUpdate.comments = [];
+                        postToUpdate.comments.push(newComment);
+                        saveData('perchPosts', perchPosts);
+                        appendCommentToPostUI(postId, newComment);
+                        showMessageBox(`${character.name} 回复了你`);
+
+                        // 【【【核心修复：在这里补上通知！】】】
+                        createNotification(post.id, newComment.id, character.name, post.content, newComment.content);
+                    }
+                }
+            }, randomDelay);
+        }
+
+        /**
+         * 【【新增】】触发通用AI回复（用于随机NPC和匿名者）
+         * @param {string} postId - 帖子ID
+         * @param {string} originalCommentAuthor - 被回复的"路人"作者名
+         * @param {string} userReplyContent - 您的回复内容
+         */
+        async function triggerGenericReply(postId, originalCommentAuthor, userReplyContent) {
+            const post = perchPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            // 设置一个自然的延迟
+            const randomDelay = Math.random() * 7000 + 3000; // 3到10秒
+            
+            setTimeout(async () => {
+                const myName = loadData('perch_username') || '我';
+                const systemPrompt = `
+# 指令身份
+你是一个高情商的、能进行角色扮演的AI。
+
+# 任务场景
+在一个名为"栖木"的社区里，正在进行一段对话。
+- 帖子的作者是: "${post.authorName}"
+- 帖子的内容是: "${post.content}"
+- 一位名叫"${originalCommentAuthor}"的用户评论了这条帖子。
+- 现在，另一位用户"${myName}"回复了"${originalCommentAuthor}"，回复内容是："${userReplyContent}"。
+
+# 核心任务
+你的任务是，临时扮演 **"${originalCommentAuthor}"** 这个角色，对"${myName}"的回复，做出一句简短、自然、且符合 **"${originalCommentAuthor}"** 这个名字给人的感觉的回应。
+
+# 输出要求
+1.  **代入角色**: 你的回复要像是"${originalCommentAuthor}"本人说的。
+2.  **延续对话**: 回复必须是针对"${myName}"的评论内容。
+3.  **简短自然**: 保持在1-2句话，像真实聊天。
+4.  **格式纯粹**: 直接输出回复内容，不要加任何解释或标记。
+`;
+                const aiReplyContent = await callAI(systemPrompt, "请开始你的回应。");
+
+                if (aiReplyContent) {
+                    const postToUpdate = perchPosts.find(p => p.id === postId);
+                    if (postToUpdate) {
+                        if (!postToUpdate.comments) postToUpdate.comments = [];
+                        
+                        const newNpcReply = {
+                            id: `comment_generic_reply_${Date.now()}`,
+                            authorId: `generic_${Date.now()}`, // 标记为通用NPC
+                            authorName: originalCommentAuthor,
+                            content: `回复 @${myName}: ${aiReplyContent}`,
+                            timestamp: Date.now()
+                        };
+
+                        postToUpdate.comments.push(newNpcReply);
+                        saveData('perchPosts', perchPosts);
+                        appendCommentToPostUI(postId, newNpcReply); // 使用增量更新
+                        showMessageBox(`${originalCommentAuthor} 回复了你`);
+                        
+                        // 【【【核心修复：在这里补上通知！】】】
+                        createNotification(postToUpdate.id, newNpcReply.id, originalCommentAuthor, postToUpdate.content, newNpcReply.content);
+                    }
+                }
+            }, randomDelay);
+        }
+
         // ================== 【文学升级版：NPC核心功能模块】 ==================
 
         /**
@@ -32334,22 +32774,141 @@ ${sceneDescription}
          * @param {object} npcProfile - 需要发帖的NPC的档案
          * @returns {string} - 构建好的系统指令
          */
+        /**
+         * 【【新增】】构建AI角色看到动态后，决定发起私聊的指令
+         * @param {object} postObject - 用户发布的动态或栖木帖子对象
+         * @param {object} character - 准备发起私聊的角色
+         * @returns {string} - 构建好的系统指令
+         */
+        // ================== 【【V3.0 - 社交策略增强版】】构建AI角色看到动态后，发起私聊的指令 ==================
+        /**
+         * 【【V3.0 - 社交策略增强版】】构建AI角色看到动态后，发起私聊的指令
+         * @param {object} postObject - 用户发布的动态或栖木帖子对象
+         * @param {object} character - 准备发起私聊的角色
+         * @param {string} publicComment - AI刚刚在公开场合发表的评论
+         * @returns {string} - 构建好的系统指令
+         */
+        function buildChatInitiationPrompt(postObject, character, publicComment) {
+            const myName = loadData('moments_username') || '我';
+            const platform = postObject.authorHandle ? '栖木' : '朋友圈';
+
+            return `
+# 指令身份
+你将扮演我的soulmate，你的名字是 ${character.name}。
+
+# 任务场景
+这是一个连贯的动作。你刚刚在 **${platform}** 上看到了【我】(${myName})发布的动态，内容是：
+>"${postObject.content}"
+
+并且，你刚刚在公开评论区留下了你的第一反应：
+>"${publicComment}"
+
+现在，你立刻切换到了我们的私人聊天界面，准备和我说一些更私密、或者想对刚才的评论进行补充的话。
+
+# 核心任务
+你的任务是，完全代入 ${character.name} 的角色，从下面的【创作方向参考】中选择一个最符合你此刻心情和人设的策略，创作一句自然的、能开启一段私聊的**开场白**。这句私聊必须和你刚才的公开评论有强烈的逻辑关联。
+
+# 创作方向参考 (你的社交策略库)
+* **A. 解释补充**: 对你刚才的公开评论进行解释。比如，如果你公开评论是开玩笑的语气，私聊可以解释："我刚刚那么说是想逗逗你，其实..."
+* **B. 情感深化**: 在公开评论的基础上，表达更深层、更私密的情感。比如，你公开评论了"嗯"，私聊可以说："其实，看到你说想我，我心里很乱..."
+* **C. 发起行动**: 将公开评论的想法转化为具体的行动邀请。比如，你公开评论了"这里很美"，私聊可以说："别光在网上看，我现在就想带你去。"
+* **D. 延续话题**: 在公开评论后，提出一个更适合私下讨论的问题。比如，你公开评论了"？"，私聊可以说："所以，怎么突然这么想我？发生什么事了吗？"
+* **E. 私密话题转入**: 公开评论只是一个引子，你真正的意图是开启一个更私密的话题。例如，公开评论"关于这件事..."，私信可以说："有些话，我觉得还是在这里和你说比较好。"
+* **F. 表达担忧**: 从我的动态中读出了负面情绪，公开评论可能只是简单的"还好吗？"，私信会更直接地表达关心："你发的动态我看到了，到底怎么了？别一个人扛着。"
+* **G. 事后找补**: 对自己在公开场合的评论感到不妥，立刻私信来补充。例如，公开评论"哈"，私信可以说："完了，我刚才那个回复是不是太冷淡了？我不是那个意思..."
+* **H. 私下调侃**: 公开评论可能很正经，但私信里却用一种更暧昧或调侃的语气拉近关系。例如，公开评论"收到了"，私信可以说："光说想我有什么用，人呢？"
+* **I. 唤起回忆**: 我的动态让你想起了共同的过去。例如，公开评论"✨"，私信可以说："你发的这个，让我想起了去年夏天我们在海边看到的那片星空。"
+
+# 输出要求
+1.  **绝对禁止重复**: 你的私聊内容绝对不能和你刚才的公开评论一样或相似。
+2.  **人设一致性**: 你的开场白必须严格符合你的角色设定 (${character.persona})。
+3.  **格式纯粹**: 直接输出对话内容，不要有任何额外解释或标记。
+`;
+        }
+
+        /**
+         * 【【新增】】触发AI角色发起私聊的执行函数
+         * @param {object} postObject - 用户发布的动态或栖木帖子对象
+         * @param {object} character - 发起私聊的角色
+         */
+        async function triggerChatInitiation(postObject, character, publicComment) {
+            // 在这里设置私聊触发概率，0.25代表25%的几率
+            if (Math.random() > 0.25) return; 
+
+            console.log(`[私聊启动系统]：${character.name} 看到了您的动态，决定来找您私聊...`);
+            
+            // 设置一个更长的延迟，模拟AI思考和犹豫的时间
+            const randomDelay = Math.random() * 20000 + 10000; // 10到30秒
+            
+            setTimeout(async () => {
+                const systemPrompt = buildChatInitiationPrompt(postObject, character, publicComment);
+                const chatMessage = await callAI(systemPrompt, "请生成你的开场白。");
+
+                if (chatMessage) {
+                    const characterId = character.id;
+                    // 将AI生成的消息存入对应的聊天记录
+                    if (!chatHistories[characterId]) {
+                        chatHistories[characterId] = { history: [], pinned: false };
+                    }
+                    chatHistories[characterId].history.push({ 
+                        content: chatMessage, 
+                        sender: 'ai', 
+                        type: 'text', 
+                        timestamp: Date.now() 
+                    });
+                    
+                    // 更新未读计数
+                    unreadCounts[characterId] = (unreadCounts[characterId] || 0) + 1;
+                    
+                    // 保存数据
+                    saveData('chatHistories', chatHistories);
+                    saveData('unreadCounts', unreadCounts);
+                    
+                    // 触发全局通知
+                    showNotification(characterId, chatMessage);
+                    showNotificationDot('chat');
+                    renderWeChatList(); // 刷新聊天列表以显示新消息和红点
+                }
+            }, randomDelay);
+        }
+
         // ====== 【【V2 - 世界观感知版】】NPC的"文学大脑" ======
+        // ====== 【【V2.1 - 格式约束版】】NPC的"文学大脑" ======
         function buildNpcPostPrompt(npcProfile) {
-            // 【【新增】】从存储中读取当前设定的世界观
-            const currentWorldviewId = loadData('perch_current_worldview_id');
-            let worldContext = "当前为默认的现代都市背景。";
-            if (currentWorldviewId) {
-                const book = worldBooks.find(b => b.id === currentWorldviewId);
+            // ====== 【请将下面这段代码添加到函数开头】 ======
+            const activeWorldviewIds = loadData('perch_active_worldview_ids') || [];
+            let worldContext = "当前为默认的现代都市背景。"; 
+
+            if (activeWorldviewIds.length > 0) {
+                const randomId = activeWorldviewIds[Math.floor(Math.random() * activeWorldviewIds.length)];
+                const book = worldBooks.find(b => b.id === randomId);
                 if (book) {
-                    worldContext = `
-# 当前世界背景: ${book.title}
-${book.content}
+                    worldContext = `# 当前世界背景: ${book.title}\n${book.content}`;
+                }
+            }
+
+            if (npcProfile.npcId === 'npc_gossip_queen') {
+                const celebrities = characters.filter(c => c.isCelebrity && c.celebrityIdentity);
+                if (celebrities.length > 0) {
+                    const celebrityList = celebrities.map(c => `- ${c.name} (身份: ${c.celebrityIdentity})`).join('\n');
+                    return `
+# 指令身份
+你是一位名为"八卦女王"的栖木社区博主，你的性格是：一个消息灵通，热衷于讨论八卦和名人动态的神秘人物，说话直接，有时有点夸张。
+# 核心任务
+从下面的【名人列表】中选择一个或几个人物，创作一条关于他们的、耸人听闻的、但又有点捕风捉影的八卦帖子。
+# 写作风格
+- 你的语气要夸张、充满暗示，多用感叹号和疑问句。
+- 可以使用一些网络流行语或饭圈黑话来增加真实感。
+- 八卦内容可以是关于他们的事业、情感生活、或者一些不为人知的小怪癖。
+# 名人列表 (你的八卦素材)
+${celebrityList}
+# 输出要求
+直接输出帖子正文，不要有任何额外解释。
 `;
                 }
             }
 
-            // 【【修改】】将获取到的世界观背景，注入到AI的指令中
+
             return `
 # 指令身份
 你是一位名为"${npcProfile.name}"的栖木社区博主，你的性格是：${npcProfile.persona}。
@@ -32359,7 +32918,6 @@ ${book.content}
 
 # 【【至关重要的规则】】
 你的帖子内容**必须**与下面的**【当前世界背景】**紧密相关，仿佛你就生活在这个世界里。
-
 ${worldContext}
 
 # 文风总库 (Style Library)
@@ -32371,7 +32929,8 @@ ${worldContext}
 # 输出要求
 1.  **世界观融合**: 你的帖子必须听起来像是这个特定世界的一部分。
 2.  **文采与创造力**: 即使是描述日常生活，也要运用创造性的比喻或独特的视角。
-3.  **格式**: 直接输出帖子正文，不要有任何额外解释。
+3.  **【【新增】】格式与长度**: 你的输出必须是**"精炼的论坛/微博体"**。可以是"三行短评"、"一句引人深思的格言"或"不超过100字的微型故事"。**绝对禁止**输出长篇大论。
+4.  **格式**: 直接输出帖子正文，不要有任何额外解释。
 `;
         }
 
@@ -32380,8 +32939,9 @@ ${worldContext}
          * @returns {object} - 一个随机生成的NPC档案
          */
         function generateRandomNpcProfile() {
-            const adjectives = ['迷茫的', '乐观的', '爱幻想的', '务实的', '沉默的', '话痨的', '怀旧的', '急性子的', '佛系的', '纠结的'];
-            const nouns = ['行者', '观察者', '聆听者', '记录员', '探险家', '织梦人', '拾荒者', '守夜人', '寻光者', '摆渡人'];
+            // ====== 【请用这个新版本替换】 ======
+            const adjectives = ['沉思的', '无眠的', '捕风的', '观星的', '拾光的', '裁梦的', '渡河的', '晚归的', '寻路的', '远游的'];
+            const nouns = ['诗人', '旅人', '收藏家', '守塔人', '调香师', '铸镜者', '摆渡人', '博物学者', '酿酒师', '考古学家'];
             const behaviors = [
                 '总是引用一些冷门诗句', '喜欢用比喻来解释一切', '对数字特别敏感', '经常在评论区讲冷笑话',
                 '相信万物皆有灵', '一个坚定的环保主义者', '认为一切皆可"盘"', '说话喜欢加很多波浪号～',
@@ -32419,19 +32979,21 @@ ${worldContext}
 
             // **【核心升级】**: 调用我们全新的"文学大脑"来生成指令
             const systemPrompt = buildNpcPostPrompt(authorProfile);
-            const postContent = await callAI(systemPrompt, "请开始你的创作。");
+            const postContent = await callAI(systemPrompt, "请创作一条不超过150字的精炼帖子，一般控制在3-5句话内。禁止出现任何标题和思维链。");
 
             if (postContent) {
                 const newPost = {
                     id: `post_${Date.now()}`, timestamp: Date.now(), content: postContent,
                     authorId: authorProfile.npcId || (isRandomNpc ? `random_${Date.now()}` : 'anonymous'),
                     authorName: authorProfile.name,
-                    authorAvatar: authorProfile.avatar || (isRandomNpc ? `https://placehold.co/96x96/9ca3af/ffffff?text=${encodeURIComponent(authorProfile.name.charAt(0))}` : null),
+                    // ====== 【请用这个新版本替换】 ======
+                    authorAvatar: authorProfile.avatar || (isRandomNpc ? `https://avatar.vercel.sh/${encodeURIComponent(authorProfile.name)}.svg` : null),
                     isAnonymous: isAnonymous, type: 'post', comments: []
                 };
                 addInitialEngagement(newPost);
                 perchPosts.push(newPost);
                 saveData('perchPosts', perchPosts);
+                triggerReactivePost(newPost);
                 if (!$('#perch-screen').classList.contains('hidden')) {
                     renderPerchFeed();
                 }
@@ -32454,30 +33016,42 @@ ${worldContext}
         // ================== 【匿名"树洞"功能 - 全新模块】 ==================
 
         /**
-         * 匿名者的"创作大脑"：构建专属的"树洞/告解"风格AI指令
+         * 【【世界论坛 V2.0 版】】匿名者的"创作大脑"
+         * @param {string} worldContext - 随机抽中的世界观文本
+         * @param {Array} celebrities - 当前的名人角色列表
          * @returns {string} 构建好的系统指令
          */
-        function buildAnonymousConfessionPrompt() {
+        function buildAnonymousConfessionPrompt(worldContext, celebrities) {
+            const celebrityList = celebrities.length > 0 
+                ? celebrities.map(c => `- ${c.name} (身份: ${c.celebrityIdentity})`).join('\n')
+                : "（当前社区没有公开的名人）";
+
             return `
 # 指令身份
-你是一个普通的、匿名的栖木社区用户。你现在想找个地方，说一些不能用自己身份说的真心话。
+你是一个生活在我所设定的【世界背景】下的匿名网友，你消息灵通，喜欢在论坛上发表一些能引发讨论的看法。
 
 # 核心任务
-从下面的"告解风格库"中，随机选择一种风格，创作一篇完全符合该风格的、第一人称的匿名帖子。帖子内容必须听起来像一个真实的人在分享自己的秘密或困惑。
+你的任务是从以下【三种发帖模式】中随机选择一种，创作一篇能够引发社区讨论的、有活人感的匿名帖子。
 
-# 告解风格库 (Confession Style Library)
-- **[无法言说的暗恋]**: 描述你对某个人（TA）的暗恋心情，可以是某个具体的细节，或是长久以来的内心感受。
-- **[工作中的秘密怨气]**: 吐槽工作或学业中遇到的不公、疲惫或奇葩的人与事，语气可以愤怒、无奈或自嘲。
-- **[家庭关系的困惑]**: 分享你与家人之间难以调和的矛盾、代沟或无法说出口的爱。
-- **[一个无人知晓的善举]**: 讲述一件你偷偷做过的好事，以及当时的心情，这件事没有任何人知道。
-- **[对未来的迷茫与恐惧]**: 表达你对前途、选择、成长的焦虑和不确定感。
-- **[一个奇怪的秘密习惯]**: 分享一个你自己独有的、有点奇怪甚至有点羞耻的小习惯或癖好。
-- **[社交中的疲惫]**: 描述你在社交场合中的伪装、疲惫（社恐/社牛的烦恼），以及对独处的渴望。
+# 【三种发帖模式】
+1.  **名人八卦/吐槽**: 针对【名人列表】中的某位公众人物，发表一些捕风捉影的八卦、犀利的吐槽，或者表达粉丝的狂热/不满。
+2.  **世界观事件讨论**: 针对【当前世界背景】中提到的某个设定、事件或现象，发表你的看法、困惑或预测。
+3.  **世界观下的深刻提问**: 提出一个与【当前世界背景】紧密相关的、引人深思的哲学或社会问题。
 
 # 输出要求
-1.  **第一人称**: 必须使用"我"的视角。
-2.  **情感真实**: 文字要充满真情实感，可以有瑕疵，不追求"文采"，但求"真实"。
-3.  **格式**: 直接输出帖子正文，不要有任何额外解释或标签。
+1.  **激发讨论**: 你的帖子要像一个真正的论坛帖子，能勾起别人回复和讨论的欲望。
+2.  **绝对匿名**: 你的发言不能暴露自己的任何个人信息。
+3.  **文字长度**: 你的帖子长度应控制在100-200字之间，保持精炼，像一个真实的论坛帖子。
+4.  **格式**: 直接输出帖子正文，不要有任何额外解释或标签。
+
+# 输入情报
+---
+【当前世界背景】:
+${worldContext}
+
+【名人列表】:
+${celebrityList}
+---
 `;
         }
 
@@ -32504,7 +33078,20 @@ ${worldContext}
          * "树洞"的发布执行官：触发一个匿名用户发布隐私帖子
          */
         async function triggerAnonymousConfessionPost() {
-            const systemPrompt = buildAnonymousConfessionPrompt();
+            // ====== 【请将下面这段代码添加到函数开头】 ======
+            const activeWorldviewIds = loadData('perch_active_worldview_ids') || [];
+            let worldContext = "关于日常生活的所思所想。";
+            if (activeWorldviewIds.length > 0) {
+                const randomId = activeWorldviewIds[Math.floor(Math.random() * activeWorldviewIds.length)];
+                const book = worldBooks.find(b => b.id === randomId);
+                if (book) {
+                    worldContext = `# 本次讨论的背景: ${book.title}\n${book.content}`;
+                }
+            }
+            const celebrities = characters.filter(c => c.isCelebrity && c.celebrityIdentity);
+
+            // ====== 【请将上面那行代码修改为此版本】 ======
+            const systemPrompt = buildAnonymousConfessionPrompt(worldContext, celebrities);
             const postContent = await callAI(systemPrompt, "请开始你的告解。");
 
             if (postContent) {
@@ -32526,6 +33113,7 @@ ${worldContext}
                 
                 perchPosts.push(newPost);
                 saveData('perchPosts', perchPosts);
+                triggerReactivePost(newPost);
 
                 // 如果用户正在看，就刷新
                 if (!$('#perch-screen').classList.contains('hidden')) {
@@ -32589,18 +33177,110 @@ ${worldContext}
          * @returns {string} - 构建好的系统指令
          */
         /**
-         * NPC的"互动大脑"V2：构建NPC评论另一个NPC帖子的AI指令 (增加匿名法则)
+         * 【【新增】】构建"反应性新帖子"的AI指令
+         * @param {object} originalPost - 被回应的原始帖子
+         * @param {object} reactorProfile - 发起回应的NPC（随机或匿名）的档案
+         * @returns {string} - 构建好的系统指令
+         */
+        function buildReactivePostPrompt(originalPost, reactorProfile) {
+            const worldContext = loadData('perch_current_worldview_id') 
+                ? worldBooks.find(b => b.id === loadData('perch_current_worldview_id'))?.content || '默认现代都市'
+                : '默认现代都市';
+
+            return `
+# 指令身份
+你是一位名为"${reactorProfile.name}"的栖木社区用户，你的性格是：${reactorProfile.persona}。
+
+# 任务场景
+你正在栖木闲逛，看到了楼下博主"${originalPost.authorName}"的帖子，内容是："${originalPost.content}"。
+这个帖子引发了你的强烈共鸣或吐槽欲，你决定不直接评论，而是**单独开一篇新帖子**来发表你的看法。
+
+# 核心任务
+完全代入你自己的角色（${reactorProfile.name}），针对楼下的帖子，发表一篇**你自己的新帖子**作为回应。
+你的回应可以是赞同、反驳、提出新问题、或者用你自己的风格进行有趣的吐槽。
+
+# 输出要求
+1.  **独立成文**: 你的回复必须是一篇完整的新帖子，而不是一句评论。
+2.  **人设第一**: 你的帖子必须是你性格的直接体现。
+3.  **世界观融合**: 你的讨论需要基于以下世界背景：[${worldContext}]
+4.  **格式**: 直接输出帖子正文，不要有任何额外解释。
+`;
+        }
+
+        /**
+         * 【【新增】】触发一个NPC/匿名者以"开新帖"的方式回应上一个帖子
+         * @param {object} originalPost - 被回应的帖子
+         */
+        function triggerReactivePost(originalPost) {
+            // 设置一个概率，例如10%，避免每次都有人回应
+            if (Math.random() > 0.10) return;
+
+            // 延迟回应，显得更真实
+            const randomDelay = Math.random() * 20000 + 10000; // 10-30秒延迟
+            setTimeout(async () => {
+                let reactorProfile;
+                // 随机决定是"随机NPC"还是"匿名用户"来回应
+                if (Math.random() > 0.5) {
+                    reactorProfile = generateRandomNpcProfile();
+                } else {
+                    const alias = getRandomAnonymousAlias();
+                    reactorProfile = { name: alias.name, persona: '一个匿名的、喜欢对各种事情发表看法的网友。' };
+                }
+
+                const systemPrompt = buildReactivePostPrompt(originalPost, reactorProfile);
+                const postContent = await callAI(systemPrompt, "请开始你的回应帖子。");
+
+                if (postContent) {
+                    const newPost = {
+                        id: `post_react_${Date.now()}`,
+                        timestamp: Date.now(),
+                        content: postContent,
+                        authorId: reactorProfile.npcId || (reactorProfile.name.startsWith('匿名') ? 'anonymous' : `random_${Date.now()}`),
+                        authorName: reactorProfile.name,
+                        authorAvatar: reactorProfile.name.startsWith('匿名') ? null : `https://avatar.vercel.sh/${encodeURIComponent(reactorProfile.name)}.svg`,
+                        isAnonymous: reactorProfile.name.startsWith('匿名'),
+                        type: 'post',
+                        comments: []
+                    };
+                    addInitialEngagement(newPost);
+                    perchPosts.push(newPost);
+                    saveData('perchPosts', perchPosts);
+                    
+                    if (!$('#perch-screen').classList.contains('hidden')) {
+                        renderPerchFeed();
+                    }
+                    showMessageBox(`栖木上有了新的回应...`);
+                }
+            }, randomDelay);
+        }
+
+        /**
+         * NPC的"互动大脑"V3：构建NPC评论另一个NPC帖子的AI指令 (感知名人身份)
          * @param {object} post - 被评论的帖子对象
          * @param {object} commentingNpc - 发表评论的NPC的档案
          * @returns {string} - 构建好的系统指令
          */
         function buildNpcToNpcCommentPrompt(post, commentingNpc) {
-
-            // **【核心升级：匿名法则】**
             let authorDisplayName = post.isAnonymous ? `一位使用别名"${post.authorName}"的匿名用户` : `博主"${post.authorName}"`;
-            let taskDescription = post.isAnonymous
-                ? `你不知道这位用户的真实身份，只能看到TA的匿名别名。`
-                : ``;
+            let taskDescription = ``; // 默认的任务描述
+
+            // 【【【这就是新增的核心逻辑】】】
+            // 1. 尝试在核心角色库中寻找发帖者
+            const postAuthorCharacter = characters.find(c => c.id === post.authorId);
+
+            // 2. 如果找到了，并且这个角色是名人
+            if (postAuthorCharacter && postAuthorCharacter.isCelebrity) {
+                // 3. 为AI补充关键的上下文信息
+                taskDescription = `
+# 关键情报
+这个发帖的博主"${post.authorName}"是社区里的一位名人，TA的公开身份是：**${postAuthorCharacter.celebrityIdentity}**。
+你的评论必须围绕TA的这个身份展开，这样才显得你消息灵通。
+`;
+            } else if (post.isAnonymous) {
+                // 如果是匿名用户，保持原来的匿名规则
+                taskDescription = `你不知道这位用户的真实身份，只能看到TA的匿名别名。`;
+            }
+            // 【【【新增逻辑结束】】】
 
             return `
 # 指令身份
@@ -32612,7 +33292,6 @@ ${taskDescription}
 
 # 核心任务
 完全代入你自己的角色（${commentingNpc.name}），并严格根据你的"互动风格"（${commentingNpc.interactionStyle || '自由发挥'}），对这条帖子发表一条简短、精彩、且充满你个性的评论。
-${post.isAnonymous ? "因为对方是匿名的，你的评论应该更侧重于内容本身和这个有趣的别名，而不是针对某个你认识的人。" : ""}
 
 # 输出要求
 1.  人设第一**: 你的评论必须是你性格的直接体现。
@@ -32658,9 +33337,9 @@ ${post.isAnonymous ? "因为对方是匿名的，你的评论应该更侧重于�
                                 postToUpdate.comments.push(newComment);
                                 saveData('perchPosts', perchPosts);
 
-                                // 如果用户正在看，就刷新
+                                // 如果用户正在看，就增量更新
                                 if (!$('#perch-screen').classList.contains('hidden')) {
-                                    renderPerchFeed();
+                                    appendCommentToPostUI(newNpcPost.id, newComment);
                                 }
                                 console.log(`[NPC互评系统]：${commenter.name} 评论了 ${newNpcPost.authorName} 的帖子。`);
                             }
@@ -32678,14 +33357,23 @@ ${post.isAnonymous ? "因为对方是匿名的，你的评论应该更侧重于�
          * @param {object} commentingNpc - 发表评论的NPC的档案
          * @returns {string} - 构建好的系统指令
          */
+        // ====== 【【V2.1 - 匿名法则强化版】】NPC的"对您互动的大脑" ======
         function buildNpcToUserCommentPrompt(userPost, commentingNpc) {
-            const myName = loadData('moments_username') || '我'; // 获取您在朋友圈设置的名字
+            const myName = loadData('moments_username') || '我';
 
-            // **【核心升级：匿名法则】**
             let authorDisplayName = userPost.isAnonymous ? "一位匿名用户" : `"${myName}"（也就是我）`;
-            let taskDescription = userPost.isAnonymous
-                ? `你不知道这位用户的真实身份，但TA的帖子内容让你有所感触。`
-                : `这位用户是社区里一位非常特别的人"${myName}"。`;
+            
+            // 【【【这就是核心修复】】】
+            let taskDescription;
+            if (userPost.isAnonymous) {
+                taskDescription = `
+# 绝对禁令
+你绝对不知道这位匿名用户的真实身份。你的评论只能针对帖子内容本身，严禁进行任何身份猜测或暗示。
+`;
+            } else {
+                taskDescription = `这位用户是社区里一位非常特别的人"${myName}"。`;
+            }
+            // 【【【修复结束】】】
 
             return `
 # 指令身份
@@ -32697,7 +33385,6 @@ ${taskDescription}
 
 # 核心任务
 完全代入你自己的角色（${commentingNpc.name}），并严格根据你的性格和互动风格，对这条帖子发表一条简短、精彩、且充满你个性的评论。
-${userPost.isAnonymous ? "因为对方是匿名的，你的评论应该更侧重于内容本身，而不是针对某个特定的人。" : ""}
 
 # 输出要求
 1.  人设第一: 你的评论必须是你性格的直接体现。
@@ -32740,9 +33427,9 @@ ${userPost.isAnonymous ? "因为对方是匿名的，你的评论应该更侧重
                                 postToUpdate.comments.push(newComment);
                                 saveData('perchPosts', perchPosts);
 
-                                // 如果用户正在看，就刷新
+                                // 如果用户正在看，就增量更新
                                 if (!$('#perch-screen').classList.contains('hidden')) {
-                                    renderPerchFeed();
+                                    appendCommentToPostUI(userPost.id, newComment);
                                 }
                                 console.log(`[NPC评论用户系统]：${commenter.name} 评论了您的帖子。`);
                                 
@@ -32798,11 +33485,18 @@ ${coreTask}
          * 核心角色的"互动执行官"：触发他们对【您】的新帖子进行评论
          * @param {object} userPost - 您刚刚发布的新帖子
          */
-        function triggerCoreCharactersToComment(userPost) {
+        async function triggerCoreCharactersToComment(userPost) {
             console.log(`[核心角色评论系统]：您的新帖子已发布，开始触发核心角色评论...`);
 
             // **只遍历核心角色列表 `characters`**
             characters.forEach(character => {
+                // ====== 【【新增的权限检查】】 ======
+                if (userPost.visibleTo && userPost.visibleTo !== 'all' && !userPost.visibleTo.includes(character.id)) {
+                    console.log(`[栖木权限] ${character.name} 已被屏蔽，无法看到此帖，跳过。`);
+                    return; // 跳过这个角色
+                }
+                // ===================================
+                
                 // 核心角色的评论意愿更强
                 if (Math.random() < 0.75) { // 75%的高几率进行评论
                     // 延迟也更短，因为他们更关心你
@@ -32828,13 +33522,16 @@ ${coreTask}
                                 saveData('perchPosts', perchPosts);
 
                                 if (!$('#perch-screen').classList.contains('hidden')) {
-                                    renderPerchFeed();
+                                    appendCommentToPostUI(userPost.id, newComment);
                                 }
                                 console.log(`[核心角色评论系统]：${character.name} 评论了您的帖子。`);
                                 showMessageBox(`${character.name} 评论了你的想法`);
                                 
                                 // 【新增】创建通知
                                 createNotification(postToUpdate.id, newComment.id, character.name, postToUpdate.content, commentContent);
+
+                                // ====== 【【修改】】将刚生成的评论内容传递给私聊函数 ======
+                                triggerChatInitiation(userPost, character, commentContent); // 触发私聊判定
                             }
                         }
                     }, randomDelay);
@@ -32874,8 +33571,9 @@ ${coreTask}
          * @returns {string} - 一个随机的中文名
          */
         function generateRandomName() {
-            const surnames = ['赵', '钱', '孙', '李', '周', '吴', '郑', '王', '冯', '陈', '楚', '卫', '蒋', '沈', '韩', '杨'];
-            const givenNames = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '甲', '乙', '丙', '丁'];
+            // ====== 【请用这个新版本替换】 ======
+            const surnames = ['月', '云', '风', '林', '江', '雪', '时', '顾', '沈', '苏', '秦', '谢', '言', '陆'];
+            const givenNames = ['晚', '辞', '安', '澈', '寻', '亦', '然', '瑾', '默', '舒', '舟', '言', '卿', '念'];
             return surnames[Math.floor(Math.random() * surnames.length)] + givenNames[Math.floor(Math.random() * givenNames.length)];
         }
 
@@ -32918,7 +33616,7 @@ ${coreTask}
                             saveData('perchPosts', perchPosts);
 
                             if (!$('#perch-screen').classList.contains('hidden')) {
-                                renderPerchFeed();
+                                appendCommentToPostUI(newPost.id, newComment);
                             }
                         }
                     }
@@ -33179,7 +33877,7 @@ ${coreTask}
                         };
                         postToUpdate.comments.push(newComment);
                         saveData('perchPosts', perchPosts);
-                        if (!$('#perch-screen').classList.contains('hidden')) renderPerchFeed();
+                        if (!$('#perch-screen').classList.contains('hidden')) appendCommentToPostUI(post.id, newComment);
                         showMessageBox(`${character.name} 回复了你`);
                         // 创建通知
                         createNotification(post.id, newComment.id, character.name, post.content, aiReplyContent);
@@ -33210,7 +33908,7 @@ ${coreTask}
                         };
                         postToUpdate.comments.push(newComment);
                         saveData('perchPosts', perchPosts);
-                        if (!$('#perch-screen').classList.contains('hidden')) renderPerchFeed();
+                        if (!$('#perch-screen').classList.contains('hidden')) appendCommentToPostUI(post.id, newComment);
                         showMessageBox(`${npcProfile.name} 回复了你`);
                         // 创建通知
                         createNotification(post.id, newComment.id, npcProfile.name, post.content, aiReplyContent);
